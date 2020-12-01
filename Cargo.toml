@@ -1,0 +1,8 @@
+[package]
+name = "diceprop"
+version = "0.1.0"
+authors = ["Jakob Schikowski <jakob.schikowski@gmx.de>"]
+edition = "2018"
+
+[dependencies]
+dicetest = "0.2"
