@@ -1,6 +1,6 @@
 use std::fmt::Debug;
 
-use crate::{hint_section, ops, Fun2, Var1, Var2, Var3};
+use crate::{hint_section, ops, var_2, var_3, Fun2, Var1, Var2, Var3};
 
 /// Asserts that the binary relation `rel` is reflexive.
 ///
@@ -78,6 +78,26 @@ where
     ));
 }
 
+/// Asserts that the binary relation `rel` is a partial equality relation.
+///
+/// It must hold:
+/// - `rel` is symmetric ([`symmetric_binrel`])
+/// - `rel` is transitive ([`transitive_binrel`])
+pub fn partial_eq_binrel<T, R>(set: Var3<T>, rel: Fun2<R>)
+where
+    T: Debug + Clone,
+    R: Fn(T, T) -> bool,
+{
+    hint_section!("Is `{}` a partial equality relation?", rel.name);
+
+    let [a, b, c] = set.elems;
+    let set_2 = var_2(set.set, [a.clone(), b.clone()]);
+    let set_3 = var_3(set.set, [a, b, c]);
+
+    symmetric_binrel(set_2, rel.as_ref());
+    transitive_binrel(set_3, rel.as_ref());
+}
+
 #[cfg(test)]
 mod tests {
     use crate::{infix_fun_2, props, FateVarExt};
@@ -116,6 +136,15 @@ mod tests {
             let rel = infix_fun_2("<", |x, y| x < y);
             let set = fate.roll_var_3("char", ["x", "y", "z"], dice::char());
             props::transitive_binrel(set, rel);
+        })
+    }
+
+    #[test]
+    fn partial_eq_binrel_example() {
+        Dicetest::once().run(|mut fate| {
+            let rel = infix_fun_2("==", |x, y| x == y);
+            let set = fate.roll_var_3("f32", ["x", "y", "z"], dice::f32(..));
+            props::partial_eq_binrel(set, rel);
         })
     }
 }
