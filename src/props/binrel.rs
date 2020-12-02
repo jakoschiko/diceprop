@@ -1,6 +1,6 @@
 use std::fmt::Debug;
 
-use crate::{hint_section, ops, var_2, var_3, Fun2, Var1, Var2, Var3};
+use crate::{hint_section, ops, var_1, var_2, var_3, Fun2, Var1, Var2, Var3};
 
 /// Asserts that the binary relation `rel` is reflexive.
 ///
@@ -98,6 +98,29 @@ where
     transitive_binrel(set_3, rel.as_ref());
 }
 
+/// Asserts that the binary relation `rel` is an equality relation.
+///
+/// It must hold:
+/// - `rel` is reflexive ([`reflexive_binrel`])
+/// - `rel` is symmetric ([`symmetric_binrel`])
+/// - `rel` is transitive ([`transitive_binrel`])
+pub fn eq_binrel<T, R>(set: Var3<T>, rel: Fun2<R>)
+where
+    T: Debug + Clone,
+    R: Fn(T, T) -> bool,
+{
+    hint_section!("Is `{}` an equality relation?", rel.name);
+
+    let [a, b, c] = set.elems;
+    let set_1 = var_1(set.set, a.clone());
+    let set_2 = var_2(set.set, [a.clone(), b.clone()]);
+    let set_3 = var_3(set.set, [a, b, c]);
+
+    reflexive_binrel(set_1, rel.as_ref());
+    symmetric_binrel(set_2, rel.as_ref());
+    transitive_binrel(set_3, rel.as_ref());
+}
+
 #[cfg(test)]
 mod tests {
     use crate::{infix_fun_2, props, FateVarExt};
@@ -116,7 +139,7 @@ mod tests {
     fn symmetric_binrel_example() {
         Dicetest::once().run(|mut fate| {
             let rel = infix_fun_2("!=", |x, y| x != y);
-            let set = fate.roll_var_2("f32", ["x", "y"], dice::f32(..));
+            let set = fate.roll_var_2("f32", ["x", "y"], dice::any_f32());
             props::symmetric_binrel(set, rel);
         })
     }
@@ -143,8 +166,17 @@ mod tests {
     fn partial_eq_binrel_example() {
         Dicetest::once().run(|mut fate| {
             let rel = infix_fun_2("==", |x, y| x == y);
-            let set = fate.roll_var_3("f32", ["x", "y", "z"], dice::f32(..));
+            let set = fate.roll_var_3("f32", ["x", "y", "z"], dice::any_f32());
             props::partial_eq_binrel(set, rel);
+        })
+    }
+
+    #[test]
+    fn eq_binrel_example() {
+        Dicetest::once().run(|mut fate| {
+            let rel = infix_fun_2("==", |x, y| x == y);
+            let set = fate.roll_var_3("String", ["x", "y", "z"], dice::string(dice::char(), ..));
+            props::eq_binrel(set, rel);
         })
     }
 }
