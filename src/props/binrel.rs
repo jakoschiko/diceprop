@@ -1,6 +1,6 @@
 use std::fmt::Debug;
 
-use crate::{hint_section, ops, Fun2, Var1, Var2};
+use crate::{hint_section, ops, Fun2, Var1, Var2, Var3};
 
 /// Asserts that the binary relation `rel` is reflexive.
 ///
@@ -56,6 +56,28 @@ where
     ));
 }
 
+/// Asserts that the binary relation `rel` is transitive.
+///
+/// For `a`, `b`, `c` of `set` it must hold:
+/// - `rel(a, b) && rel(b, c) --> rel(a, c)`
+pub fn transitive_binrel<T, R>(set: Var3<T>, rel: Fun2<R>)
+where
+    T: Debug + Clone,
+    R: Fn(T, T) -> bool,
+{
+    hint_section!("Is `{}` transitive?", rel.name);
+
+    let [a, b, c] = set.eval();
+
+    ops::assert(ops::implies(
+        ops::and(
+            rel.eval(a.clone(), b.clone()),
+            rel.eval(b.clone(), c.clone()),
+        ),
+        rel.eval(a, c),
+    ));
+}
+
 #[cfg(test)]
 mod tests {
     use crate::{infix_fun_2, props, FateVarExt};
@@ -85,6 +107,15 @@ mod tests {
             let rel = infix_fun_2("<", |x, y| x < y);
             let set = fate.roll_var_2("u8", ["x", "y"], dice::u8(..));
             props::antisymmetric_binrel(set, rel);
+        })
+    }
+
+    #[test]
+    fn transitive_binrel_example() {
+        Dicetest::once().run(|mut fate| {
+            let rel = infix_fun_2("<", |x, y| x < y);
+            let set = fate.roll_var_3("char", ["x", "y", "z"], dice::char());
+            props::transitive_binrel(set, rel);
         })
     }
 }
