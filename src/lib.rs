@@ -11,3 +11,5 @@ mod fun;
 pub use fun::{fun_1, fun_2, infix_fun_2, postfix_fun_1, Fun1, Fun1Label, Fun2, Fun2Label};
 
 pub mod ops;
+
+pub mod props;
