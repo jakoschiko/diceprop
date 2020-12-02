@@ -1,3 +1,6 @@
+#[macro_use]
+mod util;
+
 mod eval;
 pub use eval::Eval;
 
