@@ -121,6 +121,26 @@ where
     transitive_binrel(set_3, rel.as_ref());
 }
 
+/// Asserts that the binary relation `erel` is equivalent to the relation `rel`.
+///
+/// For all `a`, `b` of `set` it must hold:
+/// - `rel(a, b) <-> erel(a, b)`
+pub fn equivalent_binrel<T, R, E>(set: Var2<T>, rel: Fun2<R>, erel: Fun2<E>)
+where
+    T: Debug + Clone,
+    R: FnOnce(T, T) -> bool,
+    E: FnOnce(T, T) -> bool,
+{
+    hint_section!("Is `{}` equivalent to `{}`?", erel.name, rel.name);
+
+    let [a, b] = set.eval();
+
+    ops::assert(ops::iff(
+        rel.eval_once(a.clone(), b.clone()),
+        erel.eval_once(a, b),
+    ));
+}
+
 #[cfg(test)]
 mod tests {
     use crate::{infix_fun_2, props, FateVarExt};
@@ -177,6 +197,16 @@ mod tests {
             let rel = infix_fun_2("==", |x, y| x == y);
             let set = fate.roll_var_3("String", ["x", "y", "z"], dice::string(dice::char(), ..));
             props::eq_binrel(set, rel);
+        })
+    }
+
+    #[test]
+    fn equivalent_binrel_example() {
+        Dicetest::once().run(|mut fate| {
+            let rel = infix_fun_2("==", |x, y| x == y);
+            let erel = infix_fun_2("!!=", |x, y| !(x != y));
+            let set = fate.roll_var_2("u8", ["x", "y"], dice::u8(..));
+            props::equivalent_binrel(set, rel, erel);
         })
     }
 }
