@@ -34,6 +34,28 @@ where
     ops::assert(ops::implies(rel.eval(a.clone(), b.clone()), rel.eval(b, a)));
 }
 
+/// Asserts that the binary relation `rel` is antisymmetric.
+///
+/// For `a`, `b` of `set` it must hold:
+/// - `a != b && rel(a, b) --> !rel(b, a)`
+pub fn antisymmetric_binrel<T, R>(set: Var2<T>, rel: Fun2<R>)
+where
+    T: Debug + Clone + PartialEq,
+    R: Fn(T, T) -> bool,
+{
+    hint_section!("Is `{}` antisymmetric?", rel.name);
+
+    let [a, b] = set.eval();
+
+    ops::assert(ops::implies(
+        ops::and(
+            ops::ne(a.as_ref(), b.as_ref()),
+            rel.eval(a.clone(), b.clone()),
+        ),
+        ops::not(rel.eval(b, a)),
+    ));
+}
+
 #[cfg(test)]
 mod tests {
     use crate::{infix_fun_2, props, FateVarExt};
@@ -54,6 +76,15 @@ mod tests {
             let rel = infix_fun_2("!=", |x, y| x != y);
             let set = fate.roll_var_2("f32", ["x", "y"], dice::f32(..));
             props::symmetric_binrel(set, rel);
+        })
+    }
+
+    #[test]
+    fn antisymmetric_binrel_example() {
+        Dicetest::once().run(|mut fate| {
+            let rel = infix_fun_2("<", |x, y| x < y);
+            let set = fate.roll_var_2("u8", ["x", "y"], dice::u8(..));
+            props::antisymmetric_binrel(set, rel);
         })
     }
 }
