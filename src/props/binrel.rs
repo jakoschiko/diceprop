@@ -141,6 +141,30 @@ where
     ));
 }
 
+/// Asserts that the binary relation `crel` is the complementary relation of `rel`.
+///
+/// For all `a`, `b` of `set` it must hold:
+/// - `rel(a, b) <-> !crel(a, b)`
+pub fn complementary_binrel<T, R, C>(set: Var2<T>, rel: Fun2<R>, crel: Fun2<C>)
+where
+    T: Debug + Clone,
+    R: FnOnce(T, T) -> bool,
+    C: FnOnce(T, T) -> bool,
+{
+    hint_section!(
+        "Is `{}` complementary relation of `{}`?",
+        crel.name,
+        rel.name,
+    );
+
+    let [a, b] = set.eval();
+
+    ops::assert(ops::iff(
+        rel.eval_once(a.clone(), b.clone()),
+        ops::not(crel.eval_once(a, b)),
+    ));
+}
+
 #[cfg(test)]
 mod tests {
     use crate::{infix_fun_2, props, FateVarExt};
@@ -207,6 +231,16 @@ mod tests {
             let erel = infix_fun_2("!!=", |x, y| !(x != y));
             let set = fate.roll_var_2("u8", ["x", "y"], dice::u8(..));
             props::equivalent_binrel(set, rel, erel);
+        })
+    }
+
+    #[test]
+    fn complementary_binrel_example() {
+        Dicetest::once().run(|mut fate| {
+            let rel = infix_fun_2("<", |x, y| x < y);
+            let crel = infix_fun_2(">=", |x, y| x >= y);
+            let set = fate.roll_var_2("u8", ["x", "y"], dice::u8(..));
+            props::complementary_binrel(set, rel, crel);
         })
     }
 }
