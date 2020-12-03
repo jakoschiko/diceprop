@@ -128,6 +128,42 @@ pub fn ring<S, A, N, M>(
     distributive_binop(var, add, mul);
 }
 
+/// Asserts that `(var.set, add, mul, neg, zero, one)` is a commutative ring.
+///
+/// It must hold:
+/// - `(var.set, add, mul, neg, zero, one)` is a ring ([`ring`])
+/// - `mul` is commutative ([`commutative_binop`])
+pub fn commutative_ring<S, A, M, N>(
+    var: Var3<S>,
+    add: Fun2<A>,
+    mul: Fun2<M>,
+    neg: Fun1<N>,
+    zero: Elem<S>,
+    one: Elem<S>,
+) where
+    S: Debug + Clone + PartialEq,
+    A: Fn(S, S) -> S,
+    M: Fn(S, S) -> S,
+    N: Fn(S) -> S,
+{
+    hint_section!(
+        "Is `({}, {}, {}, {}, {}, {})` a commutative ring?",
+        var.set,
+        add.name,
+        mul.name,
+        neg.name,
+        zero.name,
+        one.name,
+    );
+
+    let [a, b, c] = var.elems;
+    let var_2 = var_2(var.set, [a.clone(), b.clone()]);
+    let var_3 = var_3(var.set, [a, b, c]);
+
+    ring(var_3, add, mul.as_ref(), neg, zero, one);
+    commutative_binop(var_2, mul);
+}
+
 #[cfg(test)]
 mod tests {
     use dicetest::prelude::*;
@@ -185,6 +221,19 @@ mod tests {
             let zero = elem("zero", 0);
             let one = elem("one", 1);
             props::ring(var, add, mul, neg, zero, one);
+        })
+    }
+
+    #[test]
+    fn commutative_ring_example() {
+        Dicetest::once().run(|mut fate| {
+            let var = fate.roll_var_3("i64", ["x", "y", "z"], dice::i64(-1000..=1000));
+            let add = infix_fun_2("+", |x, y| x + y);
+            let mul = infix_fun_2("*", |x, y| x * y);
+            let neg = fun_1("-", |x: i64| -x);
+            let zero = elem("zero", 0);
+            let one = elem("one", 1);
+            props::commutative_ring(var, add, mul, neg, zero, one);
         })
     }
 }
