@@ -3,5 +3,8 @@
 mod binrel;
 pub use binrel::*;
 
+mod binop;
+pub use binop::*;
+
 mod fun;
 pub use fun::*;
