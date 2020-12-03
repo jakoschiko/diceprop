@@ -324,8 +324,8 @@ mod tests {
     #[test]
     fn left_inverse_elem_of_binop_example() {
         Dicetest::once().run(|mut fate| {
-            let op = infix_fun_2("+", |x, y| x + y);
             let var = fate.roll_var_2("i64", ["x", "y"], dice::i64(-1000..=1000));
+            let op = infix_fun_2("+", |x, y| x + y);
             let inv = fun_1("-", |x: i64| -x);
             props::left_inverse_elem_of_binop(var, op, inv);
         })
@@ -334,8 +334,8 @@ mod tests {
     #[test]
     fn right_inverse_elem_of_binop_example() {
         Dicetest::once().run(|mut fate| {
-            let op = infix_fun_2("+", |x, y| x + y);
             let var = fate.roll_var_2("i64", ["x", "y"], dice::i64(-1000..=1000));
+            let op = infix_fun_2("+", |x, y| x + y);
             let inv = fun_1("-", |x: i64| -x);
             props::right_inverse_elem_of_binop(var, op, inv);
         })
@@ -344,8 +344,8 @@ mod tests {
     #[test]
     fn inverse_elem_of_binop_example() {
         Dicetest::once().run(|mut fate| {
-            let op = infix_fun_2("+", |x, y| x + y);
             let var = fate.roll_var_2("i64", ["x", "y"], dice::i64(-1000..=1000));
+            let op = infix_fun_2("+", |x, y| x + y);
             let inv = fun_1("-", |x: i64| -x);
             props::inverse_elem_of_binop(var, op, inv);
         })
