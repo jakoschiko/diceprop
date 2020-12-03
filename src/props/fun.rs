@@ -100,6 +100,29 @@ where
     ));
 }
 
+/// Asserts that the function `g` is equivalent to the function `f`.
+///
+/// For `a` of `var_s.set` and `b` of `var_t.set` it must hold:
+/// - `f(a, b) == g(a, b)`
+pub fn equivalent_fun_2<S, T, R, F, G>(var_s: Var1<S>, var_t: Var1<T>, f: Fun2<F>, g: Fun2<G>)
+where
+    S: Debug + Clone,
+    T: Debug + Clone,
+    R: Debug + PartialEq,
+    F: FnOnce(S, T) -> R,
+    G: FnOnce(S, T) -> R,
+{
+    hint_section!("Is `{}` equivalent to `{}`?", g.name, f.name);
+
+    let a = var_s.eval();
+    let b = var_t.eval();
+
+    ops::assert(ops::eq(
+        f.eval_once(a.clone(), b.clone()).as_ref(),
+        g.eval_once(a, b).as_ref(),
+    ));
+}
+
 /// Asserts that the function `f` is commutative.
 ///
 /// For `a`, `b` of `var.set` it must hold:
@@ -182,6 +205,24 @@ mod tests {
             let f = postfix_fun_1("+2", |x: u64| x + 2);
             let g = postfix_fun_1("+1+1", |x: u64| x + 1 + 1);
             props::equivalent_fun_1(var, f, g);
+        })
+    }
+
+    #[test]
+    fn equivalent_fun_2_example() {
+        Dicetest::once().run(|mut fate| {
+            let var_s = fate.roll_var_1("BTreeSet<u8>", "xs", dice::b_tree_set(dice::u8(..), ..));
+            let var_t = fate.roll_var_1("u8", "x", dice::u8(..));
+            let f = fun_2("insert", |mut xs: BTreeSet<u8>, x| {
+                xs.insert(x);
+                xs
+            });
+            let g = fun_2("remove_and_insert", |mut xs: BTreeSet<u8>, x| {
+                xs.remove(&x);
+                xs.insert(x);
+                xs
+            });
+            props::equivalent_fun_2(var_s, var_t, f, g);
         })
     }
 
