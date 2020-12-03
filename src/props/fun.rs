@@ -19,6 +19,27 @@ where
     ops::assert(ops::eq(fa.as_ref(), f.eval(fa.clone()).as_ref()));
 }
 
+/// Asserts that the function `g` is the left inverse of function `f`.
+///
+/// For `a` of `var.set` it must hold:
+/// - `g(f(a)) == a`
+pub fn left_inverse_fun<S, T, F, G>(var: Var1<S>, f: Fun1<F>, g: Fun1<G>)
+where
+    S: Debug + Clone + PartialEq,
+    T: Debug,
+    F: FnOnce(S) -> T,
+    G: FnOnce(T) -> S,
+{
+    hint_section!("Is `{}` left inverse of `{}`?", g.name, f.name);
+
+    let a = var.eval();
+
+    ops::assert(ops::eq(
+        g.eval_once(f.eval_once(a.clone())).as_ref(),
+        a.as_ref(),
+    ));
+}
+
 /// Asserts that the function `f` is commutative.
 ///
 /// For `a`, `b` of `var.set` it must hold:
@@ -45,6 +66,7 @@ mod tests {
 
     use dicetest::prelude::*;
     use std::collections::BTreeSet;
+    use std::str::FromStr;
 
     #[test]
     fn idempotent_fun_example() {
@@ -59,6 +81,16 @@ mod tests {
             );
             let f = fun_1("trim", |x: String| x.trim().to_owned());
             props::idempotent_fun(var, f);
+        })
+    }
+
+    #[test]
+    fn left_inverse_fun_example() {
+        Dicetest::once().run(|mut fate| {
+            let var = fate.roll_var_1("f32", "x", dice::f32(..));
+            let f = fun_1("to_string", |x: f32| x.to_string());
+            let g = fun_1("from_string", |y: String| f32::from_str(&y).unwrap());
+            props::left_inverse_fun(var, f, g);
         })
     }
 
