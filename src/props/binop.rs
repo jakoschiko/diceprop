@@ -225,6 +225,28 @@ where
     right_inverse_elem_of_binop(var, op, inv);
 }
 
+/// Asserts that the binary operation `invop` is the left inverse of the binary operation `op`.
+///
+/// For `a`, `b` of `var.set` it must hold:
+/// - `invop(op(a, b), b) == a`
+pub fn left_inverse_binop<S, O, I>(var: Var2<S>, op: Fun2<O>, invop: Fun2<I>)
+where
+    S: Debug + Clone + PartialEq,
+    O: FnOnce(S, S) -> S,
+    I: FnOnce(S, S) -> S,
+{
+    hint_section!("Is `{}` left inverse of `{}`?", invop.name, op.name);
+
+    let [a, b] = var.eval();
+
+    ops::assert(ops::eq(
+        invop
+            .eval_once(op.eval_once(a.clone(), b.clone()), b)
+            .as_ref(),
+        a.as_ref(),
+    ));
+}
+
 #[cfg(test)]
 mod tests {
     use crate::{elem, fun_1, fun_2, infix_fun_2, props, FateVarExt};
@@ -348,6 +370,16 @@ mod tests {
             let op = infix_fun_2("+", |x, y| x + y);
             let inv = fun_1("-", |x: i64| -x);
             props::inverse_elem_of_binop(var, op, inv);
+        })
+    }
+
+    #[test]
+    fn left_inverse_binop_example() {
+        Dicetest::once().run(|mut fate| {
+            let var = fate.roll_var_2("i64", ["x", "y"], dice::i64(-1000..=1000));
+            let op = infix_fun_2("+", |x, y| x + y);
+            let invop = infix_fun_2("-", |x, y| x - y);
+            props::left_inverse_binop(var, op, invop);
         })
     }
 }
