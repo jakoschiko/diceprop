@@ -201,6 +201,30 @@ where
     ));
 }
 
+/// Asserts the function `inv` returns the inverse element that regarding
+/// to the binary operation `op`.
+///
+/// It must hold:
+/// - `inv` returns the left inverse element regarding to `op`
+/// ([`left_inverse_elem_of_binop`])
+/// - `inv` returns the right inverse element regarding to `op`
+/// ([`right_inverse_elem_of_binop`])
+pub fn inverse_elem_of_binop<S, O, I>(var: Var2<S>, op: Fun2<O>, inv: Fun1<I>)
+where
+    S: Debug + Clone + PartialEq,
+    O: Fn(S, S) -> S,
+    I: Fn(S) -> S,
+{
+    hint_section!(
+        "Does `{}` return inverse element regarding to `{}`?",
+        inv.name,
+        op.name
+    );
+
+    left_inverse_elem_of_binop(var.clone(), op.as_ref(), inv.as_ref());
+    right_inverse_elem_of_binop(var, op, inv);
+}
+
 #[cfg(test)]
 mod tests {
     use crate::{elem, fun_1, fun_2, infix_fun_2, props, FateVarExt};
@@ -314,6 +338,16 @@ mod tests {
             let var = fate.roll_var_2("i64", ["x", "y"], dice::i64(-1000..=1000));
             let inv = fun_1("-", |x: i64| -x);
             props::right_inverse_elem_of_binop(var, op, inv);
+        })
+    }
+
+    #[test]
+    fn inverse_elem_of_binop_example() {
+        Dicetest::once().run(|mut fate| {
+            let op = infix_fun_2("+", |x, y| x + y);
+            let var = fate.roll_var_2("i64", ["x", "y"], dice::i64(-1000..=1000));
+            let inv = fun_1("-", |x: i64| -x);
+            props::inverse_elem_of_binop(var, op, inv);
         })
     }
 }
