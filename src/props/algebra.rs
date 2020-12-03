@@ -97,13 +97,13 @@ where
 mod tests {
     use dicetest::prelude::*;
 
-    use crate::{elem, fun_1, fun_2, props, FateVarExt};
+    use crate::{elem, fun_1, infix_fun_2, props, FateVarExt};
 
     #[test]
     fn semigroup_example() {
         Dicetest::once().run(|mut fate| {
             let var = fate.roll_var_3("u64", ["x", "y", "z"], dice::u64(..=1000));
-            let op = fun_2("+", |x, y| x + y);
+            let op = infix_fun_2("+", |x, y| x + y);
             props::semigroup(var, op);
         })
     }
@@ -112,7 +112,7 @@ mod tests {
     fn monoid_example() {
         Dicetest::once().run(|mut fate| {
             let var = fate.roll_var_3("u64", ["x", "y", "z"], dice::u64(..=1000));
-            let op = fun_2("+", |x, y| x + y);
+            let op = infix_fun_2("+", |x, y| x + y);
             let e = elem("zero", 0);
             props::monoid(var, op, e);
         })
@@ -122,7 +122,7 @@ mod tests {
     fn group_example() {
         Dicetest::once().run(|mut fate| {
             let var = fate.roll_var_3("i64", ["x", "y", "z"], dice::i64(-1000..=1000));
-            let op = fun_2("+", |x, y| x + y);
+            let op = infix_fun_2("+", |x, y| x + y);
             let inv = fun_1("-", |x: i64| -x);
             let e = elem("zero", 0);
             props::group(var, op, inv, e);
@@ -133,7 +133,7 @@ mod tests {
     fn abelian_group_example() {
         Dicetest::once().run(|mut fate| {
             let var = fate.roll_var_3("i64", ["x", "y", "z"], dice::i64(-1000..=1000));
-            let op = fun_2("+", |x, y| x + y);
+            let op = infix_fun_2("+", |x, y| x + y);
             let inv = fun_1("-", |x: i64| -x);
             let e = elem("zero", 0);
             props::abelian_group(var, op, inv, e);
