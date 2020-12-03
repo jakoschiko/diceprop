@@ -1,7 +1,7 @@
 use std::fmt::Debug;
 
 use crate::props::commutative_fun;
-use crate::{hint_section, ops, Fun2, Var2, Var3};
+use crate::{hint_section, ops, Elem, Fun2, Var1, Var2, Var3};
 
 /// Asserts that the binary operation `op` is commutative.
 ///
@@ -99,9 +99,26 @@ where
     right_distributive_binop(var, add, mul);
 }
 
+/// Asserts that `e` is the left identity element of the binary operation `op`.
+///
+/// For `a` of `var.set` it must hold:
+/// - `op(e, a) == a`
+pub fn left_identity_elem_of_binop<S, O>(var: Var1<S>, op: Fun2<O>, e: Elem<S>)
+where
+    S: Debug + Clone + PartialEq,
+    O: FnOnce(S, S) -> S,
+{
+    hint_section!("Is `{}` left identity element of `{}`?", e.name, op.name);
+
+    let a = var.eval();
+    let e = e.eval();
+
+    ops::assert(ops::eq(op.eval_once(e, a.clone()).as_ref(), a.as_ref()));
+}
+
 #[cfg(test)]
 mod tests {
-    use crate::{fun_2, infix_fun_2, props, FateVarExt};
+    use crate::{elem, fun_2, infix_fun_2, props, FateVarExt};
 
     use dicetest::prelude::*;
     use std::collections::BTreeSet;
@@ -162,6 +179,16 @@ mod tests {
             let mul = infix_fun_2("*", |x, y| x * y);
             let var = fate.roll_var_3("i64", ["x", "y", "z"], dice::i64(-1000..=1000));
             props::distributive_binop(var, add, mul);
+        })
+    }
+
+    #[test]
+    fn left_identity_elem_of_binop_example() {
+        Dicetest::once().run(|mut fate| {
+            let var = fate.roll_var_1("i8", "x", dice::i8(..));
+            let op = infix_fun_2("+", |x, y| x + y);
+            let e = elem("zero", 0);
+            props::left_identity_elem_of_binop(var, op, e);
         })
     }
 }
