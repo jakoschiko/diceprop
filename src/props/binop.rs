@@ -188,9 +188,9 @@ mod tests {
     #[test]
     fn left_distributive_binop_example() {
         Dicetest::once().run(|mut fate| {
+            let var = fate.roll_var_3("i64", ["x", "y", "z"], dice::i64(-1000..=1000));
             let add = infix_fun_2("+", |x, y| x + y);
             let mul = infix_fun_2("*", |x, y| x * y);
-            let var = fate.roll_var_3("i64", ["x", "y", "z"], dice::i64(-1000..=1000));
             props::left_distributive_binop(var, add, mul);
         })
     }
@@ -198,9 +198,9 @@ mod tests {
     #[test]
     fn right_distributive_binop_example() {
         Dicetest::once().run(|mut fate| {
+            let var = fate.roll_var_3("i64", ["x", "y", "z"], dice::i64(-1000..=1000));
             let add = infix_fun_2("+", |x, y| x + y);
             let mul = infix_fun_2("*", |x, y| x * y);
-            let var = fate.roll_var_3("i64", ["x", "y", "z"], dice::i64(-1000..=1000));
             props::right_distributive_binop(var, add, mul);
         })
     }
@@ -208,9 +208,9 @@ mod tests {
     #[test]
     fn distributive_binop_example() {
         Dicetest::once().run(|mut fate| {
+            let var = fate.roll_var_3("i64", ["x", "y", "z"], dice::i64(-1000..=1000));
             let add = infix_fun_2("+", |x, y| x + y);
             let mul = infix_fun_2("*", |x, y| x * y);
-            let var = fate.roll_var_3("i64", ["x", "y", "z"], dice::i64(-1000..=1000));
             props::distributive_binop(var, add, mul);
         })
     }
