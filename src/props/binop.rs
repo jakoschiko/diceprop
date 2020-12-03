@@ -82,6 +82,23 @@ where
     ));
 }
 
+/// Asserts that the binary operation `mul` is distributive over the binary operation `add`.
+///
+/// It must hold:
+/// - `mul` is left distributive over the `add` ([`left_distributive_binop`])
+/// - `mul` is right distributive over the `add` ([`right_distributive_binop`])
+pub fn distributive_binop<S, A, M>(var: Var3<S>, add: Fun2<A>, mul: Fun2<M>)
+where
+    S: Debug + Clone + PartialEq,
+    A: Fn(S, S) -> S,
+    M: Fn(S, S) -> S,
+{
+    hint_section!("Is `{}` distributive over `{}`?", mul.name, add.name);
+
+    left_distributive_binop(var.clone(), add.as_ref(), mul.as_ref());
+    right_distributive_binop(var, add, mul);
+}
+
 #[cfg(test)]
 mod tests {
     use crate::{fun_2, infix_fun_2, props, FateVarExt};
@@ -135,6 +152,16 @@ mod tests {
             let mul = infix_fun_2("*", |x, y| x * y);
             let var = fate.roll_var_3("i64", ["x", "y", "z"], dice::i64(-1000..=1000));
             props::right_distributive_binop(var, add, mul);
+        })
+    }
+
+    #[test]
+    fn distributive_binop_example() {
+        Dicetest::once().run(|mut fate| {
+            let add = infix_fun_2("+", |x, y| x + y);
+            let mul = infix_fun_2("*", |x, y| x * y);
+            let var = fate.roll_var_3("i64", ["x", "y", "z"], dice::i64(-1000..=1000));
+            props::distributive_binop(var, add, mul);
         })
     }
 }
