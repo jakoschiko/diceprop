@@ -1,7 +1,8 @@
 use std::fmt::Debug;
 
 use crate::props::{
-    associative_binop, commutative_binop, identity_elem_of_binop, inverse_elem_of_binop,
+    associative_binop, commutative_binop, distributive_binop, identity_elem_of_binop,
+    inverse_elem_of_binop,
 };
 use crate::{hint_section, var_1, var_2, var_3, Elem, Fun1, Fun2, Var3};
 
@@ -93,6 +94,40 @@ where
     commutative_binop(var_2, op);
 }
 
+/// Asserts that `(var.set, add, mul, neg, zero, one)` is a ring.
+///
+/// It must hold:
+/// - `(var.set, add, neg, zero)` is an abelian group ([`abelian_group`])
+/// - `(var.set, mul, one)` is a monoid ([`monoid`])
+/// - `mul` is distributive over `add` ([`distributive_binop`])
+pub fn ring<S, A, N, M>(
+    var: Var3<S>,
+    add: Fun2<A>,
+    mul: Fun2<M>,
+    neg: Fun1<N>,
+    zero: Elem<S>,
+    one: Elem<S>,
+) where
+    S: Debug + Clone + PartialEq,
+    A: Fn(S, S) -> S,
+    M: Fn(S, S) -> S,
+    N: Fn(S) -> S,
+{
+    hint_section!(
+        "Is `({}, {}, {}, {}, {}, {})` a ring?",
+        var.set,
+        add.name,
+        mul.name,
+        neg.name,
+        zero.name,
+        one.name,
+    );
+
+    abelian_group(var.clone(), add.as_ref(), neg, zero);
+    monoid(var.clone(), mul.as_ref(), one);
+    distributive_binop(var, add, mul);
+}
+
 #[cfg(test)]
 mod tests {
     use dicetest::prelude::*;
@@ -137,6 +172,19 @@ mod tests {
             let inv = fun_1("-", |x: i64| -x);
             let e = elem("zero", 0);
             props::abelian_group(var, op, inv, e);
+        })
+    }
+
+    #[test]
+    fn ring_example() {
+        Dicetest::once().run(|mut fate| {
+            let var = fate.roll_var_3("i64", ["x", "y", "z"], dice::i64(-1000..=1000));
+            let add = infix_fun_2("+", |x, y| x + y);
+            let mul = infix_fun_2("*", |x, y| x * y);
+            let neg = fun_1("-", |x: i64| -x);
+            let zero = elem("zero", 0);
+            let one = elem("one", 1);
+            props::ring(var, add, mul, neg, zero, one);
         })
     }
 }
