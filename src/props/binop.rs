@@ -126,29 +126,29 @@ mod tests {
     #[test]
     fn commutative_binop_example() {
         Dicetest::once().run(|mut fate| {
-            let rel = fun_2("intersection", |x, y| {
-                BTreeSet::<u8>::intersection(&x, &y)
-                    .cloned()
-                    .collect::<BTreeSet<_>>()
-            });
             let var = fate.roll_var_2(
                 "BTreeSet<u8>",
                 ["x", "y"],
                 dice::b_tree_set(dice::u8(..), ..),
             );
-            props::commutative_binop(var, rel);
+            let op = fun_2("intersection", |x, y| {
+                BTreeSet::<u8>::intersection(&x, &y)
+                    .cloned()
+                    .collect::<BTreeSet<_>>()
+            });
+            props::commutative_binop(var, op);
         })
     }
 
     #[test]
     fn associative_binop_example() {
         Dicetest::once().run(|mut fate| {
-            let rel = fun_2("append", |mut x, mut y| {
+            let var = fate.roll_var_3("Vec<u8>", ["x", "y", "z"], dice::vec(dice::u8(..), ..));
+            let op = fun_2("append", |mut x, mut y| {
                 Vec::<u8>::append(&mut x, &mut y);
                 x
             });
-            let var = fate.roll_var_3("Vec<u8>", ["x", "y", "z"], dice::vec(dice::u8(..), ..));
-            props::associative_binop(var, rel);
+            props::associative_binop(var, op);
         })
     }
 

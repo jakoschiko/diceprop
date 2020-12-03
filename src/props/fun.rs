@@ -32,13 +32,13 @@ mod tests {
     #[test]
     fn commutative_fun_example() {
         Dicetest::once().run(|mut fate| {
-            let rel = fun_2("is_disjoin", |x, y| BTreeSet::<u8>::is_disjoint(&x, &y));
             let var = fate.roll_var_2(
                 "BTreeSet<u8>",
                 ["x", "y"],
                 dice::b_tree_set(dice::u8(..), ..),
             );
-            props::commutative_fun(var, rel);
+            let f = fun_2("is_disjoin", |x, y| BTreeSet::<u8>::is_disjoint(&x, &y));
+            props::commutative_fun(var, f);
         })
     }
 }

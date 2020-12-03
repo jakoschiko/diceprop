@@ -174,8 +174,8 @@ mod tests {
     #[test]
     fn reflexive_binrel_example() {
         Dicetest::once().run(|mut fate| {
-            let rel = infix_fun_2("==", |x, y| x == y);
             let var = fate.roll_var_1("u8", "x", dice::u8(..));
+            let rel = infix_fun_2("==", |x, y| x == y);
             props::reflexive_binrel(var, rel);
         })
     }
@@ -183,8 +183,8 @@ mod tests {
     #[test]
     fn symmetric_binrel_example() {
         Dicetest::once().run(|mut fate| {
-            let rel = infix_fun_2("!=", |x, y| x != y);
             let var = fate.roll_var_2("f32", ["x", "y"], dice::any_f32());
+            let rel = infix_fun_2("!=", |x, y| x != y);
             props::symmetric_binrel(var, rel);
         })
     }
@@ -192,8 +192,8 @@ mod tests {
     #[test]
     fn antisymmetric_binrel_example() {
         Dicetest::once().run(|mut fate| {
-            let rel = infix_fun_2("<", |x, y| x < y);
             let var = fate.roll_var_2("u8", ["x", "y"], dice::u8(..));
+            let rel = infix_fun_2("<", |x, y| x < y);
             props::antisymmetric_binrel(var, rel);
         })
     }
@@ -201,8 +201,8 @@ mod tests {
     #[test]
     fn transitive_binrel_example() {
         Dicetest::once().run(|mut fate| {
-            let rel = infix_fun_2("<", |x, y| x < y);
             let var = fate.roll_var_3("char", ["x", "y", "z"], dice::char());
+            let rel = infix_fun_2("<", |x, y| x < y);
             props::transitive_binrel(var, rel);
         })
     }
@@ -210,8 +210,8 @@ mod tests {
     #[test]
     fn partial_eq_binrel_example() {
         Dicetest::once().run(|mut fate| {
-            let rel = infix_fun_2("==", |x, y| x == y);
             let var = fate.roll_var_3("f32", ["x", "y", "z"], dice::any_f32());
+            let rel = infix_fun_2("==", |x, y| x == y);
             props::partial_eq_binrel(var, rel);
         })
     }
@@ -219,8 +219,8 @@ mod tests {
     #[test]
     fn eq_binrel_example() {
         Dicetest::once().run(|mut fate| {
-            let rel = infix_fun_2("==", |x, y| x == y);
             let var = fate.roll_var_3("String", ["x", "y", "z"], dice::string(dice::char(), ..));
+            let rel = infix_fun_2("==", |x, y| x == y);
             props::eq_binrel(var, rel);
         })
     }
@@ -228,9 +228,9 @@ mod tests {
     #[test]
     fn equivalent_binrel_example() {
         Dicetest::once().run(|mut fate| {
+            let var = fate.roll_var_2("u8", ["x", "y"], dice::u8(..));
             let rel = infix_fun_2("==", |x, y| x == y);
             let erel = infix_fun_2("!!=", |x, y| !(x != y));
-            let var = fate.roll_var_2("u8", ["x", "y"], dice::u8(..));
             props::equivalent_binrel(var, rel, erel);
         })
     }
@@ -238,9 +238,9 @@ mod tests {
     #[test]
     fn complementary_binrel_example() {
         Dicetest::once().run(|mut fate| {
+            let var = fate.roll_var_2("u8", ["x", "y"], dice::u8(..));
             let rel = infix_fun_2("<", |x, y| x < y);
             let crel = infix_fun_2(">=", |x, y| x >= y);
-            let var = fate.roll_var_2("u8", ["x", "y"], dice::u8(..));
             props::complementary_binrel(var, rel, crel);
         })
     }
