@@ -8,3 +8,6 @@ pub use binop::*;
 
 mod fun;
 pub use fun::*;
+
+mod algebra;
+pub use algebra::*;
