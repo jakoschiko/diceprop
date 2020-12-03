@@ -116,6 +116,23 @@ where
     ops::assert(ops::eq(op.eval_once(e, a.clone()).as_ref(), a.as_ref()));
 }
 
+/// Asserts that `e` is the right identity element of the binary operation `op`.
+///
+/// For `a` of `var.set` it must hold:
+/// - `op(a, e) == a`
+pub fn right_identity_elem_of_binop<S, O>(var: Var1<S>, op: Fun2<O>, e: Elem<S>)
+where
+    S: Debug + Clone + PartialEq,
+    O: FnOnce(S, S) -> S,
+{
+    hint_section!("Is `{}` right identity element of `{}`?", e.name, op.name);
+
+    let a = var.eval();
+    let e = e.eval();
+
+    ops::assert(ops::eq(op.eval_once(a.clone(), e).as_ref(), a.as_ref()));
+}
+
 #[cfg(test)]
 mod tests {
     use crate::{elem, fun_2, infix_fun_2, props, FateVarExt};
@@ -189,6 +206,16 @@ mod tests {
             let op = infix_fun_2("+", |x, y| x + y);
             let e = elem("zero", 0);
             props::left_identity_elem_of_binop(var, op, e);
+        })
+    }
+
+    #[test]
+    fn right_identity_elem_of_binop_example() {
+        Dicetest::once().run(|mut fate| {
+            let var = fate.roll_var_1("i8", "x", dice::i8(..));
+            let op = infix_fun_2("*", |x, y| x * y);
+            let e = elem("one", 1);
+            props::right_identity_elem_of_binop(var, op, e);
         })
     }
 }
