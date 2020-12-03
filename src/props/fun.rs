@@ -79,6 +79,27 @@ where
     right_inverse_fun(var_t, f, g);
 }
 
+/// Asserts that the function `g` is equivalent to the function `f`.
+///
+/// For `a` of `var.set` it must hold:
+/// - `f(a) == g(a)`
+pub fn equivalent_fun_1<S, R, F, G>(var: Var1<S>, f: Fun1<F>, g: Fun1<G>)
+where
+    S: Debug + Clone,
+    R: Debug + PartialEq,
+    F: FnOnce(S) -> R,
+    G: FnOnce(S) -> R,
+{
+    hint_section!("Is `{}` equivalent to `{}`?", g.name, f.name);
+
+    let a = var.eval();
+
+    ops::assert(ops::eq(
+        f.eval_once(a.clone()).as_ref(),
+        g.eval_once(a).as_ref(),
+    ));
+}
+
 /// Asserts that the function `f` is commutative.
 ///
 /// For `a`, `b` of `var.set` it must hold:
@@ -101,7 +122,7 @@ where
 
 #[cfg(test)]
 mod tests {
-    use crate::{fun_1, fun_2, props, FateVarExt};
+    use crate::{fun_1, fun_2, postfix_fun_1, props, FateVarExt};
 
     use dicetest::prelude::*;
     use std::collections::BTreeSet;
@@ -151,6 +172,16 @@ mod tests {
             let f = fun_1("from_string", |x: i8| x as u8);
             let g = fun_1("to_string", |y: u8| y as i8);
             props::inverse_fun(var_s, var_t, f, g);
+        })
+    }
+
+    #[test]
+    fn equivalent_fun_1_example() {
+        Dicetest::once().run(|mut fate| {
+            let var = fate.roll_var_1("u64", "x", dice::u64(..1000));
+            let f = postfix_fun_1("+2", |x: u64| x + 2);
+            let g = postfix_fun_1("+1+1", |x: u64| x + 1 + 1);
+            props::equivalent_fun_1(var, f, g);
         })
     }
 
