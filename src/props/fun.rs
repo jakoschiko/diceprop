@@ -40,6 +40,27 @@ where
     ));
 }
 
+/// Asserts that the function `g` is the right inverse of function `f`.
+///
+/// For `a` of `var.set` it must hold:
+/// - `f(g(a)) == a`
+pub fn right_inverse_fun<S, T, F, G>(var: Var1<T>, f: Fun1<F>, g: Fun1<G>)
+where
+    S: Debug,
+    T: Debug + Clone + PartialEq,
+    F: FnOnce(S) -> T,
+    G: FnOnce(T) -> S,
+{
+    hint_section!("Is `{}` right inverse of `{}`?", g.name, f.name);
+
+    let a = var.eval();
+
+    ops::assert(ops::eq(
+        f.eval_once(g.eval_once(a.clone())).as_ref(),
+        a.as_ref(),
+    ));
+}
+
 /// Asserts that the function `f` is commutative.
 ///
 /// For `a`, `b` of `var.set` it must hold:
@@ -91,6 +112,16 @@ mod tests {
             let f = fun_1("to_string", |x: f32| x.to_string());
             let g = fun_1("from_string", |y: String| f32::from_str(&y).unwrap());
             props::left_inverse_fun(var, f, g);
+        })
+    }
+
+    #[test]
+    fn right_inverse_fun_example() {
+        Dicetest::once().run(|mut fate| {
+            let var = fate.roll_var_1("i8", "x", dice::i8(..));
+            let f = fun_1("from_string", |x: String| i8::from_str(&x).unwrap());
+            let g = fun_1("to_string", |y: i8| y.to_string());
+            props::right_inverse_fun(var, f, g);
         })
     }
 
