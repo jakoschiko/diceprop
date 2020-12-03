@@ -4,7 +4,7 @@ use crate::props::{
     associative_binop, commutative_binop, distributive_binop, identity_elem_of_binop,
     inverse_elem_of_binop,
 };
-use crate::{hint_section, var_1, var_2, var_3, Elem, Fun1, Fun2, Var3};
+use crate::{hint_section, var_1, var_2, var_3, Elem, Fun1, Fun2, Var2, Var3};
 
 /// Asserts that `(var.set, op)` is a semigroup.
 ///
@@ -164,6 +164,44 @@ pub fn commutative_ring<S, A, M, N>(
     commutative_binop(var_2, mul);
 }
 
+/// Asserts that `(var.set, add, mul, neg, inv, zero, one)` is a field.
+///
+/// It must hold:
+/// - `(var.set, add, mul, neg, zero, one)` is a commutative ring ([`commutative_ring`])
+/// - For `a` of `non_zero_var.set` the result of `inv(a)` is the inverse element of `a` regarding
+/// to `mul` ([`inverse_elem_of_binop`])
+#[allow(clippy::too_many_arguments)]
+pub fn field<S, A, M, N, I>(
+    var: Var3<S>,
+    non_zero_var: Var2<S>,
+    add: Fun2<A>,
+    mul: Fun2<M>,
+    neg: Fun1<N>,
+    inv: Fun1<I>,
+    zero: Elem<S>,
+    one: Elem<S>,
+) where
+    S: Debug + Clone + PartialEq,
+    A: Fn(S, S) -> S,
+    M: Fn(S, S) -> S,
+    N: Fn(S) -> S,
+    I: Fn(S) -> S,
+{
+    hint_section!(
+        "Is `({}, {}, {}, {}, {}, {}, {})` a field?",
+        var.set,
+        add.name,
+        mul.name,
+        neg.name,
+        inv.name,
+        zero.name,
+        one.name,
+    );
+
+    commutative_ring(var, add, mul.as_ref(), neg, zero, one);
+    inverse_elem_of_binop(non_zero_var, mul, inv);
+}
+
 #[cfg(test)]
 mod tests {
     use dicetest::prelude::*;
@@ -235,5 +273,10 @@ mod tests {
             let one = elem("one", 1);
             props::commutative_ring(var, add, mul, neg, zero, one);
         })
+    }
+
+    #[test]
+    fn field_example() {
+        // Are there any fields in libstd?
     }
 }
