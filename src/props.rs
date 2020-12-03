@@ -2,3 +2,6 @@
 
 mod binrel;
 pub use binrel::*;
+
+mod fun;
+pub use fun::*;
