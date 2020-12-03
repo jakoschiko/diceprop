@@ -19,14 +19,14 @@ where
 ///
 /// For `a`, `b`, `c` of `var.set` it must hold:
 /// - `op(op(a, b), c) == op(a, op(b, c))`
-pub fn associative_binop<S, O>(set: Var3<S>, op: Fun2<O>)
+pub fn associative_binop<S, O>(var: Var3<S>, op: Fun2<O>)
 where
     S: Debug + Clone + PartialEq,
     O: Fn(S, S) -> S,
 {
     hint_section!("Is `{}` associative?", op.name);
 
-    let [a, b, c] = set.eval();
+    let [a, b, c] = var.eval();
 
     ops::assert(ops::eq(
         op.eval(op.eval(a.clone(), b.clone()), c.clone()).as_ref(),
