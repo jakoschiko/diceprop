@@ -149,6 +149,32 @@ where
     right_identity_elem_of_binop(var, op, e);
 }
 
+/// Asserts that the function `inv` returns the left inverse element regarding
+/// to the binary operation `op`.
+///
+/// For `a`, `b` of `var.set` it must hold:
+/// - `op(b, op(inv(a), a)) == b`
+pub fn left_inverse_elem_of_binop<S, O, I>(var: Var2<S>, op: Fun2<O>, inv: Fun1<I>)
+where
+    S: Debug + Clone + PartialEq,
+    O: Fn(S, S) -> S,
+    I: Fn(S) -> S,
+{
+    hint_section!(
+        "Does `{}` return left inverse element regarding to `{}`?",
+        inv.name,
+        op.name,
+    );
+
+    let [a, b] = var.eval();
+
+    ops::assert(ops::eq(
+        op.eval(b.clone(), op.eval(inv.eval(a.clone()), a.clone()))
+            .as_ref(),
+        b.as_ref(),
+    ));
+}
+
 /// Asserts that the function `inv` returns the right inverse element regarding
 /// to the binary operation `op`.
 ///
@@ -268,6 +294,16 @@ mod tests {
             let op = infix_fun_2("+", |x, y| x + y);
             let e = elem("zero", 0.0);
             props::identity_elem_of_binop(var, op, e);
+        })
+    }
+
+    #[test]
+    fn left_inverse_elem_of_binop_example() {
+        Dicetest::once().run(|mut fate| {
+            let op = infix_fun_2("+", |x, y| x + y);
+            let var = fate.roll_var_2("i64", ["x", "y"], dice::i64(-1000..=1000));
+            let inv = fun_1("-", |x: i64| -x);
+            props::left_inverse_elem_of_binop(var, op, inv);
         })
     }
 
