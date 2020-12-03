@@ -1,6 +1,8 @@
 use std::fmt::Debug;
 
-use crate::props::{associative_binop, identity_elem_of_binop, inverse_elem_of_binop};
+use crate::props::{
+    associative_binop, commutative_binop, identity_elem_of_binop, inverse_elem_of_binop,
+};
 use crate::{hint_section, var_1, var_2, var_3, Elem, Fun1, Fun2, Var3};
 
 /// Asserts that `(var.set, op)` is a semigroup.
@@ -64,6 +66,33 @@ where
     inverse_elem_of_binop(var_2, op, inv);
 }
 
+/// Asserts that `(var.set, op, inv, e)` is an abelian group.
+///
+/// It must hold:
+/// - `(var.set, op, inv, e)` is a group ([`group`])
+/// - `op` is commutative ([`commutative_binop`])
+pub fn abelian_group<S, O, I>(var: Var3<S>, op: Fun2<O>, inv: Fun1<I>, e: Elem<S>)
+where
+    S: Debug + Clone + PartialEq,
+    O: Fn(S, S) -> S,
+    I: Fn(S) -> S,
+{
+    hint_section!(
+        "Is `({}, {}, {}, {})` an abelian group?",
+        var.set,
+        op.name,
+        inv.name,
+        e.name,
+    );
+
+    let [a, b, c] = var.elems;
+    let var_2 = var_2(var.set, [a.clone(), b.clone()]);
+    let var_3 = var_3(var.set, [a, b, c]);
+
+    group(var_3, op.as_ref(), inv, e);
+    commutative_binop(var_2, op);
+}
+
 #[cfg(test)]
 mod tests {
     use dicetest::prelude::*;
@@ -97,6 +126,17 @@ mod tests {
             let inv = fun_1("-", |x: i64| -x);
             let e = elem("zero", 0);
             props::group(var, op, inv, e);
+        })
+    }
+
+    #[test]
+    fn abelian_group_example() {
+        Dicetest::once().run(|mut fate| {
+            let var = fate.roll_var_3("i64", ["x", "y", "z"], dice::i64(-1000..=1000));
+            let op = fun_2("+", |x, y| x + y);
+            let inv = fun_1("-", |x: i64| -x);
+            let e = elem("zero", 0);
+            props::abelian_group(var, op, inv, e);
         })
     }
 }
