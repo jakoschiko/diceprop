@@ -287,10 +287,10 @@ where
 
 #[cfg(test)]
 mod tests {
-    use crate::{elem, fun_1, fun_2, infix_fun_2, props, FateVarExt};
-
     use dicetest::prelude::*;
     use std::collections::BTreeSet;
+
+    use crate::{elem, fun_1, fun_2, infix_fun_2, props, FateVarExt};
 
     #[test]
     fn commutative_binop_example() {
