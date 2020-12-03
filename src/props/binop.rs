@@ -85,8 +85,8 @@ where
 /// Asserts that the binary operation `mul` is distributive over the binary operation `add`.
 ///
 /// It must hold:
-/// - `mul` is left distributive over the `add` ([`left_distributive_binop`])
-/// - `mul` is right distributive over the `add` ([`right_distributive_binop`])
+/// - `mul` is left distributive over `add` ([`left_distributive_binop`])
+/// - `mul` is right distributive over `add` ([`right_distributive_binop`])
 pub fn distributive_binop<S, A, M>(var: Var3<S>, add: Fun2<A>, mul: Fun2<M>)
 where
     S: Debug + Clone + PartialEq,
