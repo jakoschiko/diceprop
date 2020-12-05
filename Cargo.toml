@@ -5,4 +5,4 @@ authors = ["Jakob Schikowski <jakob.schikowski@gmx.de>"]
 edition = "2018"
 
 [dependencies]
-dicetest = "0.2"
+dicetest = "0.2.1"
