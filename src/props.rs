@@ -1,13 +1,9 @@
 //! A collection of properties for tests with randomly generated test data.
 
-mod binrel;
-pub use binrel::*;
+pub mod fun;
 
-mod binop;
-pub use binop::*;
+pub mod binop;
 
-mod fun;
-pub use fun::*;
+pub mod binrel;
 
-mod algebra;
-pub use algebra::*;
+pub mod algebra;
