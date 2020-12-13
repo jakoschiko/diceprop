@@ -149,7 +149,7 @@ where
     let var_3 = var_3(var.set, [a, b, c]);
 
     symmetric(var_2, rel.as_ref());
-    transitive(var_3, rel.as_ref());
+    transitive(var_3, rel);
 }
 
 /// Asserts that the binary relation `rel` is an [equivalence relation].
@@ -174,7 +174,7 @@ where
 
     reflexive(var_1, rel.as_ref());
     symmetric(var_2, rel.as_ref());
-    transitive(var_3, rel.as_ref());
+    transitive(var_3, rel);
 }
 
 /// Asserts that the binary relation `rel` is a [partial order].
