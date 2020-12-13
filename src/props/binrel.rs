@@ -3,10 +3,12 @@ use std::fmt::Debug;
 
 use crate::{ops, var_1, var_2, var_3, Fun2, Var1, Var2, Var3};
 
-/// Asserts that the binary relation `rel` is reflexive.
+/// Asserts that the binary relation `rel` is [reflexive].
 ///
-/// For `a` of `var.set` it must hold:
+/// For all `a` of `var.set` it must hold:
 /// - `rel(a, a)`
+///
+/// [reflexive]: https://en.wikipedia.org/wiki/Reflexive_relation
 pub fn reflexive_binrel<S, R>(var: Var1<S>, rel: Fun2<R>)
 where
     S: Debug + Clone,
@@ -19,10 +21,12 @@ where
     ops::assert(rel.eval_once(a.clone(), a));
 }
 
-/// Asserts that the binary relation `rel` is symmetric.
+/// Asserts that the binary relation `rel` is [symmetric].
 ///
-/// For `a`, `b` of `var.set` it must hold:
+/// For all `a`, `b` of `var.set` it must hold:
 /// - `rel(a, b) --> rel(b, a)`
+///
+/// [symmetric]: https://en.wikipedia.org/wiki/Symmetric_relation
 pub fn symmetric_binrel<S, R>(var: Var2<S>, rel: Fun2<R>)
 where
     S: Debug + Clone,
@@ -35,10 +39,12 @@ where
     ops::assert(ops::implies(rel.eval(a.clone(), b.clone()), rel.eval(b, a)));
 }
 
-/// Asserts that the binary relation `rel` is antisymmetric.
+/// Asserts that the binary relation `rel` is [antisymmetric].
 ///
-/// For `a`, `b` of `var.set` it must hold:
+/// For all `a`, `b` of `var.set` it must hold:
 /// - `a != b && rel(a, b) --> !rel(b, a)`
+///
+/// [antisymmetric]: https://en.wikipedia.org/wiki/Antisymmetric_relation
 pub fn antisymmetric_binrel<S, R>(var: Var2<S>, rel: Fun2<R>)
 where
     S: Debug + Clone + PartialEq,
@@ -57,10 +63,12 @@ where
     ));
 }
 
-/// Asserts that the binary relation `rel` is transitive.
+/// Asserts that the binary relation `rel` is [transitive].
 ///
-/// For `a`, `b`, `c` of `var.set` it must hold:
+/// For all `a`, `b`, `c` of `var.set` it must hold:
 /// - `rel(a, b) && rel(b, c) --> rel(a, c)`
+///
+/// [transitive]: https://en.wikipedia.org/wiki/Transitive_relation
 pub fn transitive_binrel<S, R>(var: Var3<S>, rel: Fun2<R>)
 where
     S: Debug + Clone,
@@ -79,11 +87,13 @@ where
     ));
 }
 
-/// Asserts that the binary relation `rel` is a partial equality relation.
+/// Asserts that the binary relation `rel` is a [partial equivalence relation].
 ///
 /// It must hold:
 /// - `rel` is symmetric ([`symmetric_binrel`])
 /// - `rel` is transitive ([`transitive_binrel`])
+///
+/// [partial equivalence relation]: https://en.wikipedia.org/wiki/Partial_equivalence_relation
 pub fn partial_eq_binrel<S, R>(var: Var3<S>, rel: Fun2<R>)
 where
     S: Debug + Clone,
@@ -99,12 +109,14 @@ where
     transitive_binrel(var_3, rel.as_ref());
 }
 
-/// Asserts that the binary relation `rel` is an equality relation.
+/// Asserts that the binary relation `rel` is an [equivalence relation].
 ///
 /// It must hold:
 /// - `rel` is reflexive ([`reflexive_binrel`])
 /// - `rel` is symmetric ([`symmetric_binrel`])
 /// - `rel` is transitive ([`transitive_binrel`])
+///
+/// [equivalence relation]: https://en.wikipedia.org/wiki/Equivalence_relation
 pub fn eq_binrel<S, R>(var: Var3<S>, rel: Fun2<R>)
 where
     S: Debug + Clone,
@@ -142,10 +154,12 @@ where
     ));
 }
 
-/// Asserts that the binary relation `crel` is the complementary relation of `rel`.
+/// Asserts that the binary relation `crel` is the [complementary relation] of `rel`.
 ///
 /// For all `a`, `b` of `var.set` it must hold:
 /// - `rel(a, b) <-> !crel(a, b)`
+///
+/// [complementary relation]: https://en.wikipedia.org/wiki/Complement_(set_theory)#Complementary_relation
 pub fn complementary_binrel<S, R, C>(var: Var2<S>, rel: Fun2<R>, crel: Fun2<C>)
 where
     S: Debug + Clone,
