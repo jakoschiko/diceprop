@@ -138,52 +138,6 @@ where
     transitive(var_3, rel.as_ref());
 }
 
-/// Asserts that the binary relation `erel` is equal to the relation `rel`.
-///
-/// For all `a`, `b` of `var.set` it must hold:
-/// - `rel(a, b) <-> erel(a, b)`
-pub fn equal<S, R, E>(var: Var2<S>, rel: Fun2<R>, erel: Fun2<E>)
-where
-    S: Debug + Clone,
-    R: FnOnce(S, S) -> bool,
-    E: FnOnce(S, S) -> bool,
-{
-    hint_section!("Is `{}` equivalent to `{}`?", erel.name, rel.name);
-
-    let [a, b] = var.eval();
-
-    ops::assert(ops::iff(
-        rel.eval_once(a.clone(), b.clone()),
-        erel.eval_once(a, b),
-    ));
-}
-
-/// Asserts that the binary relation `crel` is the [complementary relation] of `rel`.
-///
-/// For all `a`, `b` of `var.set` it must hold:
-/// - `rel(a, b) <-> !crel(a, b)`
-///
-/// [complementary relation]: https://en.wikipedia.org/wiki/Complement_(set_theory)#Complementary_relation
-pub fn complementary<S, R, C>(var: Var2<S>, rel: Fun2<R>, crel: Fun2<C>)
-where
-    S: Debug + Clone,
-    R: FnOnce(S, S) -> bool,
-    C: FnOnce(S, S) -> bool,
-{
-    hint_section!(
-        "Is `{}` complementary relation of `{}`?",
-        crel.name,
-        rel.name,
-    );
-
-    let [a, b] = var.eval();
-
-    ops::assert(ops::iff(
-        rel.eval_once(a.clone(), b.clone()),
-        ops::not(crel.eval_once(a, b)),
-    ));
-}
-
 #[cfg(test)]
 mod tests {
     use dicetest::prelude::*;
@@ -241,26 +195,6 @@ mod tests {
             let var = fate.roll_var_3("String", ["x", "y", "z"], dice::string(dice::char(), ..));
             let rel = infix_fun_2("==", |x, y| x == y);
             props::binrel::equivalence(var, rel);
-        })
-    }
-
-    #[test]
-    fn equal_example() {
-        Dicetest::once().run(|mut fate| {
-            let var = fate.roll_var_2("u8", ["x", "y"], dice::u8(..));
-            let rel = infix_fun_2("==", |x, y| x == y);
-            let erel = infix_fun_2("!!=", |x, y| !(x != y));
-            props::binrel::equal(var, rel, erel);
-        })
-    }
-
-    #[test]
-    fn complementary_example() {
-        Dicetest::once().run(|mut fate| {
-            let var = fate.roll_var_2("u8", ["x", "y"], dice::u8(..));
-            let rel = infix_fun_2("<", |x, y| x < y);
-            let crel = infix_fun_2(">=", |x, y| x >= y);
-            props::binrel::complementary(var, rel, crel);
         })
     }
 }
