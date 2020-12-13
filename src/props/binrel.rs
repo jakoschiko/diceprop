@@ -177,6 +177,31 @@ where
     transitive(var_3, rel.as_ref());
 }
 
+/// Asserts that the binary relation `rel` is a [partial order].
+///
+/// It must hold:
+/// - `rel` is reflexive ([`connex`])
+/// - `rel` is antisymmetric ([`antisymmetric`])
+/// - `rel` is transitive ([`transitive`])
+///
+/// [partial order]: https://en.wikipedia.org/wiki/Partially_ordered_set
+pub fn partial_order<S, R>(var: Var3<S>, rel: Fun2<R>)
+where
+    S: Debug + Clone + PartialEq,
+    R: Fn(S, S) -> bool,
+{
+    hint_section!("Is `{}` a partial order?", rel.name);
+
+    let [a, b, c] = var.elems;
+    let var_1 = var_1(var.set, a.clone());
+    let var_2 = var_2(var.set, [a.clone(), b.clone()]);
+    let var_3 = var_3(var.set, [a, b, c]);
+
+    reflexive(var_1, rel.as_ref());
+    antisymmetric(var_2, rel.as_ref());
+    transitive(var_3, rel);
+}
+
 /// Asserts that the binary relation `rel` is a [total order].
 ///
 /// It must hold:
@@ -276,6 +301,21 @@ mod tests {
             let var = fate.roll_var_3("String", ["x", "y", "z"], dice::string(dice::char(), ..));
             let rel = infix_fun_2("==", |x, y| x == y);
             props::binrel::equivalence(var, rel);
+        })
+    }
+
+    #[test]
+    fn partial_order_example() {
+        Dicetest::once().run(|mut fate| {
+            let var = fate.roll_var_3(
+                "u8²",
+                ["x", "y", "z"],
+                dice::zip_2(dice::u8(..), dice::u8(..)),
+            );
+            let rel = infix_fun_2("<=", |x: (u8, u8), y: (u8, u8)| {
+                (x.0 <= y.0) && (x.1 <= y.1)
+            });
+            props::binrel::partial_order(var, rel);
         })
     }
 
