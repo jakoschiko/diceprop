@@ -88,6 +88,24 @@ where
     ));
 }
 
+/// Asserts that the binary relation `rel` is [connex].
+///
+/// For all `a`, `b` of `var.set` it must hold:
+/// - `rel(a, b) || rel(b, a)`
+///
+/// [connex]: https://en.wikipedia.org/wiki/Connex_relation
+pub fn connex<S, R>(var: Var2<S>, rel: Fun2<R>)
+where
+    S: Debug + Clone + PartialEq,
+    R: Fn(S, S) -> bool,
+{
+    hint_section!("Is `{}` connex?", rel.name);
+
+    let [a, b] = var.eval();
+
+    ops::assert(ops::or(rel.eval(a.clone(), b.clone()), rel.eval(b, a)));
+}
+
 /// Asserts that the binary relation `rel` is [transitive].
 ///
 /// For all `a`, `b`, `c` of `var.set` it must hold:
@@ -198,6 +216,15 @@ mod tests {
             let var = fate.roll_var_2("u8", ["x", "y"], dice::u8(..));
             let rel = infix_fun_2("<", |x, y| x < y);
             props::binrel::antisymmetric(var, rel);
+        })
+    }
+
+    #[test]
+    fn connex_example() {
+        Dicetest::once().run(|mut fate| {
+            let var = fate.roll_var_2("u8", ["x", "y"], dice::u8(..));
+            let rel = infix_fun_2("<=", |x, y| x <= y);
+            props::binrel::connex(var, rel);
         })
     }
 
