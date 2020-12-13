@@ -1,6 +1,7 @@
+use dicetest::hint_section;
 use std::fmt::Debug;
 
-use crate::{hint_section, ops, Fun1, Fun2, Var1, Var2};
+use crate::{ops, Fun1, Fun2, Var1, Var2};
 
 /// Asserts that the function `f` is idempotent.
 ///

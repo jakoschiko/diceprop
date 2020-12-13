@@ -1,6 +1,7 @@
+use dicetest::hint_section;
 use std::fmt::Debug;
 
-use crate::{hint_section, ops, var_1, var_2, var_3, Fun2, Var1, Var2, Var3};
+use crate::{ops, var_1, var_2, var_3, Fun2, Var1, Var2, Var3};
 
 /// Asserts that the binary relation `rel` is reflexive.
 ///

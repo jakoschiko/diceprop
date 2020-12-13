@@ -1,7 +1,8 @@
+use dicetest::hint_section;
 use std::fmt::Debug;
 
 use crate::props::commutative_fun;
-use crate::{hint_section, ops, Elem, Fun1, Fun2, Var1, Var2, Var3};
+use crate::{ops, Elem, Fun1, Fun2, Var1, Var2, Var3};
 
 /// Asserts that the binary operation `op` is commutative.
 ///

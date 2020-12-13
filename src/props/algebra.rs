@@ -1,10 +1,11 @@
+use dicetest::hint_section;
 use std::fmt::Debug;
 
 use crate::props::{
     associative_binop, commutative_binop, distributive_binop, identity_elem_of_binop,
     inverse_elem_of_binop,
 };
-use crate::{hint_section, var_1, var_2, var_3, Elem, Fun1, Fun2, Var2, Var3};
+use crate::{var_1, var_2, var_3, Elem, Fun1, Fun2, Var2, Var3};
 
 /// Asserts that `(var.set, op)` is a semigroup.
 ///
