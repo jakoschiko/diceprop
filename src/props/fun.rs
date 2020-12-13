@@ -80,11 +80,11 @@ where
     right_inverse_fun(var_t, f, g);
 }
 
-/// Asserts that the function `g` is equivalent to the function `f`.
+/// Asserts that the function `g` is equal to the function `f`.
 ///
 /// For `a` of `var.set` it must hold:
 /// - `f(a) == g(a)`
-pub fn equivalent_fun_1<S, R, F, G>(var: Var1<S>, f: Fun1<F>, g: Fun1<G>)
+pub fn equal_fun_1<S, R, F, G>(var: Var1<S>, f: Fun1<F>, g: Fun1<G>)
 where
     S: Debug + Clone,
     R: Debug + PartialEq,
@@ -105,7 +105,7 @@ where
 ///
 /// For `a` of `var_s.set` and `b` of `var_t.set` it must hold:
 /// - `f(a, b) == g(a, b)`
-pub fn equivalent_fun_2<S, T, R, F, G>(var_s: Var1<S>, var_t: Var1<T>, f: Fun2<F>, g: Fun2<G>)
+pub fn equal_fun_2<S, T, R, F, G>(var_s: Var1<S>, var_t: Var1<T>, f: Fun2<F>, g: Fun2<G>)
 where
     S: Debug + Clone,
     T: Debug + Clone,
@@ -200,17 +200,17 @@ mod tests {
     }
 
     #[test]
-    fn equivalent_fun_1_example() {
+    fn equal_fun_1_example() {
         Dicetest::once().run(|mut fate| {
             let var = fate.roll_var_1("u64", "x", dice::u64(..1000));
             let f = postfix_fun_1("+2", |x: u64| x + 2);
             let g = postfix_fun_1("+1+1", |x: u64| x + 1 + 1);
-            props::equivalent_fun_1(var, f, g);
+            props::equal_fun_1(var, f, g);
         })
     }
 
     #[test]
-    fn equivalent_fun_2_example() {
+    fn equal_fun_2_example() {
         Dicetest::once().run(|mut fate| {
             let var_s = fate.roll_var_1("BTreeSet<u8>", "xs", dice::b_tree_set(dice::u8(..), ..));
             let var_t = fate.roll_var_1("u8", "x", dice::u8(..));
@@ -223,7 +223,7 @@ mod tests {
                 xs.insert(x);
                 xs
             });
-            props::equivalent_fun_2(var_s, var_t, f, g);
+            props::equal_fun_2(var_s, var_t, f, g);
         })
     }
 
