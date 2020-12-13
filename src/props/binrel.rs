@@ -94,7 +94,7 @@ where
 /// - `rel` is transitive ([`transitive_binrel`])
 ///
 /// [partial equivalence relation]: https://en.wikipedia.org/wiki/Partial_equivalence_relation
-pub fn partial_eq_binrel<S, R>(var: Var3<S>, rel: Fun2<R>)
+pub fn partial_equivalence_binrel<S, R>(var: Var3<S>, rel: Fun2<R>)
 where
     S: Debug + Clone,
     R: Fn(S, S) -> bool,
@@ -223,11 +223,11 @@ mod tests {
     }
 
     #[test]
-    fn partial_eq_binrel_example() {
+    fn partial_equivalence_binrel_example() {
         Dicetest::once().run(|mut fate| {
             let var = fate.roll_var_3("f32", ["x", "y", "z"], dice::any_f32());
             let rel = infix_fun_2("==", |x, y| x == y);
-            props::partial_eq_binrel(var, rel);
+            props::partial_equivalence_binrel(var, rel);
         })
     }
 
