@@ -7,10 +7,12 @@ use std::fmt::Debug;
 
 use crate::{ops, props, Elem, Fun1, Fun2, Var1, Var2, Var3};
 
-/// Asserts that the binary operation `op` is commutative.
+/// Asserts that the binary operation `op` is [commutative].
 ///
-/// For `a`, `b` of `var.set` it must hold:
+/// For all `a`, `b` of `var.set` it must hold:
 /// - `op(a, b) == op(b, a)`
+///
+/// [commutative]: https://en.wikipedia.org/wiki/Commutative_property
 pub fn commutative<S, O>(var: Var2<S>, op: Fun2<O>)
 where
     S: Debug + Clone + PartialEq,
@@ -19,10 +21,12 @@ where
     props::fun::commutative(var, op)
 }
 
-/// Asserts that the binary operation `op` is associative.
+/// Asserts that the binary operation `op` is [associative].
 ///
-/// For `a`, `b`, `c` of `var.set` it must hold:
+/// For all `a`, `b`, `c` of `var.set` it must hold:
 /// - `op(op(a, b), c) == op(a, op(b, c))`
+///
+/// [associative]: https://en.wikipedia.org/wiki/Associative_property
 pub fn associative<S, O>(var: Var3<S>, op: Fun2<O>)
 where
     S: Debug + Clone + PartialEq,
@@ -38,10 +42,12 @@ where
     ));
 }
 
-/// Asserts that the binary operation `mul` is left distributive over the binary operation `add`.
+/// Asserts that the binary operation `mul` is [left distributive] over the binary operation `add`.
 ///
-/// For `a`, `b`, `c` of `var.set` it must hold:
+/// For all `a`, `b`, `c` of `var.set` it must hold:
 /// - `mul(a, add(b, c)) == add(mul(a, b), mul(a, c))`
+///
+/// [left distributive]: https://en.wikipedia.org/wiki/Distributive_property
 pub fn left_distributive<S, A, M>(var: Var3<S>, add: Fun2<A>, mul: Fun2<M>)
 where
     S: Debug + Clone + PartialEq,
@@ -62,10 +68,12 @@ where
     ));
 }
 
-/// Asserts that the binary operation `mul` is right distributive over the binary operation `add`.
+/// Asserts that the binary operation `mul` is [right distributive] over the binary operation `add`.
 ///
-/// For `a`, `b`, `c` of `var.set` it must hold:
+/// For all `a`, `b`, `c` of `var.set` it must hold:
 /// - `mul(add(a, b), c) == add(mul(a, c), mul(b, c))`
+///
+/// [right distributive]: https://en.wikipedia.org/wiki/Distributive_property
 pub fn right_distributive<S, A, M>(var: Var3<S>, add: Fun2<A>, mul: Fun2<M>)
 where
     S: Debug + Clone + PartialEq,
@@ -91,6 +99,8 @@ where
 /// It must hold:
 /// - `mul` is left distributive over `add` ([`left_distributive`])
 /// - `mul` is right distributive over `add` ([`right_distributive`])
+///
+/// [distributive]: https://en.wikipedia.org/wiki/Distributive_property
 pub fn distributive<S, A, M>(var: Var3<S>, add: Fun2<A>, mul: Fun2<M>)
 where
     S: Debug + Clone + PartialEq,
@@ -103,10 +113,12 @@ where
     right_distributive(var, add, mul);
 }
 
-/// Asserts that `e` is the left identity element of the binary operation `op`.
+/// Asserts that `e` is the [left identity element] of the binary operation `op`.
 ///
-/// For `a` of `var.set` it must hold:
+/// For all `a` of `var.set` it must hold:
 /// - `op(e, a) == a`
+///
+/// [left identity element]: https://en.wikipedia.org/wiki/Identity_element
 pub fn left_identity_elem<S, O>(var: Var1<S>, op: Fun2<O>, e: Elem<S>)
 where
     S: Debug + Clone + PartialEq,
@@ -120,10 +132,12 @@ where
     ops::assert(ops::eq(op.eval_once(e, a.clone()).as_ref(), a.as_ref()));
 }
 
-/// Asserts that `e` is the right identity element of the binary operation `op`.
+/// Asserts that `e` is the [right identity element] of the binary operation `op`.
 ///
-/// For `a` of `var.set` it must hold:
+/// For all `a` of `var.set` it must hold:
 /// - `op(a, e) == a`
+///
+/// [right identity element]: https://en.wikipedia.org/wiki/Identity_element
 pub fn right_identity_elem<S, O>(var: Var1<S>, op: Fun2<O>, e: Elem<S>)
 where
     S: Debug + Clone + PartialEq,
@@ -137,11 +151,13 @@ where
     ops::assert(ops::eq(op.eval_once(a.clone(), e).as_ref(), a.as_ref()));
 }
 
-/// Asserts that `e` is the identity element of the binary operation `op`.
+/// Asserts that `e` is the [identity element] of the binary operation `op`.
 ///
 /// It must hold:
 /// - `e` is the left identity element of `op` ([`left_identity_elem`])
 /// - `e` is the right identity element of `op` ([`right_identity_elem`])
+///
+/// [identity element]: https://en.wikipedia.org/wiki/Identity_element
 pub fn identity_elem<S, O>(var: Var1<S>, op: Fun2<O>, e: Elem<S>)
 where
     S: Debug + Clone + PartialEq,
@@ -153,11 +169,13 @@ where
     right_identity_elem(var, op, e);
 }
 
-/// Asserts that the function `inv` returns the left inverse element regarding
+/// Asserts that the function `inv` returns the [left inverse element] regarding
 /// to the binary operation `op`.
 ///
-/// For `a`, `b` of `var.set` it must hold:
+/// For all `a`, `b` of `var.set` it must hold:
 /// - `op(b, op(inv(a), a)) == b`
+///
+/// [left inverse element] https://en.wikipedia.org/wiki/Inverse_element
 pub fn left_inverse_elem<S, O, I>(var: Var2<S>, op: Fun2<O>, inv: Fun1<I>)
 where
     S: Debug + Clone + PartialEq,
@@ -179,11 +197,13 @@ where
     ));
 }
 
-/// Asserts that the function `inv` returns the right inverse element regarding
+/// Asserts that the function `inv` returns the [right inverse element] regarding
 /// to the binary operation `op`.
 ///
-/// For `a`, `b` of `var.set` it must hold:
+/// For all `a`, `b` of `var.set` it must hold:
 /// - `op(op(a, inv(a)), b) == b`
+///
+/// [right inverse element] https://en.wikipedia.org/wiki/Inverse_element
 pub fn right_inverse_elem<S, O, I>(var: Var2<S>, op: Fun2<O>, inv: Fun1<I>)
 where
     S: Debug + Clone + PartialEq,
@@ -205,7 +225,7 @@ where
     ));
 }
 
-/// Asserts the function `inv` returns the inverse element that regarding
+/// Asserts the function `inv` returns the [inverse element] that regarding
 /// to the binary operation `op`.
 ///
 /// It must hold:
@@ -213,6 +233,8 @@ where
 /// ([`left_inverse_elem`])
 /// - `inv` returns the right inverse element regarding to `op`
 /// ([`right_inverse_elem`])
+///
+/// [inverse element] https://en.wikipedia.org/wiki/Inverse_element
 pub fn inverse_elem<S, O, I>(var: Var2<S>, op: Fun2<O>, inv: Fun1<I>)
 where
     S: Debug + Clone + PartialEq,
@@ -231,7 +253,7 @@ where
 
 /// Asserts that the binary operation `invop` is the left inverse of the binary operation `op`.
 ///
-/// For `a`, `b` of `var.set` it must hold:
+/// For all `a`, `b` of `var.set` it must hold:
 /// - `invop(op(a, b), b) == a`
 pub fn left_inverse<S, O, I>(var: Var2<S>, op: Fun2<O>, invop: Fun2<I>)
 where
@@ -253,7 +275,7 @@ where
 
 /// Asserts that the binary operation `invop` is the right inverse of the binary operation `op`.
 ///
-/// For `a`, `b` of `var.set` it must hold:
+/// For all `a`, `b` of `var.set` it must hold:
 /// - `op(invop(a, b), b) == a`
 pub fn right_inverse<S, O, I>(var: Var2<S>, op: Fun2<O>, invop: Fun2<I>)
 where

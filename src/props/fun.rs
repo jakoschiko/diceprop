@@ -136,10 +136,12 @@ where
     ));
 }
 
-/// Asserts that the function `f` is commutative.
+/// Asserts that the function `f` is [commutative].
 ///
 /// For `a`, `b` of `var.set` it must hold:
 /// - `f(a, b) == f(b, a)`
+///
+/// [commutative] https://en.wikipedia.org/wiki/Commutative_property#Mathematical_definitions
 pub fn commutative<S, R, O>(var: Var2<S>, f: Fun2<O>)
 where
     S: Debug + Clone,
