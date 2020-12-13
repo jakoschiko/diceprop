@@ -177,6 +177,30 @@ where
     transitive(var_3, rel.as_ref());
 }
 
+/// Asserts that the binary relation `rel` is a [total order].
+///
+/// It must hold:
+/// - `rel` is connex ([`connex`])
+/// - `rel` is antisymmetric ([`antisymmetric`])
+/// - `rel` is transitive ([`transitive`])
+///
+/// [total order]: https://en.wikipedia.org/wiki/Total_order
+pub fn total_order<S, R>(var: Var3<S>, rel: Fun2<R>)
+where
+    S: Debug + Clone + PartialEq,
+    R: Fn(S, S) -> bool,
+{
+    hint_section!("Is `{}` a total order?", rel.name);
+
+    let [a, b, c] = var.elems;
+    let var_2 = var_2(var.set, [a.clone(), b.clone()]);
+    let var_3 = var_3(var.set, [a, b, c]);
+
+    connex(var_2.clone(), rel.as_ref());
+    antisymmetric(var_2, rel.as_ref());
+    transitive(var_3, rel);
+}
+
 #[cfg(test)]
 mod tests {
     use dicetest::prelude::*;
@@ -252,6 +276,15 @@ mod tests {
             let var = fate.roll_var_3("String", ["x", "y", "z"], dice::string(dice::char(), ..));
             let rel = infix_fun_2("==", |x, y| x == y);
             props::binrel::equivalence(var, rel);
+        })
+    }
+
+    #[test]
+    fn total_order_example() {
+        Dicetest::once().run(|mut fate| {
+            let var = fate.roll_var_3("u8", ["x", "y", "z"], dice::u8(..));
+            let rel = infix_fun_2("<=", |x, y| x <= y);
+            props::binrel::total_order(var, rel);
         })
     }
 }
