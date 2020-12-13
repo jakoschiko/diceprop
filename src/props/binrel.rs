@@ -96,7 +96,7 @@ where
 /// [connex]: https://en.wikipedia.org/wiki/Connex_relation
 pub fn connex<S, R>(var: Var2<S>, rel: Fun2<R>)
 where
-    S: Debug + Clone + PartialEq,
+    S: Debug + Clone,
     R: Fn(S, S) -> bool,
 {
     hint_section!("Is `{}` connex?", rel.name);
