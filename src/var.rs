@@ -106,9 +106,8 @@ pub fn var_3<'a, S: Debug>(set: &'a str, elems: [Elem<'a, S>; 3]) -> Var3<'a, S>
 
 pub trait Sealed {}
 
-/// Extension for [`Fate`] that allows to "pick" variables randomly from a set.
-///
-/// The set is represented by a random value generator.
+/// Extension for [`Fate`] that allows to "pick" variables randomly from a set represented
+/// by a generator.
 pub trait FateVarExt: Sealed {
     /// Returns a [`Var1`] with a value generated with the given [`DieOnce`].
     fn roll_var_1<'a, S: Debug>(

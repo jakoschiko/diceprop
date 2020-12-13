@@ -9,7 +9,7 @@ pub enum Fun1Syntax {
     Postfix,
 }
 
-/// A human-readable label for a [`Fun1`] applied to an argument.
+/// A human-readable label that describes a [`Fun1`] applied to an argument.
 #[derive(Clone, Copy)]
 pub struct Fun1Label<'a, AL1: Display + Copy> {
     fun_name: &'a str,
@@ -99,13 +99,13 @@ impl<'a, F> Fun1<'a, F> {
     }
 }
 
-/// Creates a `Fun1` with the given name and prefix syntax (e.g. `f(x)`).
+/// Creates a [`Fun1`] with the given name and prefix syntax (e.g. `f(x)`).
 pub fn fun_1<F>(name: &str, f: F) -> Fun1<F> {
     let syntax = Fun1Syntax::Prefix;
     Fun1 { name, syntax, f }
 }
 
-/// Creates a `Fun1` with the given name and postfix syntax (e.g. `(x)!`).
+/// Creates a [`Fun1`] with the given name and postfix syntax (e.g. `(x)!`).
 pub fn postfix_fun_1<F>(name: &str, f: F) -> Fun1<F> {
     let syntax = Fun1Syntax::Postfix;
     Fun1 { name, syntax, f }
@@ -117,7 +117,7 @@ pub enum Fun2Syntax {
     Infix,
 }
 
-/// A human-readable label for a [`Fun2`] applied to a arguments.
+/// A human-readable label that describes a [`Fun2`] applied to arguments.
 #[derive(Clone, Copy)]
 pub struct Fun2Label<'a, AL1: Display + Copy, AL2: Display + Copy> {
     fun_name: &'a str,
@@ -228,13 +228,13 @@ impl<'a, F> Fun2<'a, F> {
     }
 }
 
-/// Creates a `Fun2` with the given name and prefix syntax (e.g. `f(x, y)`).
+/// Creates a [`Fun2`] with the given name and prefix syntax (e.g. `f(x, y)`).
 pub fn fun_2<F>(name: &str, f: F) -> Fun2<F> {
     let syntax = Fun2Syntax::Prefix;
     Fun2 { name, syntax, f }
 }
 
-/// Creates a `Fun2` with the given name and infix syntax (e.g. `(x + y)`).
+/// Creates a [`Fun2`] with the given name and infix syntax (e.g. `(x + y)`).
 pub fn infix_fun_2<F>(name: &str, f: F) -> Fun2<F> {
     let syntax = Fun2Syntax::Infix;
     Fun2 { name, syntax, f }
