@@ -7,10 +7,12 @@ use std::fmt::Debug;
 
 use crate::{ops, Fun1, Fun2, Var1, Var2};
 
-/// Asserts that the function `f` is idempotent.
+/// Asserts that the function `f` is [idempotent].
 ///
-/// For `a` of `var.set` it must hold:
+/// For all `a` of `var.set` it must hold:
 /// - `f(a) == f(f(a))`
+///
+/// [idempotent]: https://en.wikipedia.org/wiki/Idempotence
 pub fn idempotent<S, F>(var: Var1<S>, f: Fun1<F>)
 where
     S: Debug + Clone + PartialEq,
@@ -24,10 +26,12 @@ where
     ops::assert(ops::eq(fa.as_ref(), f.eval(fa.clone()).as_ref()));
 }
 
-/// Asserts that the function `g` is the left inverse of function `f`.
+/// Asserts that the function `g` is the [left inverse] of function `f`.
 ///
-/// For `a` of `var.set` it must hold:
+/// For all `a` of `var.set` it must hold:
 /// - `g(f(a)) == a`
+///
+/// [left inverse]: https://en.wikipedia.org/wiki/Inverse_function#Left_and_right_inverses
 pub fn left_inverse<S, T, F, G>(var: Var1<S>, f: Fun1<F>, g: Fun1<G>)
 where
     S: Debug + Clone + PartialEq,
@@ -45,10 +49,12 @@ where
     ));
 }
 
-/// Asserts that the function `g` is the right inverse of function `f`.
+/// Asserts that the function `g` is the [right inverse] of function `f`.
 ///
-/// For `a` of `var.set` it must hold:
+/// For all `a` of `var.set` it must hold:
 /// - `f(g(a)) == a`
+///
+/// [right inverse]: https://en.wikipedia.org/wiki/Inverse_function#Left_and_right_inverses
 pub fn right_inverse<S, T, F, G>(var: Var1<T>, f: Fun1<F>, g: Fun1<G>)
 where
     S: Debug,
@@ -66,11 +72,13 @@ where
     ));
 }
 
-/// Asserts that the function `g` is the inverse of function `f`.
+/// Asserts that the function `g` is the [inverse] of function `f`.
 ///
 /// It must hold:
 /// - `g` is the left inverse of `f` ([`left_inverse`])
 /// - `g` is the right inverse of `f` ([`right_inverse`])
+///
+/// [inverse]: https://en.wikipedia.org/wiki/Inverse_function
 pub fn inverse<S, T, F, G>(var_s: Var1<S>, var_t: Var1<T>, f: Fun1<F>, g: Fun1<G>)
 where
     S: Debug + Clone + PartialEq,
@@ -86,7 +94,7 @@ where
 
 /// Asserts that the function `g` is equal to the function `f`.
 ///
-/// For `a` of `var.set` it must hold:
+/// For all `a` of `var.set` it must hold:
 /// - `f(a) == g(a)`
 pub fn equal_1<S, R, F, G>(var: Var1<S>, f: Fun1<F>, g: Fun1<G>)
 where
@@ -105,9 +113,9 @@ where
     ));
 }
 
-/// Asserts that the function `g` is equivalent to the function `f`.
+/// Asserts that the function `g` is equal to the function `f`.
 ///
-/// For `a` of `var_s.set` and `b` of `var_t.set` it must hold:
+/// For all `a` of `var_s.set` and `b` of `var_t.set` it must hold:
 /// - `f(a, b) == g(a, b)`
 pub fn equal_2<S, T, R, F, G>(var_s: Var1<S>, var_t: Var1<T>, f: Fun2<F>, g: Fun2<G>)
 where
