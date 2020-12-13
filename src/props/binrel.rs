@@ -43,6 +43,27 @@ where
     ops::assert(ops::implies(rel.eval(a.clone(), b.clone()), rel.eval(b, a)));
 }
 
+/// Asserts that the binary relation `rel` is [asymmetric].
+///
+/// For all `a`, `b` of `var.set` it must hold:
+/// - `rel(a, b) --> !rel(b, a)`
+///
+/// [asymmetric]: https://en.wikipedia.org/wiki/Asymmetric_relation
+pub fn asymmetric<S, R>(var: Var2<S>, rel: Fun2<R>)
+where
+    S: Debug + Clone,
+    R: Fn(S, S) -> bool,
+{
+    hint_section!("Is `{}` asymmetric?", rel.name);
+
+    let [a, b] = var.eval();
+
+    ops::assert(ops::implies(
+        rel.eval(a.clone(), b.clone()),
+        ops::not(rel.eval(b, a)),
+    ));
+}
+
 /// Asserts that the binary relation `rel` is [antisymmetric].
 ///
 /// For all `a`, `b` of `var.set` it must hold:
@@ -159,6 +180,15 @@ mod tests {
             let var = fate.roll_var_2("f32", ["x", "y"], dice::any_f32());
             let rel = infix_fun_2("!=", |x, y| x != y);
             props::binrel::symmetric(var, rel);
+        })
+    }
+
+    #[test]
+    fn asymmetric_example() {
+        Dicetest::once().run(|mut fate| {
+            let var = fate.roll_var_2("f32", ["x", "y"], dice::any_f32());
+            let rel = infix_fun_2("<", |x, y| x < y);
+            props::binrel::asymmetric(var, rel);
         })
     }
 
