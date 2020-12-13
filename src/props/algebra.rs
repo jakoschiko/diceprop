@@ -8,10 +8,12 @@ use std::fmt::Debug;
 use crate::props::binop::{associative, commutative, distributive, identity_elem, inverse_elem};
 use crate::{var_1, var_2, var_3, Elem, Fun1, Fun2, Var2, Var3};
 
-/// Asserts that `(var.set, op)` is a semigroup.
+/// Asserts that `(var.set, op)` is a [semigroup].
 ///
 /// It must hold:
 /// - `op` is associative  ([`associative`])
+///
+/// [semigroup]: https://en.wikipedia.org/wiki/Semigroup
 pub fn semigroup<S, O>(var: Var3<S>, op: Fun2<O>)
 where
     S: Debug + Clone + PartialEq,
@@ -22,11 +24,13 @@ where
     associative(var, op);
 }
 
-/// Asserts that `(var.set, op, e)` is a monoid.
+/// Asserts that `(var.set, op, e)` is a [monoid].
 ///
 /// It must hold:
 /// - `(var.set, op)` is a semigroup ([`semigroup`])
 /// - `e` is the identity element of `op` ([`identity_elem`])
+///
+/// [monoid]: https://en.wikipedia.org/wiki/Monoid
 pub fn monoid<S, O>(var: Var3<S>, op: Fun2<O>, e: Elem<S>)
 where
     S: Debug + Clone + PartialEq,
@@ -42,11 +46,13 @@ where
     identity_elem(var_1, op, e)
 }
 
-/// Asserts that `(var.set, op, inv, e)` is a group.
+/// Asserts that `(var.set, op, inv, e)` is a [group].
 ///
 /// It must hold:
 /// - `(var.set, op, e)` is a monoid ([`monoid`])
 /// - `inv` returns the inverse elements regarding to `op` ([`inverse_elem`])
+///
+/// [group]: https://en.wikipedia.org/wiki/Group_(mathematics)
 pub fn group<S, O, I>(var: Var3<S>, op: Fun2<O>, inv: Fun1<I>, e: Elem<S>)
 where
     S: Debug + Clone + PartialEq,
@@ -69,11 +75,13 @@ where
     inverse_elem(var_2, op, inv);
 }
 
-/// Asserts that `(var.set, op, inv, e)` is an abelian group.
+/// Asserts that `(var.set, op, inv, e)` is an [abelian group].
 ///
 /// It must hold:
 /// - `(var.set, op, inv, e)` is a group ([`group`])
 /// - `op` is commutative ([`commutative`])
+///
+/// [abelian group]: https://en.wikipedia.org/wiki/Abelian_group
 pub fn abelian_group<S, O, I>(var: Var3<S>, op: Fun2<O>, inv: Fun1<I>, e: Elem<S>)
 where
     S: Debug + Clone + PartialEq,
@@ -96,12 +104,14 @@ where
     commutative(var_2, op);
 }
 
-/// Asserts that `(var.set, add, mul, neg, zero, one)` is a ring.
+/// Asserts that `(var.set, add, mul, neg, zero, one)` is a [ring].
 ///
 /// It must hold:
 /// - `(var.set, add, neg, zero)` is an abelian group ([`abelian_group`])
 /// - `(var.set, mul, one)` is a monoid ([`monoid`])
 /// - `mul` is distributive over `add` ([`distributive`])
+///
+/// [ring]: https://en.wikipedia.org/wiki/Ring_(mathematics)
 pub fn ring<S, A, N, M>(
     var: Var3<S>,
     add: Fun2<A>,
@@ -130,11 +140,13 @@ pub fn ring<S, A, N, M>(
     distributive(var, add, mul);
 }
 
-/// Asserts that `(var.set, add, mul, neg, zero, one)` is a commutative ring.
+/// Asserts that `(var.set, add, mul, neg, zero, one)` is a [commutative ring].
 ///
 /// It must hold:
 /// - `(var.set, add, mul, neg, zero, one)` is a ring ([`ring`])
 /// - `mul` is commutative ([`commutative`])
+///
+/// [commutative ring]: https://en.wikipedia.org/wiki/Commutative_ring
 pub fn commutative_ring<S, A, M, N>(
     var: Var3<S>,
     add: Fun2<A>,
@@ -166,12 +178,14 @@ pub fn commutative_ring<S, A, M, N>(
     commutative(var_2, mul);
 }
 
-/// Asserts that `(var.set, add, mul, neg, inv, zero, one)` is a field.
+/// Asserts that `(var.set, add, mul, neg, inv, zero, one)` is a [field].
 ///
 /// It must hold:
 /// - `(var.set, add, mul, neg, zero, one)` is a commutative ring ([`commutative_ring`])
 /// - For `a` of `non_zero_var.set` the result of `inv(a)` is the inverse element of `a` regarding
 /// to `mul` ([`inverse_elem`])
+///
+/// [field]: https://en.wikipedia.org/wiki/Field_(mathematics)
 #[allow(clippy::too_many_arguments)]
 pub fn field<S, A, M, N, I>(
     var: Var3<S>,
