@@ -134,11 +134,11 @@ where
     transitive_binrel(var_3, rel.as_ref());
 }
 
-/// Asserts that the binary relation `erel` is equivalent to the relation `rel`.
+/// Asserts that the binary relation `erel` is equal to the relation `rel`.
 ///
 /// For all `a`, `b` of `var.set` it must hold:
 /// - `rel(a, b) <-> erel(a, b)`
-pub fn equivalent_binrel<S, R, E>(var: Var2<S>, rel: Fun2<R>, erel: Fun2<E>)
+pub fn equal_binrel<S, R, E>(var: Var2<S>, rel: Fun2<R>, erel: Fun2<E>)
 where
     S: Debug + Clone,
     R: FnOnce(S, S) -> bool,
@@ -241,12 +241,12 @@ mod tests {
     }
 
     #[test]
-    fn equivalent_binrel_example() {
+    fn equal_binrel_example() {
         Dicetest::once().run(|mut fate| {
             let var = fate.roll_var_2("u8", ["x", "y"], dice::u8(..));
             let rel = infix_fun_2("==", |x, y| x == y);
             let erel = infix_fun_2("!!=", |x, y| !(x != y));
-            props::equivalent_binrel(var, rel, erel);
+            props::equal_binrel(var, rel, erel);
         })
     }
 
