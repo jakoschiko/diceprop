@@ -117,7 +117,7 @@ where
 /// - `rel` is transitive ([`transitive_binrel`])
 ///
 /// [equivalence relation]: https://en.wikipedia.org/wiki/Equivalence_relation
-pub fn eq_binrel<S, R>(var: Var3<S>, rel: Fun2<R>)
+pub fn equivalence_binrel<S, R>(var: Var3<S>, rel: Fun2<R>)
 where
     S: Debug + Clone,
     R: Fn(S, S) -> bool,
@@ -232,11 +232,11 @@ mod tests {
     }
 
     #[test]
-    fn eq_binrel_example() {
+    fn equivalence_binrel_example() {
         Dicetest::once().run(|mut fate| {
             let var = fate.roll_var_3("String", ["x", "y", "z"], dice::string(dice::char(), ..));
             let rel = infix_fun_2("==", |x, y| x == y);
-            props::eq_binrel(var, rel);
+            props::equivalence_binrel(var, rel);
         })
     }
 
