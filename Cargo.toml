@@ -6,3 +6,8 @@ edition = "2018"
 
 [dependencies]
 dicetest = "0.2.1"
+
+[workspace]
+members = [
+    "examples_readme",
+]

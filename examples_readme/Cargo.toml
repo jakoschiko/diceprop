@@ -1,0 +1,9 @@
+[package]
+name = "examples_readme"
+version = "0.0.0"
+edition = "2018"
+publish = false
+
+[dependencies]
+dicetest = "0.2.1"
+diceprop = { path = ".." }
