@@ -1,8 +1,9 @@
-# Diceprop
+# diceprop
 
-Diceprop provides mathematical properties that can be asserted with randomly generated test data.
+Provides mathematical properties that can be asserted with randomly generated
+test data.
 
-It's based on [Dicetest](https://github.com/jakoschiko/dicetest).
+It's based on [dicetest](https://github.com/jakoschiko/dicetest).
 
 ## Status of this crate
 
@@ -24,12 +25,12 @@ fn add_is_associative_for_small_f32() {
         let add = infix_fun_2("+", |x, y| x + y);
         props::binop::associative(var, add);
     })
-} 
+}
 ```
 
 The test fails with the following output:
 
-```text
+```
 The test failed after 22 passes.
 
 # Config
@@ -75,7 +76,7 @@ fn sqrt_is_left_inverse_of_sq_for_non_negative_f32() {
 
 The test fails with the following output:
 
-```text
+```
 The test failed after 0 passes.
 
 # Config
@@ -116,7 +117,7 @@ fn gt_is_partial_order_for_any_f32() {
 
 The test fails with the following output:
 
-```text
+```
 The test failed after 3 passes.
 
 # Config
