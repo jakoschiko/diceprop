@@ -1,8 +1,13 @@
 [package]
 name = "diceprop"
 version = "0.1.0"
-authors = ["Jakob Schikowski <jakob.schikowski@gmx.de>"]
+authors = ["Jakob Schikowski"]
 license = "MIT OR Apache-2.0"
+readme = "README.md"
+description = "Mathematical properties for random testing"
+keywords = ["testing", "property", "dicetest", "algebra", "math"]
+categories = ["development-tools::testing"]
+repository = "https://github.com/jakoschiko/diceprop"
 edition = "2018"
 
 [dependencies]
