@@ -8,7 +8,9 @@ It's based on [Dicetest](https://github.com/jakoschiko/dicetest).
 
 The author does not consider this crate as stable yet.
 
-## Example: associative binary operation
+## Examples
+
+### Associative binary operation
 
 ```rust
 use diceprop::{infix_fun_2, props, FateVarExt};
@@ -53,7 +55,7 @@ The test failed after 22 passes.
 - error: assertion failed: (((x + y) + z) == (x + (y + z)))
 ```
 
-## Example: left inverse function
+### Left inverse function
 
 ```rust
 use diceprop::{fun_1, postfix_fun_1, props, FateVarExt};
@@ -95,7 +97,7 @@ The test failed after 0 passes.
 - error: assertion failed: (√((x)²) == x)
 ```
 
-## Example: partial order
+### Partial order
 
 ```rust
 use diceprop::{infix_fun_2, props, FateVarExt};
