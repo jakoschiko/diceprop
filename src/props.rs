@@ -1,4 +1,4 @@
-//! A collection of properties that can be asserted with randomly generated test data.
+//! A collection of properties that can be verified with randomly generated test data.
 
 pub mod fun;
 

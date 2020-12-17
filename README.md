@@ -1,7 +1,6 @@
 # diceprop
 
-Provides mathematical properties that can be asserted with randomly generated
-test data.
+A collection of mathematical properties for random testing.
 
 It's based on [dicetest](https://github.com/jakoschiko/dicetest).
 
