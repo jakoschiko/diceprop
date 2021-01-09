@@ -103,7 +103,7 @@ where
     F: FnOnce(S) -> R,
     G: FnOnce(S) -> R,
 {
-    hint_section!("Is `{}` equivalent to `{}`?", g.name, f.name);
+    hint_section!("Is `{}` equal to `{}`?", g.name, f.name);
 
     let a = var.eval();
 
@@ -125,7 +125,7 @@ where
     F: FnOnce(S, T) -> R,
     G: FnOnce(S, T) -> R,
 {
-    hint_section!("Is `{}` equivalent to `{}`?", g.name, f.name);
+    hint_section!("Is `{}` equal to `{}`?", g.name, f.name);
 
     let a = var_s.eval();
     let b = var_t.eval();
