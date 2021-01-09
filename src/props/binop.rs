@@ -311,6 +311,27 @@ where
     right_inverse(var, op, invop);
 }
 
+/// Asserts that the binary operation `op_2` is equal to the binary operation `op_1`.
+///
+/// For all `a`, `b` of `var.set` it must hold:
+/// - `op_1(a, b) == op_2(a, b)`
+pub fn equal<S, R, O, P>(var: Var2<S>, op_1: Fun2<O>, op_2: Fun2<P>)
+where
+    S: Debug + Clone,
+    R: Debug + PartialEq,
+    O: FnOnce(S, S) -> R,
+    P: FnOnce(S, S) -> R,
+{
+    hint_section!("Is `{}` equal to `{}`?", op_2.name, op_1.name);
+
+    let [a, b] = var.eval();
+
+    ops::assert(ops::eq(
+        op_1.eval_once(a.clone(), b.clone()).as_ref(),
+        op_2.eval_once(a, b).as_ref(),
+    ));
+}
+
 #[cfg(test)]
 mod tests {
     use dicetest::prelude::*;
@@ -464,6 +485,19 @@ mod tests {
             let op = infix_fun_2("+", |x, y| x + y);
             let invop = infix_fun_2("-", |x, y| x - y);
             props::binop::inverse(var, op, invop);
+        })
+    }
+
+    #[test]
+    fn equal_example() {
+        Dicetest::once().run(|mut fate| {
+            let var = fate.roll_var_2("i64", ["x", "y"], dice::i64(-1000..=1000));
+            let op_1 = fun_2("add", |x, y| x + y);
+            let op_2 = fun_2("add_assign", |mut x, y| {
+                x += y;
+                x
+            });
+            props::binop::equal(var, op_1, op_2);
         })
     }
 }
