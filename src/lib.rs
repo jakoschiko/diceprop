@@ -4,7 +4,8 @@
 //!
 //! # Status of this crate
 //!
-//! The author does not consider this crate as stable yet.
+//! The author does not consider this crate as stable yet. Changes will be documented in the
+//! [changelog](https://github.com/jakoschiko/diceprop/blob/master/CHANGELOG.md).
 //!
 //! # Examples
 //!
