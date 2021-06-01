@@ -29,27 +29,27 @@
 //! The test fails with the following output:
 //!
 //! ```text
-//! The test failed after 22 passes.
+//! The test failed after 12 passes.
 //!
 //! # Config
-//! - seed: 9463254571221690676
+//! - seed: 14859458141222391139
 //! - start limit: 0
 //! - end limit: 100
 //! - passes: 200
 //!
 //! # Counterexample
-//! - run code: "+AmE1tbVveYGYlIjaeh8pudhxZe2x8PIexq8M9U/Xn4LAAAAAAAAAA=="
-//! - limit: 11
+//! - run code: "2pYRCj9fj8sV52fB5iyFhxCISGY3nKlMzlzIKq0NKLwGAAAAAAAAAA=="
+//! - limit: 6
 //! - hints:
 //!         - Is `+` associative?
 //!                 - x, y, z of f32 ∩ [-100,100]
-//!                 - x = 344.4662
-//!                 - y = 503.5587
-//!                 - z = 0.70710677
-//!                 - (x + y) = 848.0249
-//!                 - ((x + y) + z) = 848.732
-//!                 - (y + z) = 504.26578
-//!                 - (x + (y + z)) = 848.73193
+//!                 - x = 96.621735
+//!                 - y = -90.97134
+//!                 - z = -8.10239
+//!                 - (x + y) = 5.6503983
+//!                 - ((x + y) + z) = -2.451992
+//!                 - (y + z) = -99.07373
+//!                 - (x + (y + z)) = -2.4519958
 //!                 - (((x + y) + z) == (x + (y + z))) = false
 //! - error: assertion failed: (((x + y) + z) == (x + (y + z)))
 //! ```
