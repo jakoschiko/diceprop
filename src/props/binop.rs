@@ -175,7 +175,7 @@ where
 /// For all `a`, `b` of `var.set` it must hold:
 /// - `op(b, op(inv(a), a)) == b`
 ///
-/// [left inverse element] https://en.wikipedia.org/wiki/Inverse_element
+/// [left inverse element]: https://en.wikipedia.org/wiki/Inverse_element
 pub fn left_inverse_elem<S, O, I>(var: Var2<S>, op: Fun2<O>, inv: Fun1<I>)
 where
     S: Debug + Clone + PartialEq,
@@ -203,7 +203,7 @@ where
 /// For all `a`, `b` of `var.set` it must hold:
 /// - `op(op(a, inv(a)), b) == b`
 ///
-/// [right inverse element] https://en.wikipedia.org/wiki/Inverse_element
+/// [right inverse element]: https://en.wikipedia.org/wiki/Inverse_element
 pub fn right_inverse_elem<S, O, I>(var: Var2<S>, op: Fun2<O>, inv: Fun1<I>)
 where
     S: Debug + Clone + PartialEq,
@@ -234,7 +234,7 @@ where
 /// - `inv` returns the right inverse element regarding to `op`
 /// ([`right_inverse_elem`])
 ///
-/// [inverse element] https://en.wikipedia.org/wiki/Inverse_element
+/// [inverse element]: https://en.wikipedia.org/wiki/Inverse_element
 pub fn inverse_elem<S, O, I>(var: Var2<S>, op: Fun2<O>, inv: Fun1<I>)
 where
     S: Debug + Clone + PartialEq,
