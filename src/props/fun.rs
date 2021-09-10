@@ -173,7 +173,7 @@ mod tests {
                 "String",
                 "x",
                 dice::string(
-                    dice::one_of_die_2(dice::one_of_slice(&[' ', '\n', '\t']), dice::char()),
+                    dice::one_of_die().two(dice::one_of_slice(&[' ', '\n', '\t']), dice::char()),
                     ..,
                 ),
             );

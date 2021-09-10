@@ -5,5 +5,5 @@ edition = "2018"
 publish = false
 
 [dependencies]
-dicetest = "0.2.1"
+dicetest = "0.3"
 diceprop = { path = ".." }

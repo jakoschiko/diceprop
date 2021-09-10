@@ -310,7 +310,7 @@ mod tests {
             let var = fate.roll_var_3(
                 "u8²",
                 ["x", "y", "z"],
-                dice::zip_2(dice::u8(..), dice::u8(..)),
+                dice::zip().two(dice::u8(..), dice::u8(..)),
             );
             let rel = infix_fun_2("<=", |x: (u8, u8), y: (u8, u8)| {
                 (x.0 <= y.0) && (x.1 <= y.1)

@@ -155,7 +155,7 @@ impl FateVarExt for Fate<'_> {
         die: impl Die<S>,
     ) -> Var2<'a, S> {
         let [name1, name2] = names;
-        let [value1, value2] = self.roll(dice::array_2(die));
+        let [value1, value2] = self.roll(dice::array(die));
         let elems = [elem(name1, value1), elem(name2, value2)];
         var_2(set, elems)
     }
@@ -167,7 +167,7 @@ impl FateVarExt for Fate<'_> {
         die: impl Die<S>,
     ) -> Var3<'a, S> {
         let [name1, name2, name3] = names;
-        let [value1, value2, value3] = self.roll(dice::array_3(die));
+        let [value1, value2, value3] = self.roll(dice::array(die));
         let elems = [
             elem(name1, value1),
             elem(name2, value2),

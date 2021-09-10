@@ -11,7 +11,7 @@ repository = "https://github.com/jakoschiko/diceprop"
 edition = "2018"
 
 [dependencies]
-dicetest = "0.2.1"
+dicetest = "0.3"
 
 [workspace]
 members = [
