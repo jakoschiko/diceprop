@@ -6,7 +6,7 @@ use dicetest::hint_section;
 use std::fmt::Debug;
 
 use crate::props::binop::{associative, commutative, distributive, identity_elem, inverse_elem};
-use crate::{var_1, var_2, var_3, Elem, Fun1, Fun2, Var2, Var3};
+use crate::{Elem, Fun1, Fun2, Var};
 
 /// Asserts that `(var.set, op)` is a [semigroup].
 ///
@@ -14,7 +14,7 @@ use crate::{var_1, var_2, var_3, Elem, Fun1, Fun2, Var2, Var3};
 /// - `op` is associative  ([`associative`])
 ///
 /// [semigroup]: https://en.wikipedia.org/wiki/Semigroup
-pub fn semigroup<S, O>(var: Var3<S>, op: Fun2<O>)
+pub fn semigroup<S, O>(var: Var<S, 3>, op: Fun2<O>)
 where
     S: Debug + Clone + PartialEq,
     O: Fn(S, S) -> S,
@@ -31,7 +31,7 @@ where
 /// - `e` is the identity element of `op` ([`identity_elem`])
 ///
 /// [monoid]: https://en.wikipedia.org/wiki/Monoid
-pub fn monoid<S, O>(var: Var3<S>, op: Fun2<O>, e: Elem<S>)
+pub fn monoid<S, O>(var: Var<S, 3>, op: Fun2<O>, e: Elem<S>)
 where
     S: Debug + Clone + PartialEq,
     O: Fn(S, S) -> S,
@@ -39,8 +39,8 @@ where
     hint_section!("Is `({}, {}, {})` a monoid?", var.set, op.name, e.name,);
 
     let [a, b, c] = var.elems;
-    let var_1 = var_1(var.set, a.clone());
-    let var_3 = var_3(var.set, [a, b, c]);
+    let var_1 = Var::new(var.set, [a.clone()]);
+    let var_3 = Var::new(var.set, [a, b, c]);
 
     semigroup(var_3, op.as_ref());
     identity_elem(var_1, op, e)
@@ -53,7 +53,7 @@ where
 /// - `inv` returns the inverse elements regarding to `op` ([`inverse_elem`])
 ///
 /// [group]: https://en.wikipedia.org/wiki/Group_(mathematics)
-pub fn group<S, O, I>(var: Var3<S>, op: Fun2<O>, inv: Fun1<I>, e: Elem<S>)
+pub fn group<S, O, I>(var: Var<S, 3>, op: Fun2<O>, inv: Fun1<I>, e: Elem<S>)
 where
     S: Debug + Clone + PartialEq,
     O: Fn(S, S) -> S,
@@ -68,8 +68,8 @@ where
     );
 
     let [a, b, c] = var.elems;
-    let var_2 = var_2(var.set, [a.clone(), b.clone()]);
-    let var_3 = var_3(var.set, [a, b, c]);
+    let var_2 = Var::new(var.set, [a.clone(), b.clone()]);
+    let var_3 = Var::new(var.set, [a, b, c]);
 
     monoid(var_3, op.as_ref(), e);
     inverse_elem(var_2, op, inv);
@@ -82,7 +82,7 @@ where
 /// - `op` is commutative ([`commutative`])
 ///
 /// [abelian group]: https://en.wikipedia.org/wiki/Abelian_group
-pub fn abelian_group<S, O, I>(var: Var3<S>, op: Fun2<O>, inv: Fun1<I>, e: Elem<S>)
+pub fn abelian_group<S, O, I>(var: Var<S, 3>, op: Fun2<O>, inv: Fun1<I>, e: Elem<S>)
 where
     S: Debug + Clone + PartialEq,
     O: Fn(S, S) -> S,
@@ -97,8 +97,8 @@ where
     );
 
     let [a, b, c] = var.elems;
-    let var_2 = var_2(var.set, [a.clone(), b.clone()]);
-    let var_3 = var_3(var.set, [a, b, c]);
+    let var_2 = Var::new(var.set, [a.clone(), b.clone()]);
+    let var_3 = Var::new(var.set, [a, b, c]);
 
     group(var_3, op.as_ref(), inv, e);
     commutative(var_2, op);
@@ -113,7 +113,7 @@ where
 ///
 /// [ring]: https://en.wikipedia.org/wiki/Ring_(mathematics)
 pub fn ring<S, A, N, M>(
-    var: Var3<S>,
+    var: Var<S, 3>,
     add: Fun2<A>,
     mul: Fun2<M>,
     neg: Fun1<N>,
@@ -148,7 +148,7 @@ pub fn ring<S, A, N, M>(
 ///
 /// [commutative ring]: https://en.wikipedia.org/wiki/Commutative_ring
 pub fn commutative_ring<S, A, M, N>(
-    var: Var3<S>,
+    var: Var<S, 3>,
     add: Fun2<A>,
     mul: Fun2<M>,
     neg: Fun1<N>,
@@ -171,8 +171,8 @@ pub fn commutative_ring<S, A, M, N>(
     );
 
     let [a, b, c] = var.elems;
-    let var_2 = var_2(var.set, [a.clone(), b.clone()]);
-    let var_3 = var_3(var.set, [a, b, c]);
+    let var_2 = Var::new(var.set, [a.clone(), b.clone()]);
+    let var_3 = Var::new(var.set, [a, b, c]);
 
     ring(var_3, add, mul.as_ref(), neg, zero, one);
     commutative(var_2, mul);
@@ -188,8 +188,8 @@ pub fn commutative_ring<S, A, M, N>(
 /// [field]: https://en.wikipedia.org/wiki/Field_(mathematics)
 #[allow(clippy::too_many_arguments)]
 pub fn field<S, A, M, N, I>(
-    var: Var3<S>,
-    non_zero_var: Var2<S>,
+    var: Var<S, 3>,
+    non_zero_var: Var<S, 2>,
     add: Fun2<A>,
     mul: Fun2<M>,
     neg: Fun1<N>,
@@ -227,7 +227,7 @@ mod tests {
     #[test]
     fn semigroup_example() {
         Dicetest::once().run(|mut fate| {
-            let var = fate.roll_var_3("u64", ["x", "y", "z"], dice::u64(..=1000));
+            let var = fate.roll_var("u64", ["x", "y", "z"], dice::u64(..=1000));
             let op = infix_fun_2("+", |x, y| x + y);
             props::algebra::semigroup(var, op);
         })
@@ -236,7 +236,7 @@ mod tests {
     #[test]
     fn monoid_example() {
         Dicetest::once().run(|mut fate| {
-            let var = fate.roll_var_3("u64", ["x", "y", "z"], dice::u64(..=1000));
+            let var = fate.roll_var("u64", ["x", "y", "z"], dice::u64(..=1000));
             let op = infix_fun_2("+", |x, y| x + y);
             let e = elem("zero", 0);
             props::algebra::monoid(var, op, e);
@@ -246,7 +246,7 @@ mod tests {
     #[test]
     fn group_example() {
         Dicetest::once().run(|mut fate| {
-            let var = fate.roll_var_3("i64", ["x", "y", "z"], dice::i64(-1000..=1000));
+            let var = fate.roll_var("i64", ["x", "y", "z"], dice::i64(-1000..=1000));
             let op = infix_fun_2("+", |x, y| x + y);
             let inv = fun_1("-", |x: i64| -x);
             let e = elem("zero", 0);
@@ -257,7 +257,7 @@ mod tests {
     #[test]
     fn abelian_group_example() {
         Dicetest::once().run(|mut fate| {
-            let var = fate.roll_var_3("i64", ["x", "y", "z"], dice::i64(-1000..=1000));
+            let var = fate.roll_var("i64", ["x", "y", "z"], dice::i64(-1000..=1000));
             let op = infix_fun_2("+", |x, y| x + y);
             let inv = fun_1("-", |x: i64| -x);
             let e = elem("zero", 0);
@@ -268,7 +268,7 @@ mod tests {
     #[test]
     fn ring_example() {
         Dicetest::once().run(|mut fate| {
-            let var = fate.roll_var_3("i64", ["x", "y", "z"], dice::i64(-1000..=1000));
+            let var = fate.roll_var("i64", ["x", "y", "z"], dice::i64(-1000..=1000));
             let add = infix_fun_2("+", |x, y| x + y);
             let mul = infix_fun_2("*", |x, y| x * y);
             let neg = fun_1("-", |x: i64| -x);
@@ -281,7 +281,7 @@ mod tests {
     #[test]
     fn commutative_ring_example() {
         Dicetest::once().run(|mut fate| {
-            let var = fate.roll_var_3("i64", ["x", "y", "z"], dice::i64(-1000..=1000));
+            let var = fate.roll_var("i64", ["x", "y", "z"], dice::i64(-1000..=1000));
             let add = infix_fun_2("+", |x, y| x + y);
             let mul = infix_fun_2("*", |x, y| x * y);
             let neg = fun_1("-", |x: i64| -x);

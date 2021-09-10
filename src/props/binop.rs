@@ -5,7 +5,7 @@
 use dicetest::hint_section;
 use std::fmt::Debug;
 
-use crate::{ops, props, Elem, Fun1, Fun2, Var1, Var2, Var3};
+use crate::{ops, props, Elem, Fun1, Fun2, Var};
 
 /// Asserts that the binary operation `op` is [commutative].
 ///
@@ -13,7 +13,7 @@ use crate::{ops, props, Elem, Fun1, Fun2, Var1, Var2, Var3};
 /// - `op(a, b) == op(b, a)`
 ///
 /// [commutative]: https://en.wikipedia.org/wiki/Commutative_property
-pub fn commutative<S, O>(var: Var2<S>, op: Fun2<O>)
+pub fn commutative<S, O>(var: Var<S, 2>, op: Fun2<O>)
 where
     S: Debug + Clone + PartialEq,
     O: Fn(S, S) -> S,
@@ -27,7 +27,7 @@ where
 /// - `op(op(a, b), c) == op(a, op(b, c))`
 ///
 /// [associative]: https://en.wikipedia.org/wiki/Associative_property
-pub fn associative<S, O>(var: Var3<S>, op: Fun2<O>)
+pub fn associative<S, O>(var: Var<S, 3>, op: Fun2<O>)
 where
     S: Debug + Clone + PartialEq,
     O: Fn(S, S) -> S,
@@ -48,7 +48,7 @@ where
 /// - `mul(a, add(b, c)) == add(mul(a, b), mul(a, c))`
 ///
 /// [left distributive]: https://en.wikipedia.org/wiki/Distributive_property
-pub fn left_distributive<S, A, M>(var: Var3<S>, add: Fun2<A>, mul: Fun2<M>)
+pub fn left_distributive<S, A, M>(var: Var<S, 3>, add: Fun2<A>, mul: Fun2<M>)
 where
     S: Debug + Clone + PartialEq,
     A: Fn(S, S) -> S,
@@ -74,7 +74,7 @@ where
 /// - `mul(add(a, b), c) == add(mul(a, c), mul(b, c))`
 ///
 /// [right distributive]: https://en.wikipedia.org/wiki/Distributive_property
-pub fn right_distributive<S, A, M>(var: Var3<S>, add: Fun2<A>, mul: Fun2<M>)
+pub fn right_distributive<S, A, M>(var: Var<S, 3>, add: Fun2<A>, mul: Fun2<M>)
 where
     S: Debug + Clone + PartialEq,
     A: Fn(S, S) -> S,
@@ -101,7 +101,7 @@ where
 /// - `mul` is right distributive over `add` ([`right_distributive`])
 ///
 /// [distributive]: https://en.wikipedia.org/wiki/Distributive_property
-pub fn distributive<S, A, M>(var: Var3<S>, add: Fun2<A>, mul: Fun2<M>)
+pub fn distributive<S, A, M>(var: Var<S, 3>, add: Fun2<A>, mul: Fun2<M>)
 where
     S: Debug + Clone + PartialEq,
     A: Fn(S, S) -> S,
@@ -119,14 +119,14 @@ where
 /// - `op(e, a) == a`
 ///
 /// [left identity element]: https://en.wikipedia.org/wiki/Identity_element
-pub fn left_identity_elem<S, O>(var: Var1<S>, op: Fun2<O>, e: Elem<S>)
+pub fn left_identity_elem<S, O>(var: Var<S, 1>, op: Fun2<O>, e: Elem<S>)
 where
     S: Debug + Clone + PartialEq,
     O: FnOnce(S, S) -> S,
 {
     hint_section!("Is `{}` left identity element of `{}`?", e.name, op.name);
 
-    let a = var.eval();
+    let [a] = var.eval();
     let e = e.eval();
 
     ops::assert(ops::eq(op.eval_once(e, a.clone()).as_ref(), a.as_ref()));
@@ -138,14 +138,14 @@ where
 /// - `op(a, e) == a`
 ///
 /// [right identity element]: https://en.wikipedia.org/wiki/Identity_element
-pub fn right_identity_elem<S, O>(var: Var1<S>, op: Fun2<O>, e: Elem<S>)
+pub fn right_identity_elem<S, O>(var: Var<S, 1>, op: Fun2<O>, e: Elem<S>)
 where
     S: Debug + Clone + PartialEq,
     O: FnOnce(S, S) -> S,
 {
     hint_section!("Is `{}` right identity element of `{}`?", e.name, op.name);
 
-    let a = var.eval();
+    let [a] = var.eval();
     let e = e.eval();
 
     ops::assert(ops::eq(op.eval_once(a.clone(), e).as_ref(), a.as_ref()));
@@ -158,7 +158,7 @@ where
 /// - `e` is the right identity element of `op` ([`right_identity_elem`])
 ///
 /// [identity element]: https://en.wikipedia.org/wiki/Identity_element
-pub fn identity_elem<S, O>(var: Var1<S>, op: Fun2<O>, e: Elem<S>)
+pub fn identity_elem<S, O>(var: Var<S, 1>, op: Fun2<O>, e: Elem<S>)
 where
     S: Debug + Clone + PartialEq,
     O: Fn(S, S) -> S,
@@ -176,7 +176,7 @@ where
 /// - `op(b, op(inv(a), a)) == b`
 ///
 /// [left inverse element]: https://en.wikipedia.org/wiki/Inverse_element
-pub fn left_inverse_elem<S, O, I>(var: Var2<S>, op: Fun2<O>, inv: Fun1<I>)
+pub fn left_inverse_elem<S, O, I>(var: Var<S, 2>, op: Fun2<O>, inv: Fun1<I>)
 where
     S: Debug + Clone + PartialEq,
     O: Fn(S, S) -> S,
@@ -204,7 +204,7 @@ where
 /// - `op(op(a, inv(a)), b) == b`
 ///
 /// [right inverse element]: https://en.wikipedia.org/wiki/Inverse_element
-pub fn right_inverse_elem<S, O, I>(var: Var2<S>, op: Fun2<O>, inv: Fun1<I>)
+pub fn right_inverse_elem<S, O, I>(var: Var<S, 2>, op: Fun2<O>, inv: Fun1<I>)
 where
     S: Debug + Clone + PartialEq,
     O: Fn(S, S) -> S,
@@ -235,7 +235,7 @@ where
 /// ([`right_inverse_elem`])
 ///
 /// [inverse element]: https://en.wikipedia.org/wiki/Inverse_element
-pub fn inverse_elem<S, O, I>(var: Var2<S>, op: Fun2<O>, inv: Fun1<I>)
+pub fn inverse_elem<S, O, I>(var: Var<S, 2>, op: Fun2<O>, inv: Fun1<I>)
 where
     S: Debug + Clone + PartialEq,
     O: Fn(S, S) -> S,
@@ -255,7 +255,7 @@ where
 ///
 /// For all `a`, `b` of `var.set` it must hold:
 /// - `invop(op(a, b), b) == a`
-pub fn left_inverse<S, O, I>(var: Var2<S>, op: Fun2<O>, invop: Fun2<I>)
+pub fn left_inverse<S, O, I>(var: Var<S, 2>, op: Fun2<O>, invop: Fun2<I>)
 where
     S: Debug + Clone + PartialEq,
     O: FnOnce(S, S) -> S,
@@ -277,7 +277,7 @@ where
 ///
 /// For all `a`, `b` of `var.set` it must hold:
 /// - `op(invop(a, b), b) == a`
-pub fn right_inverse<S, O, I>(var: Var2<S>, op: Fun2<O>, invop: Fun2<I>)
+pub fn right_inverse<S, O, I>(var: Var<S, 2>, op: Fun2<O>, invop: Fun2<I>)
 where
     S: Debug + Clone + PartialEq,
     O: FnOnce(S, S) -> S,
@@ -299,7 +299,7 @@ where
 /// It must hold:
 /// - `invop` is the left inverse of `op` ([`left_inverse`])
 /// - `invop` is the right inverse of `op` ([`right_inverse`])
-pub fn inverse<S, O, I>(var: Var2<S>, op: Fun2<O>, invop: Fun2<I>)
+pub fn inverse<S, O, I>(var: Var<S, 2>, op: Fun2<O>, invop: Fun2<I>)
 where
     S: Debug + Clone + PartialEq,
     O: Fn(S, S) -> S,
@@ -315,7 +315,7 @@ where
 ///
 /// For all `a`, `b` of `var.set` it must hold:
 /// - `op_1(a, b) == op_2(a, b)`
-pub fn equal<S, R, O, P>(var: Var2<S>, op_1: Fun2<O>, op_2: Fun2<P>)
+pub fn equal<S, R, O, P>(var: Var<S, 2>, op_1: Fun2<O>, op_2: Fun2<P>)
 where
     S: Debug + Clone,
     R: Debug + PartialEq,
@@ -342,7 +342,7 @@ mod tests {
     #[test]
     fn commutative_example() {
         Dicetest::once().run(|mut fate| {
-            let var = fate.roll_var_2(
+            let var = fate.roll_var(
                 "BTreeSet<u8>",
                 ["x", "y"],
                 dice::b_tree_set(dice::u8(..), ..),
@@ -359,7 +359,7 @@ mod tests {
     #[test]
     fn associative_example() {
         Dicetest::once().run(|mut fate| {
-            let var = fate.roll_var_3("Vec<u8>", ["x", "y", "z"], dice::vec(dice::u8(..), ..));
+            let var = fate.roll_var("Vec<u8>", ["x", "y", "z"], dice::vec(dice::u8(..), ..));
             let op = fun_2("append", |mut x, mut y| {
                 Vec::<u8>::append(&mut x, &mut y);
                 x
@@ -371,7 +371,7 @@ mod tests {
     #[test]
     fn left_distributive_example() {
         Dicetest::once().run(|mut fate| {
-            let var = fate.roll_var_3("i64", ["x", "y", "z"], dice::i64(-1000..=1000));
+            let var = fate.roll_var("i64", ["x", "y", "z"], dice::i64(-1000..=1000));
             let add = infix_fun_2("+", |x, y| x + y);
             let mul = infix_fun_2("*", |x, y| x * y);
             props::binop::left_distributive(var, add, mul);
@@ -381,7 +381,7 @@ mod tests {
     #[test]
     fn right_distributive_example() {
         Dicetest::once().run(|mut fate| {
-            let var = fate.roll_var_3("i64", ["x", "y", "z"], dice::i64(-1000..=1000));
+            let var = fate.roll_var("i64", ["x", "y", "z"], dice::i64(-1000..=1000));
             let add = infix_fun_2("+", |x, y| x + y);
             let mul = infix_fun_2("*", |x, y| x * y);
             props::binop::right_distributive(var, add, mul);
@@ -391,7 +391,7 @@ mod tests {
     #[test]
     fn distributive_example() {
         Dicetest::once().run(|mut fate| {
-            let var = fate.roll_var_3("i64", ["x", "y", "z"], dice::i64(-1000..=1000));
+            let var = fate.roll_var("i64", ["x", "y", "z"], dice::i64(-1000..=1000));
             let add = infix_fun_2("+", |x, y| x + y);
             let mul = infix_fun_2("*", |x, y| x * y);
             props::binop::distributive(var, add, mul);
@@ -401,7 +401,7 @@ mod tests {
     #[test]
     fn left_identity_elem_example() {
         Dicetest::once().run(|mut fate| {
-            let var = fate.roll_var_1("i8", "x", dice::i8(..));
+            let var = fate.roll_single_var("i8", "x", dice::i8(..));
             let op = infix_fun_2("+", |x, y| x + y);
             let e = elem("zero", 0);
             props::binop::left_identity_elem(var, op, e);
@@ -411,7 +411,7 @@ mod tests {
     #[test]
     fn right_identity_elem_example() {
         Dicetest::once().run(|mut fate| {
-            let var = fate.roll_var_1("i8", "x", dice::i8(..));
+            let var = fate.roll_single_var("i8", "x", dice::i8(..));
             let op = infix_fun_2("*", |x, y| x * y);
             let e = elem("one", 1);
             props::binop::right_identity_elem(var, op, e);
@@ -421,7 +421,7 @@ mod tests {
     #[test]
     fn identity_elem_example() {
         Dicetest::once().run(|mut fate| {
-            let var = fate.roll_var_1("f32", "x", dice::f32(..));
+            let var = fate.roll_single_var("f32", "x", dice::f32(..));
             let op = infix_fun_2("+", |x, y| x + y);
             let e = elem("zero", 0.0);
             props::binop::identity_elem(var, op, e);
@@ -431,7 +431,7 @@ mod tests {
     #[test]
     fn left_inverse_elem_example() {
         Dicetest::once().run(|mut fate| {
-            let var = fate.roll_var_2("i64", ["x", "y"], dice::i64(-1000..=1000));
+            let var = fate.roll_var("i64", ["x", "y"], dice::i64(-1000..=1000));
             let op = infix_fun_2("+", |x, y| x + y);
             let inv = fun_1("-", |x: i64| -x);
             props::binop::left_inverse_elem(var, op, inv);
@@ -441,7 +441,7 @@ mod tests {
     #[test]
     fn right_inverse_elem_example() {
         Dicetest::once().run(|mut fate| {
-            let var = fate.roll_var_2("i64", ["x", "y"], dice::i64(-1000..=1000));
+            let var = fate.roll_var("i64", ["x", "y"], dice::i64(-1000..=1000));
             let op = infix_fun_2("+", |x, y| x + y);
             let inv = fun_1("-", |x: i64| -x);
             props::binop::right_inverse_elem(var, op, inv);
@@ -451,7 +451,7 @@ mod tests {
     #[test]
     fn inverse_elem_example() {
         Dicetest::once().run(|mut fate| {
-            let var = fate.roll_var_2("i64", ["x", "y"], dice::i64(-1000..=1000));
+            let var = fate.roll_var("i64", ["x", "y"], dice::i64(-1000..=1000));
             let op = infix_fun_2("+", |x, y| x + y);
             let inv = fun_1("-", |x: i64| -x);
             props::binop::inverse_elem(var, op, inv);
@@ -461,7 +461,7 @@ mod tests {
     #[test]
     fn left_inverse_example() {
         Dicetest::once().run(|mut fate| {
-            let var = fate.roll_var_2("i64", ["x", "y"], dice::i64(-1000..=1000));
+            let var = fate.roll_var("i64", ["x", "y"], dice::i64(-1000..=1000));
             let op = infix_fun_2("+", |x, y| x + y);
             let invop = infix_fun_2("-", |x, y| x - y);
             props::binop::left_inverse(var, op, invop);
@@ -471,7 +471,7 @@ mod tests {
     #[test]
     fn right_inverse_example() {
         Dicetest::once().run(|mut fate| {
-            let var = fate.roll_var_2("i64", ["x", "y"], dice::i64(-1000..=1000));
+            let var = fate.roll_var("i64", ["x", "y"], dice::i64(-1000..=1000));
             let op = infix_fun_2("+", |x, y| x + y);
             let invop = infix_fun_2("-", |x, y| x - y);
             props::binop::right_inverse(var, op, invop);
@@ -481,7 +481,7 @@ mod tests {
     #[test]
     fn inverse_example() {
         Dicetest::once().run(|mut fate| {
-            let var = fate.roll_var_2("i64", ["x", "y"], dice::i64(-1000..=1000));
+            let var = fate.roll_var("i64", ["x", "y"], dice::i64(-1000..=1000));
             let op = infix_fun_2("+", |x, y| x + y);
             let invop = infix_fun_2("-", |x, y| x - y);
             props::binop::inverse(var, op, invop);
@@ -491,7 +491,7 @@ mod tests {
     #[test]
     fn equal_example() {
         Dicetest::once().run(|mut fate| {
-            let var = fate.roll_var_2("i64", ["x", "y"], dice::i64(-1000..=1000));
+            let var = fate.roll_var("i64", ["x", "y"], dice::i64(-1000..=1000));
             let op_1 = fun_2("add", |x, y| x + y);
             let op_2 = fun_2("add_assign", |mut x, y| {
                 x += y;

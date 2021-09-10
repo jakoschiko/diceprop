@@ -5,7 +5,7 @@
 use dicetest::hint_section;
 use std::fmt::Debug;
 
-use crate::{ops, var_1, var_2, var_3, Fun2, Var1, Var2, Var3};
+use crate::{ops, Fun2, Var};
 
 /// Asserts that the binary relation `rel` is [reflexive].
 ///
@@ -13,14 +13,14 @@ use crate::{ops, var_1, var_2, var_3, Fun2, Var1, Var2, Var3};
 /// - `rel(a, a)`
 ///
 /// [reflexive]: https://en.wikipedia.org/wiki/Reflexive_relation
-pub fn reflexive<S, R>(var: Var1<S>, rel: Fun2<R>)
+pub fn reflexive<S, R>(var: Var<S, 1>, rel: Fun2<R>)
 where
     S: Debug + Clone,
     R: FnOnce(S, S) -> bool,
 {
     hint_section!("Is `{}` reflexive?", rel.name);
 
-    let a = var.eval();
+    let [a] = var.eval();
 
     ops::assert(rel.eval_once(a.clone(), a));
 }
@@ -31,7 +31,7 @@ where
 /// - `rel(a, b) --> rel(b, a)`
 ///
 /// [symmetric]: https://en.wikipedia.org/wiki/Symmetric_relation
-pub fn symmetric<S, R>(var: Var2<S>, rel: Fun2<R>)
+pub fn symmetric<S, R>(var: Var<S, 2>, rel: Fun2<R>)
 where
     S: Debug + Clone,
     R: Fn(S, S) -> bool,
@@ -49,7 +49,7 @@ where
 /// - `rel(a, b) --> !rel(b, a)`
 ///
 /// [asymmetric]: https://en.wikipedia.org/wiki/Asymmetric_relation
-pub fn asymmetric<S, R>(var: Var2<S>, rel: Fun2<R>)
+pub fn asymmetric<S, R>(var: Var<S, 2>, rel: Fun2<R>)
 where
     S: Debug + Clone,
     R: Fn(S, S) -> bool,
@@ -70,7 +70,7 @@ where
 /// - `a != b && rel(a, b) --> !rel(b, a)`
 ///
 /// [antisymmetric]: https://en.wikipedia.org/wiki/Antisymmetric_relation
-pub fn antisymmetric<S, R>(var: Var2<S>, rel: Fun2<R>)
+pub fn antisymmetric<S, R>(var: Var<S, 2>, rel: Fun2<R>)
 where
     S: Debug + Clone + PartialEq,
     R: Fn(S, S) -> bool,
@@ -94,7 +94,7 @@ where
 /// - `rel(a, b) || rel(b, a)`
 ///
 /// [connex]: https://en.wikipedia.org/wiki/Connex_relation
-pub fn connex<S, R>(var: Var2<S>, rel: Fun2<R>)
+pub fn connex<S, R>(var: Var<S, 2>, rel: Fun2<R>)
 where
     S: Debug + Clone,
     R: Fn(S, S) -> bool,
@@ -112,7 +112,7 @@ where
 /// - `rel(a, b) && rel(b, c) --> rel(a, c)`
 ///
 /// [transitive]: https://en.wikipedia.org/wiki/Transitive_relation
-pub fn transitive<S, R>(var: Var3<S>, rel: Fun2<R>)
+pub fn transitive<S, R>(var: Var<S, 3>, rel: Fun2<R>)
 where
     S: Debug + Clone,
     R: Fn(S, S) -> bool,
@@ -137,7 +137,7 @@ where
 /// - `rel` is transitive ([`transitive`])
 ///
 /// [partial equivalence relation]: https://en.wikipedia.org/wiki/Partial_equivalence_relation
-pub fn partial_equivalence<S, R>(var: Var3<S>, rel: Fun2<R>)
+pub fn partial_equivalence<S, R>(var: Var<S, 3>, rel: Fun2<R>)
 where
     S: Debug + Clone,
     R: Fn(S, S) -> bool,
@@ -145,8 +145,8 @@ where
     hint_section!("Is `{}` a partial equality relation?", rel.name);
 
     let [a, b, c] = var.elems;
-    let var_2 = var_2(var.set, [a.clone(), b.clone()]);
-    let var_3 = var_3(var.set, [a, b, c]);
+    let var_2 = Var::new(var.set, [a.clone(), b.clone()]);
+    let var_3 = Var::new(var.set, [a, b, c]);
 
     symmetric(var_2, rel.as_ref());
     transitive(var_3, rel);
@@ -160,7 +160,7 @@ where
 /// - `rel` is transitive ([`transitive`])
 ///
 /// [equivalence relation]: https://en.wikipedia.org/wiki/Equivalence_relation
-pub fn equivalence<S, R>(var: Var3<S>, rel: Fun2<R>)
+pub fn equivalence<S, R>(var: Var<S, 3>, rel: Fun2<R>)
 where
     S: Debug + Clone,
     R: Fn(S, S) -> bool,
@@ -168,9 +168,9 @@ where
     hint_section!("Is `{}` an equality relation?", rel.name);
 
     let [a, b, c] = var.elems;
-    let var_1 = var_1(var.set, a.clone());
-    let var_2 = var_2(var.set, [a.clone(), b.clone()]);
-    let var_3 = var_3(var.set, [a, b, c]);
+    let var_1 = Var::new(var.set, [a.clone()]);
+    let var_2 = Var::new(var.set, [a.clone(), b.clone()]);
+    let var_3 = Var::new(var.set, [a, b, c]);
 
     reflexive(var_1, rel.as_ref());
     symmetric(var_2, rel.as_ref());
@@ -185,7 +185,7 @@ where
 /// - `rel` is transitive ([`transitive`])
 ///
 /// [partial order]: https://en.wikipedia.org/wiki/Partially_ordered_set
-pub fn partial_order<S, R>(var: Var3<S>, rel: Fun2<R>)
+pub fn partial_order<S, R>(var: Var<S, 3>, rel: Fun2<R>)
 where
     S: Debug + Clone + PartialEq,
     R: Fn(S, S) -> bool,
@@ -193,9 +193,9 @@ where
     hint_section!("Is `{}` a partial order?", rel.name);
 
     let [a, b, c] = var.elems;
-    let var_1 = var_1(var.set, a.clone());
-    let var_2 = var_2(var.set, [a.clone(), b.clone()]);
-    let var_3 = var_3(var.set, [a, b, c]);
+    let var_1 = Var::new(var.set, [a.clone()]);
+    let var_2 = Var::new(var.set, [a.clone(), b.clone()]);
+    let var_3 = Var::new(var.set, [a, b, c]);
 
     reflexive(var_1, rel.as_ref());
     antisymmetric(var_2, rel.as_ref());
@@ -210,7 +210,7 @@ where
 /// - `rel` is transitive ([`transitive`])
 ///
 /// [total order]: https://en.wikipedia.org/wiki/Total_order
-pub fn total_order<S, R>(var: Var3<S>, rel: Fun2<R>)
+pub fn total_order<S, R>(var: Var<S, 3>, rel: Fun2<R>)
 where
     S: Debug + Clone + PartialEq,
     R: Fn(S, S) -> bool,
@@ -218,8 +218,8 @@ where
     hint_section!("Is `{}` a total order?", rel.name);
 
     let [a, b, c] = var.elems;
-    let var_2 = var_2(var.set, [a.clone(), b.clone()]);
-    let var_3 = var_3(var.set, [a, b, c]);
+    let var_2 = Var::new(var.set, [a.clone(), b.clone()]);
+    let var_3 = Var::new(var.set, [a, b, c]);
 
     connex(var_2.clone(), rel.as_ref());
     antisymmetric(var_2, rel.as_ref());
@@ -235,7 +235,7 @@ mod tests {
     #[test]
     fn reflexive_example() {
         Dicetest::once().run(|mut fate| {
-            let var = fate.roll_var_1("u8", "x", dice::u8(..));
+            let var = fate.roll_single_var("u8", "x", dice::u8(..));
             let rel = infix_fun_2("==", |x, y| x == y);
             props::binrel::reflexive(var, rel);
         })
@@ -244,7 +244,7 @@ mod tests {
     #[test]
     fn symmetric_example() {
         Dicetest::once().run(|mut fate| {
-            let var = fate.roll_var_2("f32", ["x", "y"], dice::any_f32());
+            let var = fate.roll_var("f32", ["x", "y"], dice::any_f32());
             let rel = infix_fun_2("!=", |x, y| x != y);
             props::binrel::symmetric(var, rel);
         })
@@ -253,7 +253,7 @@ mod tests {
     #[test]
     fn asymmetric_example() {
         Dicetest::once().run(|mut fate| {
-            let var = fate.roll_var_2("f32", ["x", "y"], dice::any_f32());
+            let var = fate.roll_var("f32", ["x", "y"], dice::any_f32());
             let rel = infix_fun_2("<", |x, y| x < y);
             props::binrel::asymmetric(var, rel);
         })
@@ -262,7 +262,7 @@ mod tests {
     #[test]
     fn antisymmetric_example() {
         Dicetest::once().run(|mut fate| {
-            let var = fate.roll_var_2("u8", ["x", "y"], dice::u8(..));
+            let var = fate.roll_var("u8", ["x", "y"], dice::u8(..));
             let rel = infix_fun_2("<", |x, y| x < y);
             props::binrel::antisymmetric(var, rel);
         })
@@ -271,7 +271,7 @@ mod tests {
     #[test]
     fn connex_example() {
         Dicetest::once().run(|mut fate| {
-            let var = fate.roll_var_2("u8", ["x", "y"], dice::u8(..));
+            let var = fate.roll_var("u8", ["x", "y"], dice::u8(..));
             let rel = infix_fun_2("<=", |x, y| x <= y);
             props::binrel::connex(var, rel);
         })
@@ -280,7 +280,7 @@ mod tests {
     #[test]
     fn transitive_example() {
         Dicetest::once().run(|mut fate| {
-            let var = fate.roll_var_3("char", ["x", "y", "z"], dice::char());
+            let var = fate.roll_var("char", ["x", "y", "z"], dice::char());
             let rel = infix_fun_2("<", |x, y| x < y);
             props::binrel::transitive(var, rel);
         })
@@ -289,7 +289,7 @@ mod tests {
     #[test]
     fn partial_equivalence_example() {
         Dicetest::once().run(|mut fate| {
-            let var = fate.roll_var_3("f32", ["x", "y", "z"], dice::any_f32());
+            let var = fate.roll_var("f32", ["x", "y", "z"], dice::any_f32());
             let rel = infix_fun_2("==", |x, y| x == y);
             props::binrel::partial_equivalence(var, rel);
         })
@@ -298,7 +298,7 @@ mod tests {
     #[test]
     fn equivalence_example() {
         Dicetest::once().run(|mut fate| {
-            let var = fate.roll_var_3("String", ["x", "y", "z"], dice::string(dice::char(), ..));
+            let var = fate.roll_var("String", ["x", "y", "z"], dice::string(dice::char(), ..));
             let rel = infix_fun_2("==", |x, y| x == y);
             props::binrel::equivalence(var, rel);
         })
@@ -307,7 +307,7 @@ mod tests {
     #[test]
     fn partial_order_example() {
         Dicetest::once().run(|mut fate| {
-            let var = fate.roll_var_3(
+            let var = fate.roll_var(
                 "u8²",
                 ["x", "y", "z"],
                 dice::zip().two(dice::u8(..), dice::u8(..)),
@@ -322,7 +322,7 @@ mod tests {
     #[test]
     fn total_order_example() {
         Dicetest::once().run(|mut fate| {
-            let var = fate.roll_var_3("u8", ["x", "y", "z"], dice::u8(..));
+            let var = fate.roll_var("u8", ["x", "y", "z"], dice::u8(..));
             let rel = infix_fun_2("<=", |x, y| x <= y);
             props::binrel::total_order(var, rel);
         })

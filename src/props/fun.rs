@@ -5,7 +5,7 @@
 use dicetest::hint_section;
 use std::fmt::Debug;
 
-use crate::{ops, Fun1, Fun2, Var1, Var2};
+use crate::{ops, Fun1, Fun2, Var};
 
 /// Asserts that the function `f` is [idempotent].
 ///
@@ -13,14 +13,14 @@ use crate::{ops, Fun1, Fun2, Var1, Var2};
 /// - `f(a) == f(f(a))`
 ///
 /// [idempotent]: https://en.wikipedia.org/wiki/Idempotence
-pub fn idempotent<S, F>(var: Var1<S>, f: Fun1<F>)
+pub fn idempotent<S, F>(var: Var<S, 1>, f: Fun1<F>)
 where
     S: Debug + Clone + PartialEq,
     F: Fn(S) -> S,
 {
     hint_section!("Is `{}` idempotent?", f.name);
 
-    let a = var.eval();
+    let [a] = var.eval();
     let fa = f.eval(a);
 
     ops::assert(ops::eq(fa.as_ref(), f.eval(fa.clone()).as_ref()));
@@ -32,7 +32,7 @@ where
 /// - `g(f(a)) == a`
 ///
 /// [left inverse]: https://en.wikipedia.org/wiki/Inverse_function#Left_and_right_inverses
-pub fn left_inverse<S, T, F, G>(var: Var1<S>, f: Fun1<F>, g: Fun1<G>)
+pub fn left_inverse<S, T, F, G>(var: Var<S, 1>, f: Fun1<F>, g: Fun1<G>)
 where
     S: Debug + Clone + PartialEq,
     T: Debug,
@@ -41,7 +41,7 @@ where
 {
     hint_section!("Is `{}` left inverse of `{}`?", g.name, f.name);
 
-    let a = var.eval();
+    let [a] = var.eval();
 
     ops::assert(ops::eq(
         g.eval_once(f.eval_once(a.clone())).as_ref(),
@@ -55,7 +55,7 @@ where
 /// - `f(g(a)) == a`
 ///
 /// [right inverse]: https://en.wikipedia.org/wiki/Inverse_function#Left_and_right_inverses
-pub fn right_inverse<S, T, F, G>(var: Var1<T>, f: Fun1<F>, g: Fun1<G>)
+pub fn right_inverse<S, T, F, G>(var: Var<T, 1>, f: Fun1<F>, g: Fun1<G>)
 where
     S: Debug,
     T: Debug + Clone + PartialEq,
@@ -64,7 +64,7 @@ where
 {
     hint_section!("Is `{}` right inverse of `{}`?", g.name, f.name);
 
-    let a = var.eval();
+    let [a] = var.eval();
 
     ops::assert(ops::eq(
         f.eval_once(g.eval_once(a.clone())).as_ref(),
@@ -79,7 +79,7 @@ where
 /// - `g` is the right inverse of `f` ([`right_inverse`])
 ///
 /// [inverse]: https://en.wikipedia.org/wiki/Inverse_function
-pub fn inverse<S, T, F, G>(var_s: Var1<S>, var_t: Var1<T>, f: Fun1<F>, g: Fun1<G>)
+pub fn inverse<S, T, F, G>(var_s: Var<S, 1>, var_t: Var<T, 1>, f: Fun1<F>, g: Fun1<G>)
 where
     S: Debug + Clone + PartialEq,
     T: Debug + Clone + PartialEq,
@@ -96,7 +96,7 @@ where
 ///
 /// For all `a` of `var.set` it must hold:
 /// - `f(a) == g(a)`
-pub fn equal_1<S, R, F, G>(var: Var1<S>, f: Fun1<F>, g: Fun1<G>)
+pub fn equal_1<S, R, F, G>(var: Var<S, 1>, f: Fun1<F>, g: Fun1<G>)
 where
     S: Debug + Clone,
     R: Debug + PartialEq,
@@ -105,7 +105,7 @@ where
 {
     hint_section!("Is `{}` equal to `{}`?", g.name, f.name);
 
-    let a = var.eval();
+    let [a] = var.eval();
 
     ops::assert(ops::eq(
         f.eval_once(a.clone()).as_ref(),
@@ -117,7 +117,7 @@ where
 ///
 /// For all `a` of `var_s.set` and `b` of `var_t.set` it must hold:
 /// - `f(a, b) == g(a, b)`
-pub fn equal_2<S, T, R, F, G>(var_s: Var1<S>, var_t: Var1<T>, f: Fun2<F>, g: Fun2<G>)
+pub fn equal_2<S, T, R, F, G>(var_s: Var<S, 1>, var_t: Var<T, 1>, f: Fun2<F>, g: Fun2<G>)
 where
     S: Debug + Clone,
     T: Debug + Clone,
@@ -127,8 +127,8 @@ where
 {
     hint_section!("Is `{}` equal to `{}`?", g.name, f.name);
 
-    let a = var_s.eval();
-    let b = var_t.eval();
+    let [a] = var_s.eval();
+    let [b] = var_t.eval();
 
     ops::assert(ops::eq(
         f.eval_once(a.clone(), b.clone()).as_ref(),
@@ -142,7 +142,7 @@ where
 /// - `f(a, b) == f(b, a)`
 ///
 /// [commutative]: https://en.wikipedia.org/wiki/Commutative_property#Mathematical_definitions
-pub fn commutative<S, R, O>(var: Var2<S>, f: Fun2<O>)
+pub fn commutative<S, R, O>(var: Var<S, 2>, f: Fun2<O>)
 where
     S: Debug + Clone,
     R: Debug + PartialEq,
@@ -169,7 +169,7 @@ mod tests {
     #[test]
     fn idempotent_example() {
         Dicetest::once().run(|mut fate| {
-            let var = fate.roll_var_1(
+            let var = fate.roll_single_var(
                 "String",
                 "x",
                 dice::string(
@@ -185,7 +185,7 @@ mod tests {
     #[test]
     fn left_inverse_example() {
         Dicetest::once().run(|mut fate| {
-            let var = fate.roll_var_1("f32", "x", dice::f32(..));
+            let var = fate.roll_single_var("f32", "x", dice::f32(..));
             let f = fun_1("to_string", |x: f32| x.to_string());
             let g = fun_1("from_string", |y: String| f32::from_str(&y).unwrap());
             props::fun::left_inverse(var, f, g);
@@ -195,7 +195,7 @@ mod tests {
     #[test]
     fn right_inverse_example() {
         Dicetest::once().run(|mut fate| {
-            let var = fate.roll_var_1("i8", "x", dice::i8(..));
+            let var = fate.roll_single_var("i8", "x", dice::i8(..));
             let f = fun_1("from_string", |x: String| i8::from_str(&x).unwrap());
             let g = fun_1("to_string", |y: i8| y.to_string());
             props::fun::right_inverse(var, f, g);
@@ -205,8 +205,8 @@ mod tests {
     #[test]
     fn inverse_example() {
         Dicetest::once().run(|mut fate| {
-            let var_s = fate.roll_var_1("i8", "x", dice::i8(..));
-            let var_t = fate.roll_var_1("u8", "y", dice::u8(..));
+            let var_s = fate.roll_single_var("i8", "x", dice::i8(..));
+            let var_t = fate.roll_single_var("u8", "y", dice::u8(..));
             let f = fun_1("from_string", |x: i8| x as u8);
             let g = fun_1("to_string", |y: u8| y as i8);
             props::fun::inverse(var_s, var_t, f, g);
@@ -216,7 +216,7 @@ mod tests {
     #[test]
     fn equal_1_example() {
         Dicetest::once().run(|mut fate| {
-            let var = fate.roll_var_1("u64", "x", dice::u64(..1000));
+            let var = fate.roll_single_var("u64", "x", dice::u64(..1000));
             let f = postfix_fun_1("+2", |x: u64| x + 2);
             let g = postfix_fun_1("+1+1", |x: u64| x + 1 + 1);
             props::fun::equal_1(var, f, g);
@@ -226,8 +226,9 @@ mod tests {
     #[test]
     fn equal_2_example() {
         Dicetest::once().run(|mut fate| {
-            let var_s = fate.roll_var_1("BTreeSet<u8>", "xs", dice::b_tree_set(dice::u8(..), ..));
-            let var_t = fate.roll_var_1("u8", "x", dice::u8(..));
+            let var_s =
+                fate.roll_single_var("BTreeSet<u8>", "xs", dice::b_tree_set(dice::u8(..), ..));
+            let var_t = fate.roll_single_var("u8", "x", dice::u8(..));
             let f = fun_2("insert", |mut xs: BTreeSet<u8>, x| {
                 xs.insert(x);
                 xs
@@ -244,7 +245,7 @@ mod tests {
     #[test]
     fn commutative_example() {
         Dicetest::once().run(|mut fate| {
-            let var = fate.roll_var_2(
+            let var = fate.roll_var(
                 "BTreeSet<u8>",
                 ["x", "y"],
                 dice::b_tree_set(dice::u8(..), ..),

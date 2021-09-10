@@ -12,6 +12,7 @@ edition = "2018"
 
 [dependencies]
 dicetest = "0.3"
+array-init = "2.0"
 
 [workspace]
 members = [
