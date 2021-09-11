@@ -14,6 +14,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Remove `diceprop::FateVarExt`. Use the generators `diceprop::Set::{single_var, var}` instead.
 
 ### Added
-- Add function `diceprop::props::binop::equal`
+- Add function `diceprop::props::binop::equal`.
+- Add struct `diceprop::Fun3`.
 
 [Unreleased]: https://github.com/jakoschiko/diceprop/compare/v0.1.0...HEAD

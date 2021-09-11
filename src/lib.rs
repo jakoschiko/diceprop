@@ -150,7 +150,7 @@ mod set;
 pub use set::Set;
 
 mod fun;
-pub use fun::{Fun1, Fun1Label, Fun2, Fun2Label};
+pub use fun::{Fun1, Fun1Label, Fun2, Fun2Label, Fun3, Fun3Label};
 
 pub mod ops;
 
