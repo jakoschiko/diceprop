@@ -222,13 +222,13 @@ pub fn field<S, A, M, N, I>(
 mod tests {
     use dicetest::prelude::*;
 
-    use crate::{elem, props, FateVarExt, Fun1, Fun2, Set};
+    use crate::{elem, props, Fun1, Fun2, Set};
 
     #[test]
     fn semigroup_example() {
         Dicetest::once().run(|mut fate| {
             let set = Set::new("u64", dice::u64(..=1000));
-            let var = fate.roll_var(["x", "y", "z"], set);
+            let var = fate.roll(set.var(["x", "y", "z"]));
             let op = Fun2::infix("+", |x, y| x + y);
             props::algebra::semigroup(var, op);
         })
@@ -238,7 +238,7 @@ mod tests {
     fn monoid_example() {
         Dicetest::once().run(|mut fate| {
             let set = Set::new("u64", dice::u64(..=1000));
-            let var = fate.roll_var(["x", "y", "z"], set);
+            let var = fate.roll(set.var(["x", "y", "z"]));
             let op = Fun2::infix("+", |x, y| x + y);
             let e = elem("zero", 0);
             props::algebra::monoid(var, op, e);
@@ -249,7 +249,7 @@ mod tests {
     fn group_example() {
         Dicetest::once().run(|mut fate| {
             let set = Set::new("i64", dice::i64(-1000..=1000));
-            let var = fate.roll_var(["x", "y", "z"], set);
+            let var = fate.roll(set.var(["x", "y", "z"]));
             let op = Fun2::infix("+", |x, y| x + y);
             let inv = Fun1::new("-", |x: i64| -x);
             let e = elem("zero", 0);
@@ -261,7 +261,7 @@ mod tests {
     fn abelian_group_example() {
         Dicetest::once().run(|mut fate| {
             let set = Set::new("i64", dice::i64(-1000..=1000));
-            let var = fate.roll_var(["x", "y", "z"], set);
+            let var = fate.roll(set.var(["x", "y", "z"]));
             let op = Fun2::infix("+", |x, y| x + y);
             let inv = Fun1::new("-", |x: i64| -x);
             let e = elem("zero", 0);
@@ -273,7 +273,7 @@ mod tests {
     fn ring_example() {
         Dicetest::once().run(|mut fate| {
             let set = Set::new("i64", dice::i64(-1000..=1000));
-            let var = fate.roll_var(["x", "y", "z"], set);
+            let var = fate.roll(set.var(["x", "y", "z"]));
             let add = Fun2::infix("+", |x, y| x + y);
             let mul = Fun2::infix("*", |x, y| x * y);
             let neg = Fun1::new("-", |x: i64| -x);
@@ -287,7 +287,7 @@ mod tests {
     fn commutative_ring_example() {
         Dicetest::once().run(|mut fate| {
             let set = Set::new("i64", dice::i64(-1000..=1000));
-            let var = fate.roll_var(["x", "y", "z"], set);
+            let var = fate.roll(set.var(["x", "y", "z"]));
             let add = Fun2::infix("+", |x, y| x + y);
             let mul = Fun2::infix("*", |x, y| x * y);
             let neg = Fun1::new("-", |x: i64| -x);

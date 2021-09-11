@@ -12,14 +12,14 @@
 //! ## Associative binary operation
 //!
 //! ```
-//! use diceprop::{props, FateVarExt, Fun2, Set};
+//! use diceprop::{props, Fun2, Set};
 //! use dicetest::prelude::*;
 //!
 //! #[test]
 //! fn add_is_associative_for_small_f32() {
 //!     Dicetest::repeatedly().run(|mut fate| {
 //!         let set = Set::new("f32 ∩ [-100,100]", dice::f32(-100.0..=100.0));
-//!         let var = fate.roll_var(["x", "y", "z"], set);
+//!         let var = fate.roll(set.var(["x", "y", "z"]));
 //!         let add = Fun2::infix("+", |x, y| x + y);
 //!         props::binop::associative(var, add);
 //!     })
@@ -57,14 +57,14 @@
 //! ## Left inverse function
 //!
 //! ```
-//! use diceprop::{props, FateVarExt, Fun1, Set};
+//! use diceprop::{props, Fun1, Set};
 //! use dicetest::prelude::*;
 //!
 //! #[test]
 //! fn sqrt_is_left_inverse_of_sq_for_non_negative_f32() {
 //!     Dicetest::repeatedly().run(|mut fate| {
 //!         let set = Set::new("f32 ∩ [0,+∞]", dice::f32(0.0..));
-//!         let var = fate.roll_var(["x"], set);
+//!         let var = fate.roll(set.var(["x"]));
 //!         let sq = Fun1::postfix("²", |x| x * x);
 //!         let sqrt = Fun1::new("√", |x: f32| x.sqrt());
 //!         props::fun::left_inverse(var, sq, sqrt);
@@ -99,14 +99,14 @@
 //! ## Partial order
 //!
 //! ```
-//! use diceprop::{props, FateVarExt, Fun2, Set};
+//! use diceprop::{props, Fun2, Set};
 //! use dicetest::prelude::*;
 //!
 //! #[test]
 //! fn gt_is_partial_order_for_any_f32() {
 //!     Dicetest::repeatedly().run(|mut fate| {
 //!         let set = Set::new("f32", dice::any_f32());
-//!         let var = fate.roll_var(["x", "y", "z"], set);
+//!         let var = fate.roll(set.var(["x", "y", "z"]));
 //!         let gt = Fun2::infix("≤", |x, y| x <= y);
 //!         props::binrel::partial_order(var, gt);
 //!     })
@@ -143,11 +143,11 @@ pub use eval::Eval;
 mod elem;
 pub use elem::{elem, Elem};
 
+mod var;
+pub use var::Var;
+
 mod set;
 pub use set::Set;
-
-mod var;
-pub use var::{FateVarExt, Var};
 
 mod fun;
 pub use fun::{Fun1, Fun1Label, Fun2, Fun2Label};
