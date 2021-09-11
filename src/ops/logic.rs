@@ -1,4 +1,4 @@
-use crate::{fun_1, infix_fun_2, Eval, Fun1Label, Fun2Label};
+use crate::{Eval, Fun1, Fun1Label, Fun2, Fun2Label};
 use std::fmt::Display;
 use std::ops::Not;
 
@@ -7,7 +7,7 @@ pub fn not<L>(b: Eval<L, bool>) -> Eval<Fun1Label<'static, L>, bool>
 where
     L: Display + Copy,
 {
-    fun_1("!", bool::not).eval_once(b)
+    Fun1::new("!", bool::not).eval_once(b)
 }
 
 /// Logical conjunction.
@@ -19,7 +19,7 @@ where
     L1: Display + Copy,
     L2: Display + Copy,
 {
-    infix_fun_2("&&", |l, r| l && r).eval_once(lhs, rhs)
+    Fun2::infix("&&", |l, r| l && r).eval_once(lhs, rhs)
 }
 
 /// Logical disjunction.
@@ -31,7 +31,7 @@ where
     L1: Display + Copy,
     L2: Display + Copy,
 {
-    infix_fun_2("||", |l, r| l || r).eval_once(lhs, rhs)
+    Fun2::infix("||", |l, r| l || r).eval_once(lhs, rhs)
 }
 
 /// Logical implication.
@@ -43,7 +43,7 @@ where
     L1: Display + Copy,
     L2: Display + Copy,
 {
-    infix_fun_2("-->", |a: bool, c| !a || c).eval_once(antecedent, consequent)
+    Fun2::infix("-->", |a: bool, c| !a || c).eval_once(antecedent, consequent)
 }
 
 /// Logical equivalence.
@@ -55,5 +55,5 @@ where
     L1: Display + Copy,
     L2: Display + Copy,
 {
-    infix_fun_2("<->", |l, r| l == r).eval_once(lhs, rhs)
+    Fun2::infix("<->", |l, r| l == r).eval_once(lhs, rhs)
 }

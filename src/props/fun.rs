@@ -160,7 +160,7 @@ where
 
 #[cfg(test)]
 mod tests {
-    use crate::{fun_1, fun_2, postfix_fun_1, props, FateVarExt, Set};
+    use crate::{props, FateVarExt, Fun1, Fun2, Set};
 
     use dicetest::prelude::*;
     use std::collections::BTreeSet;
@@ -177,7 +177,7 @@ mod tests {
                 ),
             );
             let var = fate.roll_var(["x"], set);
-            let f = fun_1("trim", |x: String| x.trim().to_owned());
+            let f = Fun1::new("trim", |x: String| x.trim().to_owned());
             props::fun::idempotent(var, f);
         })
     }
@@ -187,8 +187,8 @@ mod tests {
         Dicetest::once().run(|mut fate| {
             let set = Set::new("f32", dice::f32(..));
             let var = fate.roll_var(["x"], set);
-            let f = fun_1("to_string", |x: f32| x.to_string());
-            let g = fun_1("from_string", |y: String| f32::from_str(&y).unwrap());
+            let f = Fun1::new("to_string", |x: f32| x.to_string());
+            let g = Fun1::new("from_string", |y: String| f32::from_str(&y).unwrap());
             props::fun::left_inverse(var, f, g);
         })
     }
@@ -198,8 +198,8 @@ mod tests {
         Dicetest::once().run(|mut fate| {
             let set = Set::new("i8", dice::i8(..));
             let var = fate.roll_var(["x"], set);
-            let f = fun_1("from_string", |x: String| i8::from_str(&x).unwrap());
-            let g = fun_1("to_string", |y: i8| y.to_string());
+            let f = Fun1::new("from_string", |x: String| i8::from_str(&x).unwrap());
+            let g = Fun1::new("to_string", |y: i8| y.to_string());
             props::fun::right_inverse(var, f, g);
         })
     }
@@ -211,8 +211,8 @@ mod tests {
             let set_t = Set::new("u8", dice::u8(..));
             let var_s = fate.roll_var(["x"], set_s);
             let var_t = fate.roll_var(["y"], set_t);
-            let f = fun_1("from_string", |x: i8| x as u8);
-            let g = fun_1("to_string", |y: u8| y as i8);
+            let f = Fun1::new("from_string", |x: i8| x as u8);
+            let g = Fun1::new("to_string", |y: u8| y as i8);
             props::fun::inverse(var_s, var_t, f, g);
         })
     }
@@ -222,8 +222,8 @@ mod tests {
         Dicetest::once().run(|mut fate| {
             let set = Set::new("u64", dice::u64(..1000));
             let var = fate.roll_var(["x"], set);
-            let f = postfix_fun_1("+2", |x: u64| x + 2);
-            let g = postfix_fun_1("+1+1", |x: u64| x + 1 + 1);
+            let f = Fun1::postfix("+2", |x: u64| x + 2);
+            let g = Fun1::postfix("+1+1", |x: u64| x + 1 + 1);
             props::fun::equal_1(var, f, g);
         })
     }
@@ -235,11 +235,11 @@ mod tests {
             let set_t = Set::new("u8", dice::u8(..));
             let var_s = fate.roll_var(["xs"], set_s);
             let var_t = fate.roll_var(["x"], set_t);
-            let f = fun_2("insert", |mut xs: BTreeSet<u8>, x| {
+            let f = Fun2::new("insert", |mut xs: BTreeSet<u8>, x| {
                 xs.insert(x);
                 xs
             });
-            let g = fun_2("remove_and_insert", |mut xs: BTreeSet<u8>, x| {
+            let g = Fun2::new("remove_and_insert", |mut xs: BTreeSet<u8>, x| {
                 xs.remove(&x);
                 xs.insert(x);
                 xs
@@ -253,7 +253,7 @@ mod tests {
         Dicetest::once().run(|mut fate| {
             let set = Set::new("BTreeSet<u8>", dice::b_tree_set(dice::u8(..), ..));
             let var = fate.roll_var(["x", "y"], set);
-            let f = fun_2("is_disjoin", |x, y| BTreeSet::<u8>::is_disjoint(&x, &y));
+            let f = Fun2::new("is_disjoin", |x, y| BTreeSet::<u8>::is_disjoint(&x, &y));
             props::fun::commutative(var, f);
         })
     }

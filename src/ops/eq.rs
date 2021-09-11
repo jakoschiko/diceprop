@@ -1,4 +1,4 @@
-use crate::{infix_fun_2, Eval, Fun2Label};
+use crate::{Eval, Fun2, Fun2Label};
 use std::fmt::{Debug, Display};
 
 /// The values are equal based on [`PartialEq`].
@@ -8,7 +8,7 @@ where
     L2: Display + Copy,
     V: Debug + PartialEq,
 {
-    infix_fun_2("==", |l, r| l == r).eval_once(lhs, rhs)
+    Fun2::infix("==", |l, r| l == r).eval_once(lhs, rhs)
 }
 
 /// The values are not equal based on [`PartialEq`].
@@ -18,5 +18,5 @@ where
     L2: Display + Copy,
     V: Debug + PartialEq,
 {
-    infix_fun_2("!=", |l, r| l != r).eval_once(lhs, rhs)
+    Fun2::infix("!=", |l, r| l != r).eval_once(lhs, rhs)
 }

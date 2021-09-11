@@ -35,6 +35,18 @@ pub struct Fun1<'a, F> {
 }
 
 impl<'a, F> Fun1<'a, F> {
+    /// Creates a [`Fun1`] with the given name and prefix syntax (e.g. `f(x)`).
+    pub fn new(name: &'a str, f: F) -> Self {
+        let syntax = Fun1Syntax::Prefix;
+        Self { name, syntax, f }
+    }
+
+    /// Creates a [`Fun1`] with the given name and postfix syntax (e.g. `(x)!`).
+    pub fn postfix(name: &'a str, f: F) -> Self {
+        let syntax = Fun1Syntax::Postfix;
+        Self { name, syntax, f }
+    }
+
     fn label<AL1>(&self, arg_1_label: AL1) -> Fun1Label<'a, AL1>
     where
         AL1: Display + Copy,
@@ -99,18 +111,6 @@ impl<'a, F> Fun1<'a, F> {
     }
 }
 
-/// Creates a [`Fun1`] with the given name and prefix syntax (e.g. `f(x)`).
-pub fn fun_1<F>(name: &str, f: F) -> Fun1<F> {
-    let syntax = Fun1Syntax::Prefix;
-    Fun1 { name, syntax, f }
-}
-
-/// Creates a [`Fun1`] with the given name and postfix syntax (e.g. `(x)!`).
-pub fn postfix_fun_1<F>(name: &str, f: F) -> Fun1<F> {
-    let syntax = Fun1Syntax::Postfix;
-    Fun1 { name, syntax, f }
-}
-
 #[derive(Clone, Copy)]
 pub enum Fun2Syntax {
     Prefix,
@@ -152,6 +152,18 @@ pub struct Fun2<'a, F> {
 }
 
 impl<'a, F> Fun2<'a, F> {
+    /// Creates a [`Fun2`] with the given name and prefix syntax (e.g. `f(x, y)`).
+    pub fn new(name: &'a str, f: F) -> Self {
+        let syntax = Fun2Syntax::Prefix;
+        Self { name, syntax, f }
+    }
+
+    /// Creates a [`Fun2`] with the given name and infix syntax (e.g. `(x + y)`).
+    pub fn infix(name: &'a str, f: F) -> Self {
+        let syntax = Fun2Syntax::Infix;
+        Self { name, syntax, f }
+    }
+
     fn label<AL1, AL2>(&self, arg_1_label: AL1, arg_2_label: AL2) -> Fun2Label<'a, AL1, AL2>
     where
         AL1: Display + Copy,
@@ -226,16 +238,4 @@ impl<'a, F> Fun2<'a, F> {
             f: &self.f,
         }
     }
-}
-
-/// Creates a [`Fun2`] with the given name and prefix syntax (e.g. `f(x, y)`).
-pub fn fun_2<F>(name: &str, f: F) -> Fun2<F> {
-    let syntax = Fun2Syntax::Prefix;
-    Fun2 { name, syntax, f }
-}
-
-/// Creates a [`Fun2`] with the given name and infix syntax (e.g. `(x + y)`).
-pub fn infix_fun_2<F>(name: &str, f: F) -> Fun2<F> {
-    let syntax = Fun2Syntax::Infix;
-    Fun2 { name, syntax, f }
 }

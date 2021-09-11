@@ -337,14 +337,14 @@ mod tests {
     use dicetest::prelude::*;
     use std::collections::BTreeSet;
 
-    use crate::{elem, fun_1, fun_2, infix_fun_2, props, FateVarExt, Set};
+    use crate::{elem, props, FateVarExt, Fun1, Fun2, Set};
 
     #[test]
     fn commutative_example() {
         Dicetest::once().run(|mut fate| {
             let set = Set::new("BTreeSet<u8>", dice::b_tree_set(dice::u8(..), ..));
             let var = fate.roll_var(["x", "y"], set);
-            let op = fun_2("intersection", |x, y| {
+            let op = Fun2::new("intersection", |x, y| {
                 BTreeSet::<u8>::intersection(&x, &y)
                     .cloned()
                     .collect::<BTreeSet<_>>()
@@ -358,7 +358,7 @@ mod tests {
         Dicetest::once().run(|mut fate| {
             let set = Set::new("Vec<u8>", dice::vec(dice::u8(..), ..));
             let var = fate.roll_var(["x", "y", "z"], set);
-            let op = fun_2("append", |mut x, mut y| {
+            let op = Fun2::new("append", |mut x, mut y| {
                 Vec::<u8>::append(&mut x, &mut y);
                 x
             });
@@ -371,8 +371,8 @@ mod tests {
         Dicetest::once().run(|mut fate| {
             let set = Set::new("i64", dice::i64(-1000..=1000));
             let var = fate.roll_var(["x", "y", "z"], set);
-            let add = infix_fun_2("+", |x, y| x + y);
-            let mul = infix_fun_2("*", |x, y| x * y);
+            let add = Fun2::infix("+", |x, y| x + y);
+            let mul = Fun2::infix("*", |x, y| x * y);
             props::binop::left_distributive(var, add, mul);
         })
     }
@@ -382,8 +382,8 @@ mod tests {
         Dicetest::once().run(|mut fate| {
             let set = Set::new("i64", dice::i64(-1000..=1000));
             let var = fate.roll_var(["x", "y", "z"], set);
-            let add = infix_fun_2("+", |x, y| x + y);
-            let mul = infix_fun_2("*", |x, y| x * y);
+            let add = Fun2::infix("+", |x, y| x + y);
+            let mul = Fun2::infix("*", |x, y| x * y);
             props::binop::right_distributive(var, add, mul);
         })
     }
@@ -393,8 +393,8 @@ mod tests {
         Dicetest::once().run(|mut fate| {
             let set = Set::new("i64", dice::i64(-1000..=1000));
             let var = fate.roll_var(["x", "y", "z"], set);
-            let add = infix_fun_2("+", |x, y| x + y);
-            let mul = infix_fun_2("*", |x, y| x * y);
+            let add = Fun2::infix("+", |x, y| x + y);
+            let mul = Fun2::infix("*", |x, y| x * y);
             props::binop::distributive(var, add, mul);
         })
     }
@@ -404,7 +404,7 @@ mod tests {
         Dicetest::once().run(|mut fate| {
             let set = Set::new("i8", dice::i8(..));
             let var = fate.roll_var(["x"], set);
-            let op = infix_fun_2("+", |x, y| x + y);
+            let op = Fun2::infix("+", |x, y| x + y);
             let e = elem("zero", 0);
             props::binop::left_identity_elem(var, op, e);
         })
@@ -415,7 +415,7 @@ mod tests {
         Dicetest::once().run(|mut fate| {
             let set = Set::new("i8", dice::i8(..));
             let var = fate.roll_var(["x"], set);
-            let op = infix_fun_2("*", |x, y| x * y);
+            let op = Fun2::infix("*", |x, y| x * y);
             let e = elem("one", 1);
             props::binop::right_identity_elem(var, op, e);
         })
@@ -426,7 +426,7 @@ mod tests {
         Dicetest::once().run(|mut fate| {
             let set = Set::new("f32", dice::f32(..));
             let var = fate.roll_var(["x"], set);
-            let op = infix_fun_2("+", |x, y| x + y);
+            let op = Fun2::infix("+", |x, y| x + y);
             let e = elem("zero", 0.0);
             props::binop::identity_elem(var, op, e);
         })
@@ -437,8 +437,8 @@ mod tests {
         Dicetest::once().run(|mut fate| {
             let set = Set::new("i64", dice::i64(-1000..=1000));
             let var = fate.roll_var(["x", "y"], set);
-            let op = infix_fun_2("+", |x, y| x + y);
-            let inv = fun_1("-", |x: i64| -x);
+            let op = Fun2::infix("+", |x, y| x + y);
+            let inv = Fun1::new("-", |x: i64| -x);
             props::binop::left_inverse_elem(var, op, inv);
         })
     }
@@ -448,8 +448,8 @@ mod tests {
         Dicetest::once().run(|mut fate| {
             let set = Set::new("i64", dice::i64(-1000..=1000));
             let var = fate.roll_var(["x", "y"], set);
-            let op = infix_fun_2("+", |x, y| x + y);
-            let inv = fun_1("-", |x: i64| -x);
+            let op = Fun2::infix("+", |x, y| x + y);
+            let inv = Fun1::new("-", |x: i64| -x);
             props::binop::right_inverse_elem(var, op, inv);
         })
     }
@@ -459,8 +459,8 @@ mod tests {
         Dicetest::once().run(|mut fate| {
             let set = Set::new("i64", dice::i64(-1000..=1000));
             let var = fate.roll_var(["x", "y"], set);
-            let op = infix_fun_2("+", |x, y| x + y);
-            let inv = fun_1("-", |x: i64| -x);
+            let op = Fun2::infix("+", |x, y| x + y);
+            let inv = Fun1::new("-", |x: i64| -x);
             props::binop::inverse_elem(var, op, inv);
         })
     }
@@ -470,8 +470,8 @@ mod tests {
         Dicetest::once().run(|mut fate| {
             let set = Set::new("i64", dice::i64(-1000..=1000));
             let var = fate.roll_var(["x", "y"], set);
-            let op = infix_fun_2("+", |x, y| x + y);
-            let invop = infix_fun_2("-", |x, y| x - y);
+            let op = Fun2::infix("+", |x, y| x + y);
+            let invop = Fun2::infix("-", |x, y| x - y);
             props::binop::left_inverse(var, op, invop);
         })
     }
@@ -481,8 +481,8 @@ mod tests {
         Dicetest::once().run(|mut fate| {
             let set = Set::new("i64", dice::i64(-1000..=1000));
             let var = fate.roll_var(["x", "y"], set);
-            let op = infix_fun_2("+", |x, y| x + y);
-            let invop = infix_fun_2("-", |x, y| x - y);
+            let op = Fun2::infix("+", |x, y| x + y);
+            let invop = Fun2::infix("-", |x, y| x - y);
             props::binop::right_inverse(var, op, invop);
         })
     }
@@ -492,8 +492,8 @@ mod tests {
         Dicetest::once().run(|mut fate| {
             let set = Set::new("i64", dice::i64(-1000..=1000));
             let var = fate.roll_var(["x", "y"], set);
-            let op = infix_fun_2("+", |x, y| x + y);
-            let invop = infix_fun_2("-", |x, y| x - y);
+            let op = Fun2::infix("+", |x, y| x + y);
+            let invop = Fun2::infix("-", |x, y| x - y);
             props::binop::inverse(var, op, invop);
         })
     }
@@ -503,8 +503,8 @@ mod tests {
         Dicetest::once().run(|mut fate| {
             let set = Set::new("i64", dice::i64(-1000..=1000));
             let var = fate.roll_var(["x", "y"], set);
-            let op_1 = fun_2("add", |x, y| x + y);
-            let op_2 = fun_2("add_assign", |mut x, y| {
+            let op_1 = Fun2::new("add", |x, y| x + y);
+            let op_2 = Fun2::new("add_assign", |mut x, y| {
                 x += y;
                 x
             });

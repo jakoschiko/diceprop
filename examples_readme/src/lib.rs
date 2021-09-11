@@ -3,7 +3,7 @@
 
 #[cfg(test)]
 mod associative_example {
-    use diceprop::{infix_fun_2, props, FateVarExt, Set};
+    use diceprop::{props, FateVarExt, Fun2, Set};
     use dicetest::prelude::*;
 
     #[test]
@@ -11,7 +11,7 @@ mod associative_example {
         Dicetest::repeatedly().run(|mut fate| {
             let set = Set::new("f32 ∩ [-100,100]", dice::f32(-100.0..=100.0));
             let var = fate.roll_var(["x", "y", "z"], set);
-            let add = infix_fun_2("+", |x, y| x + y);
+            let add = Fun2::infix("+", |x, y| x + y);
             props::binop::associative(var, add);
         })
     }
@@ -19,7 +19,7 @@ mod associative_example {
 
 #[cfg(test)]
 mod left_inverse_example {
-    use diceprop::{fun_1, postfix_fun_1, props, FateVarExt, Set};
+    use diceprop::{props, FateVarExt, Fun1, Set};
     use dicetest::prelude::*;
 
     #[test]
@@ -27,8 +27,8 @@ mod left_inverse_example {
         Dicetest::repeatedly().run(|mut fate| {
             let set = Set::new("f32 ∩ [0,+∞]", dice::f32(0.0..));
             let var = fate.roll_var(["x"], set);
-            let sq = postfix_fun_1("²", |x| x * x);
-            let sqrt = fun_1("√", |x: f32| x.sqrt());
+            let sq = Fun1::postfix("²", |x| x * x);
+            let sqrt = Fun1::new("√", |x: f32| x.sqrt());
             props::fun::left_inverse(var, sq, sqrt);
         })
     }
@@ -36,7 +36,7 @@ mod left_inverse_example {
 
 #[cfg(test)]
 mod partial_order_example {
-    use diceprop::{infix_fun_2, props, FateVarExt, Set};
+    use diceprop::{props, FateVarExt, Fun2, Set};
     use dicetest::prelude::*;
 
     #[test]
@@ -44,7 +44,7 @@ mod partial_order_example {
         Dicetest::repeatedly().run(|mut fate| {
             let set = Set::new("f32", dice::any_f32());
             let var = fate.roll_var(["x", "y", "z"], set);
-            let gt = infix_fun_2("≤", |x, y| x <= y);
+            let gt = Fun2::infix("≤", |x, y| x <= y);
             props::binrel::partial_order(var, gt);
         })
     }

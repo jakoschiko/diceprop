@@ -12,7 +12,7 @@
 //! ## Associative binary operation
 //!
 //! ```
-//! use diceprop::{infix_fun_2, props, FateVarExt, Set};
+//! use diceprop::{props, FateVarExt, Fun2, Set};
 //! use dicetest::prelude::*;
 //!
 //! #[test]
@@ -20,7 +20,7 @@
 //!     Dicetest::repeatedly().run(|mut fate| {
 //!         let set = Set::new("f32 ∩ [-100,100]", dice::f32(-100.0..=100.0));
 //!         let var = fate.roll_var(["x", "y", "z"], set);
-//!         let add = infix_fun_2("+", |x, y| x + y);
+//!         let add = Fun2::infix("+", |x, y| x + y);
 //!         props::binop::associative(var, add);
 //!     })
 //! }
@@ -57,7 +57,7 @@
 //! ## Left inverse function
 //!
 //! ```
-//! use diceprop::{fun_1, postfix_fun_1, props, FateVarExt, Set};
+//! use diceprop::{props, FateVarExt, Fun1, Set};
 //! use dicetest::prelude::*;
 //!
 //! #[test]
@@ -65,8 +65,8 @@
 //!     Dicetest::repeatedly().run(|mut fate| {
 //!         let set = Set::new("f32 ∩ [0,+∞]", dice::f32(0.0..));
 //!         let var = fate.roll_var(["x"], set);
-//!         let sq = postfix_fun_1("²", |x| x * x);
-//!         let sqrt = fun_1("√", |x: f32| x.sqrt());
+//!         let sq = Fun1::postfix("²", |x| x * x);
+//!         let sqrt = Fun1::new("√", |x: f32| x.sqrt());
 //!         props::fun::left_inverse(var, sq, sqrt);
 //!     })
 //! }
@@ -99,7 +99,7 @@
 //! ## Partial order
 //!
 //! ```
-//! use diceprop::{infix_fun_2, props, FateVarExt, Set};
+//! use diceprop::{props, FateVarExt, Fun2, Set};
 //! use dicetest::prelude::*;
 //!
 //! #[test]
@@ -107,7 +107,7 @@
 //!     Dicetest::repeatedly().run(|mut fate| {
 //!         let set = Set::new("f32", dice::any_f32());
 //!         let var = fate.roll_var(["x", "y", "z"], set);
-//!         let gt = infix_fun_2("≤", |x, y| x <= y);
+//!         let gt = Fun2::infix("≤", |x, y| x <= y);
 //!         props::binrel::partial_order(var, gt);
 //!     })
 //! }
@@ -150,7 +150,7 @@ mod var;
 pub use var::{FateVarExt, Var};
 
 mod fun;
-pub use fun::{fun_1, fun_2, infix_fun_2, postfix_fun_1, Fun1, Fun1Label, Fun2, Fun2Label};
+pub use fun::{Fun1, Fun1Label, Fun2, Fun2Label};
 
 pub mod ops;
 

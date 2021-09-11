@@ -230,14 +230,14 @@ where
 mod tests {
     use dicetest::prelude::*;
 
-    use crate::{infix_fun_2, props, FateVarExt, Set};
+    use crate::{props, FateVarExt, Fun2, Set};
 
     #[test]
     fn reflexive_example() {
         Dicetest::once().run(|mut fate| {
             let set = Set::new("u8", dice::u8(..));
             let var = fate.roll_var(["x"], set);
-            let rel = infix_fun_2("==", |x, y| x == y);
+            let rel = Fun2::infix("==", |x, y| x == y);
             props::binrel::reflexive(var, rel);
         })
     }
@@ -247,7 +247,7 @@ mod tests {
         Dicetest::once().run(|mut fate| {
             let set = Set::new("f32", dice::any_f32());
             let var = fate.roll_var(["x", "y"], set);
-            let rel = infix_fun_2("!=", |x, y| x != y);
+            let rel = Fun2::infix("!=", |x, y| x != y);
             props::binrel::symmetric(var, rel);
         })
     }
@@ -257,7 +257,7 @@ mod tests {
         Dicetest::once().run(|mut fate| {
             let set = Set::new("f32", dice::any_f32());
             let var = fate.roll_var(["x", "y"], set);
-            let rel = infix_fun_2("<", |x, y| x < y);
+            let rel = Fun2::infix("<", |x, y| x < y);
             props::binrel::asymmetric(var, rel);
         })
     }
@@ -267,7 +267,7 @@ mod tests {
         Dicetest::once().run(|mut fate| {
             let set = Set::new("u8", dice::u8(..));
             let var = fate.roll_var(["x", "y"], set);
-            let rel = infix_fun_2("<", |x, y| x < y);
+            let rel = Fun2::infix("<", |x, y| x < y);
             props::binrel::antisymmetric(var, rel);
         })
     }
@@ -277,7 +277,7 @@ mod tests {
         Dicetest::once().run(|mut fate| {
             let set = Set::new("u8", dice::u8(..));
             let var = fate.roll_var(["x", "y"], set);
-            let rel = infix_fun_2("<=", |x, y| x <= y);
+            let rel = Fun2::infix("<=", |x, y| x <= y);
             props::binrel::connex(var, rel);
         })
     }
@@ -287,7 +287,7 @@ mod tests {
         Dicetest::once().run(|mut fate| {
             let set = Set::new("char", dice::char());
             let var = fate.roll_var(["x", "y", "z"], set);
-            let rel = infix_fun_2("<", |x, y| x < y);
+            let rel = Fun2::infix("<", |x, y| x < y);
             props::binrel::transitive(var, rel);
         })
     }
@@ -297,7 +297,7 @@ mod tests {
         Dicetest::once().run(|mut fate| {
             let set = Set::new("f32", dice::any_f32());
             let var = fate.roll_var(["x", "y", "z"], set);
-            let rel = infix_fun_2("==", |x, y| x == y);
+            let rel = Fun2::infix("==", |x, y| x == y);
             props::binrel::partial_equivalence(var, rel);
         })
     }
@@ -307,7 +307,7 @@ mod tests {
         Dicetest::once().run(|mut fate| {
             let set = Set::new("String", dice::string(dice::char(), ..));
             let var = fate.roll_var(["x", "y", "z"], set);
-            let rel = infix_fun_2("==", |x, y| x == y);
+            let rel = Fun2::infix("==", |x, y| x == y);
             props::binrel::equivalence(var, rel);
         })
     }
@@ -317,7 +317,7 @@ mod tests {
         Dicetest::once().run(|mut fate| {
             let set = Set::new("u8²", dice::zip().two(dice::u8(..), dice::u8(..)));
             let var = fate.roll_var(["x", "y", "z"], set);
-            let rel = infix_fun_2("<=", |x: (u8, u8), y: (u8, u8)| {
+            let rel = Fun2::infix("<=", |x: (u8, u8), y: (u8, u8)| {
                 (x.0 <= y.0) && (x.1 <= y.1)
             });
             props::binrel::partial_order(var, rel);
@@ -329,7 +329,7 @@ mod tests {
         Dicetest::once().run(|mut fate| {
             let set = Set::new("u8", dice::u8(..));
             let var = fate.roll_var(["x", "y", "z"], set);
-            let rel = infix_fun_2("<=", |x, y| x <= y);
+            let rel = Fun2::infix("<=", |x, y| x <= y);
             props::binrel::total_order(var, rel);
         })
     }

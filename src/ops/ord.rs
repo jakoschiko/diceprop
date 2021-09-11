@@ -1,4 +1,4 @@
-use crate::{infix_fun_2, Eval, Fun2Label};
+use crate::{Eval, Fun2, Fun2Label};
 use std::fmt::{Debug, Display};
 
 /// The first value is less than the second value based on [`PartialOrd`].
@@ -8,7 +8,7 @@ where
     L2: Display + Copy,
     V: Debug + PartialOrd,
 {
-    infix_fun_2("<", V::lt).eval_once(lhs, rhs)
+    Fun2::infix("<", V::lt).eval_once(lhs, rhs)
 }
 
 /// The first value is less than or equal to the second value based on [`PartialOrd`].
@@ -18,7 +18,7 @@ where
     L2: Display + Copy,
     V: Debug + PartialOrd,
 {
-    infix_fun_2("<=", V::le).eval_once(lhs, rhs)
+    Fun2::infix("<=", V::le).eval_once(lhs, rhs)
 }
 
 /// The first value is greater than the second value based on [`PartialOrd`].
@@ -28,7 +28,7 @@ where
     L2: Display + Copy,
     V: Debug + PartialOrd,
 {
-    infix_fun_2(">", V::gt).eval_once(lhs, rhs)
+    Fun2::infix(">", V::gt).eval_once(lhs, rhs)
 }
 
 /// The first value is greater than or equal to the second value based on [`PartialOrd`].
@@ -38,5 +38,5 @@ where
     L2: Display + Copy,
     V: Debug + PartialOrd,
 {
-    infix_fun_2(">=", V::ge).eval_once(lhs, rhs)
+    Fun2::infix(">=", V::ge).eval_once(lhs, rhs)
 }
