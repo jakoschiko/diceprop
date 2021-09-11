@@ -11,12 +11,11 @@ pub struct Elem<'a, S: Debug> {
     value: S,
 }
 
-/// Creates an [`Elem`] with the given name and value.
-pub fn elem<S: Debug>(name: &str, value: S) -> Elem<S> {
-    Elem { name, value }
-}
-
 impl<'a, S: Debug> Elem<'a, S> {
+    pub fn new(name: &'a str, value: S) -> Self {
+        Self { name, value }
+    }
+
     /// Returns an [`Eval`] that contains this element.
     ///
     /// This operation will log the element via [`dicetest::hints`].
@@ -31,7 +30,7 @@ impl<'a, S: Debug> Elem<'a, S> {
 
     /// Returns an [`Elem`] with the same name and a reference to the original value.
     pub fn as_ref(&self) -> Elem<&S> {
-        elem(self.name, &self.value)
+        Elem::new(self.name, &self.value)
     }
 }
 
@@ -41,7 +40,7 @@ impl<'a, 'b, S: Debug> Elem<'a, &'b S> {
     where
         S: Clone,
     {
-        elem(self.name, self.value.clone())
+        Elem::new(self.name, self.value.clone())
     }
 
     /// Returns an [`Elem`] with the same name and a copy of the original value.
@@ -49,6 +48,6 @@ impl<'a, 'b, S: Debug> Elem<'a, &'b S> {
     where
         S: Copy,
     {
-        elem(self.name, *self.value)
+        Elem::new(self.name, *self.value)
     }
 }

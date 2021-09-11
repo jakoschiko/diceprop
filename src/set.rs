@@ -3,7 +3,7 @@ use std::array::IntoIter;
 use std::fmt::Debug;
 use std::marker::PhantomData;
 
-use crate::{elem, Var};
+use crate::{Elem, Var};
 
 /// A mathematical set that can be used to choose variables.
 ///
@@ -32,7 +32,7 @@ impl<'a, S: Debug, D: DieOnce<S> + 'a> Set<'a, S, D> {
         let die = self.elem_die;
         dice::from_fn_once(move |mut fate| {
             let value = fate.roll(die);
-            let elem = elem(name, value);
+            let elem = Elem::new(name, value);
             Var::new(set, [elem])
         })
     }
@@ -56,7 +56,7 @@ impl<'a, S: Debug, D: Die<S> + 'a> Set<'a, S, D> {
             let values = fate.roll(dice::array::<_, _, N>(&die));
             let elems_iter = IntoIter::new(names)
                 .zip(IntoIter::new(values))
-                .map(|(name, value)| elem(name, value));
+                .map(|(name, value)| Elem::new(name, value));
             let elems: [_; N] = array_init::from_iter(elems_iter).unwrap();
             Var::new(set, elems)
         })

@@ -222,7 +222,7 @@ pub fn field<S, A, M, N, I>(
 mod tests {
     use dicetest::prelude::*;
 
-    use crate::{elem, props, Fun1, Fun2, Set};
+    use crate::{props, Elem, Fun1, Fun2, Set};
 
     #[test]
     fn semigroup_example() {
@@ -240,7 +240,7 @@ mod tests {
             let set = Set::new("u64", dice::u64(..=1000));
             let var = fate.roll(set.var(["x", "y", "z"]));
             let op = Fun2::infix("+", |x, y| x + y);
-            let e = elem("zero", 0);
+            let e = Elem::new("zero", 0);
             props::algebra::monoid(var, op, e);
         })
     }
@@ -252,7 +252,7 @@ mod tests {
             let var = fate.roll(set.var(["x", "y", "z"]));
             let op = Fun2::infix("+", |x, y| x + y);
             let inv = Fun1::new("-", |x: i64| -x);
-            let e = elem("zero", 0);
+            let e = Elem::new("zero", 0);
             props::algebra::group(var, op, inv, e);
         })
     }
@@ -264,7 +264,7 @@ mod tests {
             let var = fate.roll(set.var(["x", "y", "z"]));
             let op = Fun2::infix("+", |x, y| x + y);
             let inv = Fun1::new("-", |x: i64| -x);
-            let e = elem("zero", 0);
+            let e = Elem::new("zero", 0);
             props::algebra::abelian_group(var, op, inv, e);
         })
     }
@@ -277,8 +277,8 @@ mod tests {
             let add = Fun2::infix("+", |x, y| x + y);
             let mul = Fun2::infix("*", |x, y| x * y);
             let neg = Fun1::new("-", |x: i64| -x);
-            let zero = elem("zero", 0);
-            let one = elem("one", 1);
+            let zero = Elem::new("zero", 0);
+            let one = Elem::new("one", 1);
             props::algebra::ring(var, add, mul, neg, zero, one);
         })
     }
@@ -291,8 +291,8 @@ mod tests {
             let add = Fun2::infix("+", |x, y| x + y);
             let mul = Fun2::infix("*", |x, y| x * y);
             let neg = Fun1::new("-", |x: i64| -x);
-            let zero = elem("zero", 0);
-            let one = elem("one", 1);
+            let zero = Elem::new("zero", 0);
+            let one = Elem::new("one", 1);
             props::algebra::commutative_ring(var, add, mul, neg, zero, one);
         })
     }

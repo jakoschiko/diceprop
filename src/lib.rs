@@ -141,7 +141,7 @@ mod eval;
 pub use eval::Eval;
 
 mod elem;
-pub use elem::{elem, Elem};
+pub use elem::Elem;
 
 mod var;
 pub use var::Var;

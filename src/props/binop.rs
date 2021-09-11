@@ -337,7 +337,7 @@ mod tests {
     use dicetest::prelude::*;
     use std::collections::BTreeSet;
 
-    use crate::{elem, props, Fun1, Fun2, Set};
+    use crate::{props, Elem, Fun1, Fun2, Set};
 
     #[test]
     fn commutative_example() {
@@ -405,7 +405,7 @@ mod tests {
             let set = Set::new("i8", dice::i8(..));
             let var = fate.roll(set.var(["x"]));
             let op = Fun2::infix("+", |x, y| x + y);
-            let e = elem("zero", 0);
+            let e = Elem::new("zero", 0);
             props::binop::left_identity_elem(var, op, e);
         })
     }
@@ -416,7 +416,7 @@ mod tests {
             let set = Set::new("i8", dice::i8(..));
             let var = fate.roll(set.var(["x"]));
             let op = Fun2::infix("*", |x, y| x * y);
-            let e = elem("one", 1);
+            let e = Elem::new("one", 1);
             props::binop::right_identity_elem(var, op, e);
         })
     }
@@ -427,7 +427,7 @@ mod tests {
             let set = Set::new("f32", dice::f32(..));
             let var = fate.roll(set.var(["x"]));
             let op = Fun2::infix("+", |x, y| x + y);
-            let e = elem("zero", 0.0);
+            let e = Elem::new("zero", 0.0);
             props::binop::identity_elem(var, op, e);
         })
     }
