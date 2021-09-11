@@ -4,7 +4,7 @@ use std::array::IntoIter;
 use std::fmt::Debug;
 use std::fmt::Write;
 
-use crate::{elem, Elem, Eval};
+use crate::{elem, Elem, Eval, Set};
 
 /// Represents elements that were chosen from a set and that can be used as variables in a
 /// predicate.
@@ -59,47 +59,43 @@ pub trait Sealed {}
 /// by a generator.
 pub trait FateVarExt: Sealed {
     /// Returns a [`Var`] with a single value generated with the given [`DieOnce`].
-    fn roll_single_var<'a, S: Debug>(
+    fn roll_single_var<'a, S: Debug, D: DieOnce<S>>(
         &mut self,
-        set: &'a str,
         name: &'a str,
-        die: impl DieOnce<S>,
+        set: Set<'a, S, D>,
     ) -> Var<'a, S, 1>;
 
     /// Returns a [`Var`] with `N` values generated with the given [`Die`].
-    fn roll_var<'a, S: Debug, const N: usize>(
+    fn roll_var<'a, S: Debug, D: Die<S>, const N: usize>(
         &mut self,
-        set: &'a str,
         names: [&'a str; N],
-        die: impl Die<S>,
+        set: Set<'a, S, D>,
     ) -> Var<'a, S, N>;
 }
 
 impl Sealed for Fate<'_> {}
 
 impl FateVarExt for Fate<'_> {
-    fn roll_single_var<'a, S: Debug>(
+    fn roll_single_var<'a, S: Debug, D: DieOnce<S>>(
         &mut self,
-        set: &'a str,
         name: &'a str,
-        die: impl DieOnce<S>,
+        set: Set<'a, S, D>,
     ) -> Var<'a, S, 1> {
-        let value = self.roll(die);
+        let value = self.roll(set.elem_die);
         let elem = elem(name, value);
-        Var::new(set, [elem])
+        Var::new(set.name, [elem])
     }
 
-    fn roll_var<'a, S: Debug, const N: usize>(
+    fn roll_var<'a, S: Debug, D: Die<S>, const N: usize>(
         &mut self,
-        set: &'a str,
         names: [&'a str; N],
-        die: impl Die<S>,
+        set: Set<'a, S, D>,
     ) -> Var<'a, S, N> {
-        let values = self.roll(dice::array::<_, _, N>(die));
+        let values = self.roll(dice::array::<_, _, N>(set.elem_die));
         let elems_iter = IntoIter::new(names)
             .zip(IntoIter::new(values))
             .map(|(name, value)| elem(name, value));
         let elems: [_; N] = array_init::from_iter(elems_iter).unwrap();
-        Var::new(set, elems)
+        Var::new(set.name, elems)
     }
 }

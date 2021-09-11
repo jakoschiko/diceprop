@@ -160,7 +160,7 @@ where
 
 #[cfg(test)]
 mod tests {
-    use crate::{fun_1, fun_2, postfix_fun_1, props, FateVarExt};
+    use crate::{fun_1, fun_2, postfix_fun_1, props, FateVarExt, Set};
 
     use dicetest::prelude::*;
     use std::collections::BTreeSet;
@@ -169,14 +169,14 @@ mod tests {
     #[test]
     fn idempotent_example() {
         Dicetest::once().run(|mut fate| {
-            let var = fate.roll_single_var(
+            let set = Set::new(
                 "String",
-                "x",
                 dice::string(
                     dice::one_of_die().two(dice::one_of_slice(&[' ', '\n', '\t']), dice::char()),
                     ..,
                 ),
             );
+            let var = fate.roll_var(["x"], set);
             let f = fun_1("trim", |x: String| x.trim().to_owned());
             props::fun::idempotent(var, f);
         })
@@ -185,7 +185,8 @@ mod tests {
     #[test]
     fn left_inverse_example() {
         Dicetest::once().run(|mut fate| {
-            let var = fate.roll_single_var("f32", "x", dice::f32(..));
+            let set = Set::new("f32", dice::f32(..));
+            let var = fate.roll_var(["x"], set);
             let f = fun_1("to_string", |x: f32| x.to_string());
             let g = fun_1("from_string", |y: String| f32::from_str(&y).unwrap());
             props::fun::left_inverse(var, f, g);
@@ -195,7 +196,8 @@ mod tests {
     #[test]
     fn right_inverse_example() {
         Dicetest::once().run(|mut fate| {
-            let var = fate.roll_single_var("i8", "x", dice::i8(..));
+            let set = Set::new("i8", dice::i8(..));
+            let var = fate.roll_var(["x"], set);
             let f = fun_1("from_string", |x: String| i8::from_str(&x).unwrap());
             let g = fun_1("to_string", |y: i8| y.to_string());
             props::fun::right_inverse(var, f, g);
@@ -205,8 +207,10 @@ mod tests {
     #[test]
     fn inverse_example() {
         Dicetest::once().run(|mut fate| {
-            let var_s = fate.roll_single_var("i8", "x", dice::i8(..));
-            let var_t = fate.roll_single_var("u8", "y", dice::u8(..));
+            let set_s = Set::new("i8", dice::i8(..));
+            let set_t = Set::new("u8", dice::u8(..));
+            let var_s = fate.roll_var(["x"], set_s);
+            let var_t = fate.roll_var(["y"], set_t);
             let f = fun_1("from_string", |x: i8| x as u8);
             let g = fun_1("to_string", |y: u8| y as i8);
             props::fun::inverse(var_s, var_t, f, g);
@@ -216,7 +220,8 @@ mod tests {
     #[test]
     fn equal_1_example() {
         Dicetest::once().run(|mut fate| {
-            let var = fate.roll_single_var("u64", "x", dice::u64(..1000));
+            let set = Set::new("u64", dice::u64(..1000));
+            let var = fate.roll_var(["x"], set);
             let f = postfix_fun_1("+2", |x: u64| x + 2);
             let g = postfix_fun_1("+1+1", |x: u64| x + 1 + 1);
             props::fun::equal_1(var, f, g);
@@ -226,9 +231,10 @@ mod tests {
     #[test]
     fn equal_2_example() {
         Dicetest::once().run(|mut fate| {
-            let var_s =
-                fate.roll_single_var("BTreeSet<u8>", "xs", dice::b_tree_set(dice::u8(..), ..));
-            let var_t = fate.roll_single_var("u8", "x", dice::u8(..));
+            let set_s = Set::new("BTreeSet<u8>", dice::b_tree_set(dice::u8(..), ..));
+            let set_t = Set::new("u8", dice::u8(..));
+            let var_s = fate.roll_var(["xs"], set_s);
+            let var_t = fate.roll_var(["x"], set_t);
             let f = fun_2("insert", |mut xs: BTreeSet<u8>, x| {
                 xs.insert(x);
                 xs
@@ -245,11 +251,8 @@ mod tests {
     #[test]
     fn commutative_example() {
         Dicetest::once().run(|mut fate| {
-            let var = fate.roll_var(
-                "BTreeSet<u8>",
-                ["x", "y"],
-                dice::b_tree_set(dice::u8(..), ..),
-            );
+            let set = Set::new("BTreeSet<u8>", dice::b_tree_set(dice::u8(..), ..));
+            let var = fate.roll_var(["x", "y"], set);
             let f = fun_2("is_disjoin", |x, y| BTreeSet::<u8>::is_disjoint(&x, &y));
             props::fun::commutative(var, f);
         })

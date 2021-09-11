@@ -8,6 +8,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 - Add struct `diceprop::Var`. It is implemented with const generics and can represent an arbitrary number of variables. It replaces `diceprop::{Var1, Var2, Var3}`.
+- Add struct `diceprop::Set`. It wraps a value generator and is necessary for generating `diceprop::Var`.
 
 ### Added
 - Add function `diceprop::props::binop::equal`

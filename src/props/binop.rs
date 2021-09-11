@@ -337,16 +337,13 @@ mod tests {
     use dicetest::prelude::*;
     use std::collections::BTreeSet;
 
-    use crate::{elem, fun_1, fun_2, infix_fun_2, props, FateVarExt};
+    use crate::{elem, fun_1, fun_2, infix_fun_2, props, FateVarExt, Set};
 
     #[test]
     fn commutative_example() {
         Dicetest::once().run(|mut fate| {
-            let var = fate.roll_var(
-                "BTreeSet<u8>",
-                ["x", "y"],
-                dice::b_tree_set(dice::u8(..), ..),
-            );
+            let set = Set::new("BTreeSet<u8>", dice::b_tree_set(dice::u8(..), ..));
+            let var = fate.roll_var(["x", "y"], set);
             let op = fun_2("intersection", |x, y| {
                 BTreeSet::<u8>::intersection(&x, &y)
                     .cloned()
@@ -359,7 +356,8 @@ mod tests {
     #[test]
     fn associative_example() {
         Dicetest::once().run(|mut fate| {
-            let var = fate.roll_var("Vec<u8>", ["x", "y", "z"], dice::vec(dice::u8(..), ..));
+            let set = Set::new("Vec<u8>", dice::vec(dice::u8(..), ..));
+            let var = fate.roll_var(["x", "y", "z"], set);
             let op = fun_2("append", |mut x, mut y| {
                 Vec::<u8>::append(&mut x, &mut y);
                 x
@@ -371,7 +369,8 @@ mod tests {
     #[test]
     fn left_distributive_example() {
         Dicetest::once().run(|mut fate| {
-            let var = fate.roll_var("i64", ["x", "y", "z"], dice::i64(-1000..=1000));
+            let set = Set::new("i64", dice::i64(-1000..=1000));
+            let var = fate.roll_var(["x", "y", "z"], set);
             let add = infix_fun_2("+", |x, y| x + y);
             let mul = infix_fun_2("*", |x, y| x * y);
             props::binop::left_distributive(var, add, mul);
@@ -381,7 +380,8 @@ mod tests {
     #[test]
     fn right_distributive_example() {
         Dicetest::once().run(|mut fate| {
-            let var = fate.roll_var("i64", ["x", "y", "z"], dice::i64(-1000..=1000));
+            let set = Set::new("i64", dice::i64(-1000..=1000));
+            let var = fate.roll_var(["x", "y", "z"], set);
             let add = infix_fun_2("+", |x, y| x + y);
             let mul = infix_fun_2("*", |x, y| x * y);
             props::binop::right_distributive(var, add, mul);
@@ -391,7 +391,8 @@ mod tests {
     #[test]
     fn distributive_example() {
         Dicetest::once().run(|mut fate| {
-            let var = fate.roll_var("i64", ["x", "y", "z"], dice::i64(-1000..=1000));
+            let set = Set::new("i64", dice::i64(-1000..=1000));
+            let var = fate.roll_var(["x", "y", "z"], set);
             let add = infix_fun_2("+", |x, y| x + y);
             let mul = infix_fun_2("*", |x, y| x * y);
             props::binop::distributive(var, add, mul);
@@ -401,7 +402,8 @@ mod tests {
     #[test]
     fn left_identity_elem_example() {
         Dicetest::once().run(|mut fate| {
-            let var = fate.roll_single_var("i8", "x", dice::i8(..));
+            let set = Set::new("i8", dice::i8(..));
+            let var = fate.roll_var(["x"], set);
             let op = infix_fun_2("+", |x, y| x + y);
             let e = elem("zero", 0);
             props::binop::left_identity_elem(var, op, e);
@@ -411,7 +413,8 @@ mod tests {
     #[test]
     fn right_identity_elem_example() {
         Dicetest::once().run(|mut fate| {
-            let var = fate.roll_single_var("i8", "x", dice::i8(..));
+            let set = Set::new("i8", dice::i8(..));
+            let var = fate.roll_var(["x"], set);
             let op = infix_fun_2("*", |x, y| x * y);
             let e = elem("one", 1);
             props::binop::right_identity_elem(var, op, e);
@@ -421,7 +424,8 @@ mod tests {
     #[test]
     fn identity_elem_example() {
         Dicetest::once().run(|mut fate| {
-            let var = fate.roll_single_var("f32", "x", dice::f32(..));
+            let set = Set::new("f32", dice::f32(..));
+            let var = fate.roll_var(["x"], set);
             let op = infix_fun_2("+", |x, y| x + y);
             let e = elem("zero", 0.0);
             props::binop::identity_elem(var, op, e);
@@ -431,7 +435,8 @@ mod tests {
     #[test]
     fn left_inverse_elem_example() {
         Dicetest::once().run(|mut fate| {
-            let var = fate.roll_var("i64", ["x", "y"], dice::i64(-1000..=1000));
+            let set = Set::new("i64", dice::i64(-1000..=1000));
+            let var = fate.roll_var(["x", "y"], set);
             let op = infix_fun_2("+", |x, y| x + y);
             let inv = fun_1("-", |x: i64| -x);
             props::binop::left_inverse_elem(var, op, inv);
@@ -441,7 +446,8 @@ mod tests {
     #[test]
     fn right_inverse_elem_example() {
         Dicetest::once().run(|mut fate| {
-            let var = fate.roll_var("i64", ["x", "y"], dice::i64(-1000..=1000));
+            let set = Set::new("i64", dice::i64(-1000..=1000));
+            let var = fate.roll_var(["x", "y"], set);
             let op = infix_fun_2("+", |x, y| x + y);
             let inv = fun_1("-", |x: i64| -x);
             props::binop::right_inverse_elem(var, op, inv);
@@ -451,7 +457,8 @@ mod tests {
     #[test]
     fn inverse_elem_example() {
         Dicetest::once().run(|mut fate| {
-            let var = fate.roll_var("i64", ["x", "y"], dice::i64(-1000..=1000));
+            let set = Set::new("i64", dice::i64(-1000..=1000));
+            let var = fate.roll_var(["x", "y"], set);
             let op = infix_fun_2("+", |x, y| x + y);
             let inv = fun_1("-", |x: i64| -x);
             props::binop::inverse_elem(var, op, inv);
@@ -461,7 +468,8 @@ mod tests {
     #[test]
     fn left_inverse_example() {
         Dicetest::once().run(|mut fate| {
-            let var = fate.roll_var("i64", ["x", "y"], dice::i64(-1000..=1000));
+            let set = Set::new("i64", dice::i64(-1000..=1000));
+            let var = fate.roll_var(["x", "y"], set);
             let op = infix_fun_2("+", |x, y| x + y);
             let invop = infix_fun_2("-", |x, y| x - y);
             props::binop::left_inverse(var, op, invop);
@@ -471,7 +479,8 @@ mod tests {
     #[test]
     fn right_inverse_example() {
         Dicetest::once().run(|mut fate| {
-            let var = fate.roll_var("i64", ["x", "y"], dice::i64(-1000..=1000));
+            let set = Set::new("i64", dice::i64(-1000..=1000));
+            let var = fate.roll_var(["x", "y"], set);
             let op = infix_fun_2("+", |x, y| x + y);
             let invop = infix_fun_2("-", |x, y| x - y);
             props::binop::right_inverse(var, op, invop);
@@ -481,7 +490,8 @@ mod tests {
     #[test]
     fn inverse_example() {
         Dicetest::once().run(|mut fate| {
-            let var = fate.roll_var("i64", ["x", "y"], dice::i64(-1000..=1000));
+            let set = Set::new("i64", dice::i64(-1000..=1000));
+            let var = fate.roll_var(["x", "y"], set);
             let op = infix_fun_2("+", |x, y| x + y);
             let invop = infix_fun_2("-", |x, y| x - y);
             props::binop::inverse(var, op, invop);
@@ -491,7 +501,8 @@ mod tests {
     #[test]
     fn equal_example() {
         Dicetest::once().run(|mut fate| {
-            let var = fate.roll_var("i64", ["x", "y"], dice::i64(-1000..=1000));
+            let set = Set::new("i64", dice::i64(-1000..=1000));
+            let var = fate.roll_var(["x", "y"], set);
             let op_1 = fun_2("add", |x, y| x + y);
             let op_2 = fun_2("add_assign", |mut x, y| {
                 x += y;

@@ -230,12 +230,13 @@ where
 mod tests {
     use dicetest::prelude::*;
 
-    use crate::{infix_fun_2, props, FateVarExt};
+    use crate::{infix_fun_2, props, FateVarExt, Set};
 
     #[test]
     fn reflexive_example() {
         Dicetest::once().run(|mut fate| {
-            let var = fate.roll_single_var("u8", "x", dice::u8(..));
+            let set = Set::new("u8", dice::u8(..));
+            let var = fate.roll_var(["x"], set);
             let rel = infix_fun_2("==", |x, y| x == y);
             props::binrel::reflexive(var, rel);
         })
@@ -244,7 +245,8 @@ mod tests {
     #[test]
     fn symmetric_example() {
         Dicetest::once().run(|mut fate| {
-            let var = fate.roll_var("f32", ["x", "y"], dice::any_f32());
+            let set = Set::new("f32", dice::any_f32());
+            let var = fate.roll_var(["x", "y"], set);
             let rel = infix_fun_2("!=", |x, y| x != y);
             props::binrel::symmetric(var, rel);
         })
@@ -253,7 +255,8 @@ mod tests {
     #[test]
     fn asymmetric_example() {
         Dicetest::once().run(|mut fate| {
-            let var = fate.roll_var("f32", ["x", "y"], dice::any_f32());
+            let set = Set::new("f32", dice::any_f32());
+            let var = fate.roll_var(["x", "y"], set);
             let rel = infix_fun_2("<", |x, y| x < y);
             props::binrel::asymmetric(var, rel);
         })
@@ -262,7 +265,8 @@ mod tests {
     #[test]
     fn antisymmetric_example() {
         Dicetest::once().run(|mut fate| {
-            let var = fate.roll_var("u8", ["x", "y"], dice::u8(..));
+            let set = Set::new("u8", dice::u8(..));
+            let var = fate.roll_var(["x", "y"], set);
             let rel = infix_fun_2("<", |x, y| x < y);
             props::binrel::antisymmetric(var, rel);
         })
@@ -271,7 +275,8 @@ mod tests {
     #[test]
     fn connex_example() {
         Dicetest::once().run(|mut fate| {
-            let var = fate.roll_var("u8", ["x", "y"], dice::u8(..));
+            let set = Set::new("u8", dice::u8(..));
+            let var = fate.roll_var(["x", "y"], set);
             let rel = infix_fun_2("<=", |x, y| x <= y);
             props::binrel::connex(var, rel);
         })
@@ -280,7 +285,8 @@ mod tests {
     #[test]
     fn transitive_example() {
         Dicetest::once().run(|mut fate| {
-            let var = fate.roll_var("char", ["x", "y", "z"], dice::char());
+            let set = Set::new("char", dice::char());
+            let var = fate.roll_var(["x", "y", "z"], set);
             let rel = infix_fun_2("<", |x, y| x < y);
             props::binrel::transitive(var, rel);
         })
@@ -289,7 +295,8 @@ mod tests {
     #[test]
     fn partial_equivalence_example() {
         Dicetest::once().run(|mut fate| {
-            let var = fate.roll_var("f32", ["x", "y", "z"], dice::any_f32());
+            let set = Set::new("f32", dice::any_f32());
+            let var = fate.roll_var(["x", "y", "z"], set);
             let rel = infix_fun_2("==", |x, y| x == y);
             props::binrel::partial_equivalence(var, rel);
         })
@@ -298,7 +305,8 @@ mod tests {
     #[test]
     fn equivalence_example() {
         Dicetest::once().run(|mut fate| {
-            let var = fate.roll_var("String", ["x", "y", "z"], dice::string(dice::char(), ..));
+            let set = Set::new("String", dice::string(dice::char(), ..));
+            let var = fate.roll_var(["x", "y", "z"], set);
             let rel = infix_fun_2("==", |x, y| x == y);
             props::binrel::equivalence(var, rel);
         })
@@ -307,11 +315,8 @@ mod tests {
     #[test]
     fn partial_order_example() {
         Dicetest::once().run(|mut fate| {
-            let var = fate.roll_var(
-                "u8²",
-                ["x", "y", "z"],
-                dice::zip().two(dice::u8(..), dice::u8(..)),
-            );
+            let set = Set::new("u8²", dice::zip().two(dice::u8(..), dice::u8(..)));
+            let var = fate.roll_var(["x", "y", "z"], set);
             let rel = infix_fun_2("<=", |x: (u8, u8), y: (u8, u8)| {
                 (x.0 <= y.0) && (x.1 <= y.1)
             });
@@ -322,7 +327,8 @@ mod tests {
     #[test]
     fn total_order_example() {
         Dicetest::once().run(|mut fate| {
-            let var = fate.roll_var("u8", ["x", "y", "z"], dice::u8(..));
+            let set = Set::new("u8", dice::u8(..));
+            let var = fate.roll_var(["x", "y", "z"], set);
             let rel = infix_fun_2("<=", |x, y| x <= y);
             props::binrel::total_order(var, rel);
         })
