@@ -3,7 +3,7 @@ use std::array::IntoIter;
 use std::fmt::Debug;
 use std::marker::PhantomData;
 
-use crate::{Elem, Var};
+use crate::{Elem, Vars};
 
 /// A mathematical set that can be used to choose variables.
 ///
@@ -27,13 +27,13 @@ impl<'a, S: Debug, D: DieOnce<S> + 'a> Set<'a, S, D> {
     }
 
     /// Returns a generator that chooses a single variable from the set.
-    pub fn single_var(self, name: &'a str) -> impl DieOnce<Var<'a, S, 1>> {
+    pub fn var_once(self, name: &'a str) -> impl DieOnce<Vars<'a, S, 1>> {
         let set = self.name;
         let die = self.elem_die;
         dice::from_fn_once(move |mut fate| {
             let value = fate.roll(die);
             let elem = Elem::new(name, value);
-            Var::new(set, [elem])
+            Vars::new(set, [elem])
         })
     }
 }
@@ -49,7 +49,7 @@ impl<'a, S: Debug, D: Die<S> + 'a> Set<'a, S, D> {
     }
 
     /// Returns a generator that chooses `N` variables from the set.
-    pub fn var<const N: usize>(self, names: [&'a str; N]) -> impl Die<Var<'a, S, N>> {
+    pub fn vars<const N: usize>(self, names: [&'a str; N]) -> impl Die<Vars<'a, S, N>> {
         let set = self.name;
         let die = self.elem_die;
         dice::from_fn(move |mut fate| {
@@ -58,7 +58,7 @@ impl<'a, S: Debug, D: Die<S> + 'a> Set<'a, S, D> {
                 .zip(IntoIter::new(values))
                 .map(|(name, value)| Elem::new(name, value));
             let elems: [_; N] = array_init::from_iter(elems_iter).unwrap();
-            Var::new(set, elems)
+            Vars::new(set, elems)
         })
     }
 }

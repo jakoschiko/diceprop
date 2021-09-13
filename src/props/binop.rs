@@ -5,36 +5,36 @@
 use dicetest::hint_section;
 use std::fmt::Debug;
 
-use crate::{ops, props, Elem, Fun1, Fun2, Var};
+use crate::{ops, props, Elem, Fun1, Fun2, Vars};
 
 /// Asserts that the binary operation `op` is [commutative].
 ///
-/// For all `a`, `b` of `var.set` it must hold:
+/// For all `a`, `b` of `vars.set` it must hold:
 /// - `op(a, b) == op(b, a)`
 ///
 /// [commutative]: https://en.wikipedia.org/wiki/Commutative_property
-pub fn commutative<S, O>(var: Var<S, 2>, op: Fun2<O>)
+pub fn commutative<S, O>(vars: Vars<S, 2>, op: Fun2<O>)
 where
     S: Debug + Clone + PartialEq,
     O: Fn(S, S) -> S,
 {
-    props::fun::commutative(var, op)
+    props::fun::commutative(vars, op)
 }
 
 /// Asserts that the binary operation `op` is [associative].
 ///
-/// For all `a`, `b`, `c` of `var.set` it must hold:
+/// For all `a`, `b`, `c` of `vars.set` it must hold:
 /// - `op(op(a, b), c) == op(a, op(b, c))`
 ///
 /// [associative]: https://en.wikipedia.org/wiki/Associative_property
-pub fn associative<S, O>(var: Var<S, 3>, op: Fun2<O>)
+pub fn associative<S, O>(vars: Vars<S, 3>, op: Fun2<O>)
 where
     S: Debug + Clone + PartialEq,
     O: Fn(S, S) -> S,
 {
     hint_section!("Is `{}` associative?", op.name);
 
-    let [a, b, c] = var.eval();
+    let [a, b, c] = vars.eval();
 
     ops::assert(ops::eq(
         op.eval(op.eval(a.clone(), b.clone()), c.clone()).as_ref(),
@@ -44,11 +44,11 @@ where
 
 /// Asserts that the binary operation `mul` is [left distributive] over the binary operation `add`.
 ///
-/// For all `a`, `b`, `c` of `var.set` it must hold:
+/// For all `a`, `b`, `c` of `vars.set` it must hold:
 /// - `mul(a, add(b, c)) == add(mul(a, b), mul(a, c))`
 ///
 /// [left distributive]: https://en.wikipedia.org/wiki/Distributive_property
-pub fn left_distributive<S, A, M>(var: Var<S, 3>, add: Fun2<A>, mul: Fun2<M>)
+pub fn left_distributive<S, A, M>(vars: Vars<S, 3>, add: Fun2<A>, mul: Fun2<M>)
 where
     S: Debug + Clone + PartialEq,
     A: Fn(S, S) -> S,
@@ -56,7 +56,7 @@ where
 {
     hint_section!("Is `{}` left distributive over `{}`?", mul.name, add.name,);
 
-    let [a, b, c] = var.eval();
+    let [a, b, c] = vars.eval();
 
     ops::assert(ops::eq(
         mul.eval(a.clone(), add.eval(b.clone(), c.clone())).as_ref(),
@@ -70,11 +70,11 @@ where
 
 /// Asserts that the binary operation `mul` is [right distributive] over the binary operation `add`.
 ///
-/// For all `a`, `b`, `c` of `var.set` it must hold:
+/// For all `a`, `b`, `c` of `vars.set` it must hold:
 /// - `mul(add(a, b), c) == add(mul(a, c), mul(b, c))`
 ///
 /// [right distributive]: https://en.wikipedia.org/wiki/Distributive_property
-pub fn right_distributive<S, A, M>(var: Var<S, 3>, add: Fun2<A>, mul: Fun2<M>)
+pub fn right_distributive<S, A, M>(vars: Vars<S, 3>, add: Fun2<A>, mul: Fun2<M>)
 where
     S: Debug + Clone + PartialEq,
     A: Fn(S, S) -> S,
@@ -82,7 +82,7 @@ where
 {
     hint_section!("Is `{}` right distributive over `{}`?", mul.name, add.name,);
 
-    let [a, b, c] = var.eval();
+    let [a, b, c] = vars.eval();
 
     ops::assert(ops::eq(
         mul.eval(add.eval(a.clone(), b.clone()), c.clone()).as_ref(),
@@ -101,7 +101,7 @@ where
 /// - `mul` is right distributive over `add` ([`right_distributive`])
 ///
 /// [distributive]: https://en.wikipedia.org/wiki/Distributive_property
-pub fn distributive<S, A, M>(var: Var<S, 3>, add: Fun2<A>, mul: Fun2<M>)
+pub fn distributive<S, A, M>(vars: Vars<S, 3>, add: Fun2<A>, mul: Fun2<M>)
 where
     S: Debug + Clone + PartialEq,
     A: Fn(S, S) -> S,
@@ -109,24 +109,24 @@ where
 {
     hint_section!("Is `{}` distributive over `{}`?", mul.name, add.name);
 
-    left_distributive(var.clone(), add.as_ref(), mul.as_ref());
-    right_distributive(var, add, mul);
+    left_distributive(vars.clone(), add.as_ref(), mul.as_ref());
+    right_distributive(vars, add, mul);
 }
 
 /// Asserts that `e` is the [left identity element] of the binary operation `op`.
 ///
-/// For all `a` of `var.set` it must hold:
+/// For all `a` of `vars.set` it must hold:
 /// - `op(e, a) == a`
 ///
 /// [left identity element]: https://en.wikipedia.org/wiki/Identity_element
-pub fn left_identity_elem<S, O>(var: Var<S, 1>, op: Fun2<O>, e: Elem<S>)
+pub fn left_identity_elem<S, O>(vars: Vars<S, 1>, op: Fun2<O>, e: Elem<S>)
 where
     S: Debug + Clone + PartialEq,
     O: FnOnce(S, S) -> S,
 {
     hint_section!("Is `{}` left identity element of `{}`?", e.name, op.name);
 
-    let [a] = var.eval();
+    let [a] = vars.eval();
     let e = e.eval();
 
     ops::assert(ops::eq(op.eval_once(e, a.clone()).as_ref(), a.as_ref()));
@@ -134,18 +134,18 @@ where
 
 /// Asserts that `e` is the [right identity element] of the binary operation `op`.
 ///
-/// For all `a` of `var.set` it must hold:
+/// For all `a` of `vars.set` it must hold:
 /// - `op(a, e) == a`
 ///
 /// [right identity element]: https://en.wikipedia.org/wiki/Identity_element
-pub fn right_identity_elem<S, O>(var: Var<S, 1>, op: Fun2<O>, e: Elem<S>)
+pub fn right_identity_elem<S, O>(vars: Vars<S, 1>, op: Fun2<O>, e: Elem<S>)
 where
     S: Debug + Clone + PartialEq,
     O: FnOnce(S, S) -> S,
 {
     hint_section!("Is `{}` right identity element of `{}`?", e.name, op.name);
 
-    let [a] = var.eval();
+    let [a] = vars.eval();
     let e = e.eval();
 
     ops::assert(ops::eq(op.eval_once(a.clone(), e).as_ref(), a.as_ref()));
@@ -158,25 +158,25 @@ where
 /// - `e` is the right identity element of `op` ([`right_identity_elem`])
 ///
 /// [identity element]: https://en.wikipedia.org/wiki/Identity_element
-pub fn identity_elem<S, O>(var: Var<S, 1>, op: Fun2<O>, e: Elem<S>)
+pub fn identity_elem<S, O>(vars: Vars<S, 1>, op: Fun2<O>, e: Elem<S>)
 where
     S: Debug + Clone + PartialEq,
     O: Fn(S, S) -> S,
 {
     hint_section!("Is `{}` identity element of `{}`?", e.name, op.name);
 
-    left_identity_elem(var.clone(), op.as_ref(), e.clone());
-    right_identity_elem(var, op, e);
+    left_identity_elem(vars.clone(), op.as_ref(), e.clone());
+    right_identity_elem(vars, op, e);
 }
 
 /// Asserts that the function `inv` returns the [left inverse element] regarding
 /// to the binary operation `op`.
 ///
-/// For all `a`, `b` of `var.set` it must hold:
+/// For all `a`, `b` of `vars.set` it must hold:
 /// - `op(b, op(inv(a), a)) == b`
 ///
 /// [left inverse element]: https://en.wikipedia.org/wiki/Inverse_element
-pub fn left_inverse_elem<S, O, I>(var: Var<S, 2>, op: Fun2<O>, inv: Fun1<I>)
+pub fn left_inverse_elem<S, O, I>(vars: Vars<S, 2>, op: Fun2<O>, inv: Fun1<I>)
 where
     S: Debug + Clone + PartialEq,
     O: Fn(S, S) -> S,
@@ -188,7 +188,7 @@ where
         op.name,
     );
 
-    let [a, b] = var.eval();
+    let [a, b] = vars.eval();
 
     ops::assert(ops::eq(
         op.eval(b.clone(), op.eval(inv.eval(a.clone()), a.clone()))
@@ -200,11 +200,11 @@ where
 /// Asserts that the function `inv` returns the [right inverse element] regarding
 /// to the binary operation `op`.
 ///
-/// For all `a`, `b` of `var.set` it must hold:
+/// For all `a`, `b` of `vars.set` it must hold:
 /// - `op(op(a, inv(a)), b) == b`
 ///
 /// [right inverse element]: https://en.wikipedia.org/wiki/Inverse_element
-pub fn right_inverse_elem<S, O, I>(var: Var<S, 2>, op: Fun2<O>, inv: Fun1<I>)
+pub fn right_inverse_elem<S, O, I>(vars: Vars<S, 2>, op: Fun2<O>, inv: Fun1<I>)
 where
     S: Debug + Clone + PartialEq,
     O: Fn(S, S) -> S,
@@ -216,7 +216,7 @@ where
         op.name
     );
 
-    let [a, b] = var.eval();
+    let [a, b] = vars.eval();
 
     ops::assert(ops::eq(
         op.eval(op.eval(a.clone(), inv.eval(a.clone())), b.clone())
@@ -235,7 +235,7 @@ where
 /// ([`right_inverse_elem`])
 ///
 /// [inverse element]: https://en.wikipedia.org/wiki/Inverse_element
-pub fn inverse_elem<S, O, I>(var: Var<S, 2>, op: Fun2<O>, inv: Fun1<I>)
+pub fn inverse_elem<S, O, I>(vars: Vars<S, 2>, op: Fun2<O>, inv: Fun1<I>)
 where
     S: Debug + Clone + PartialEq,
     O: Fn(S, S) -> S,
@@ -247,15 +247,15 @@ where
         op.name
     );
 
-    left_inverse_elem(var.clone(), op.as_ref(), inv.as_ref());
-    right_inverse_elem(var, op, inv);
+    left_inverse_elem(vars.clone(), op.as_ref(), inv.as_ref());
+    right_inverse_elem(vars, op, inv);
 }
 
 /// Asserts that the binary operation `invop` is the left inverse of the binary operation `op`.
 ///
-/// For all `a`, `b` of `var.set` it must hold:
+/// For all `a`, `b` of `vars.set` it must hold:
 /// - `invop(op(a, b), b) == a`
-pub fn left_inverse<S, O, I>(var: Var<S, 2>, op: Fun2<O>, invop: Fun2<I>)
+pub fn left_inverse<S, O, I>(vars: Vars<S, 2>, op: Fun2<O>, invop: Fun2<I>)
 where
     S: Debug + Clone + PartialEq,
     O: FnOnce(S, S) -> S,
@@ -263,7 +263,7 @@ where
 {
     hint_section!("Is `{}` left inverse of `{}`?", invop.name, op.name);
 
-    let [a, b] = var.eval();
+    let [a, b] = vars.eval();
 
     ops::assert(ops::eq(
         invop
@@ -275,9 +275,9 @@ where
 
 /// Asserts that the binary operation `invop` is the right inverse of the binary operation `op`.
 ///
-/// For all `a`, `b` of `var.set` it must hold:
+/// For all `a`, `b` of `vars.set` it must hold:
 /// - `op(invop(a, b), b) == a`
-pub fn right_inverse<S, O, I>(var: Var<S, 2>, op: Fun2<O>, invop: Fun2<I>)
+pub fn right_inverse<S, O, I>(vars: Vars<S, 2>, op: Fun2<O>, invop: Fun2<I>)
 where
     S: Debug + Clone + PartialEq,
     O: FnOnce(S, S) -> S,
@@ -285,7 +285,7 @@ where
 {
     hint_section!("Is `{}` right inverse of `{}`?", invop.name, op.name);
 
-    let [a, b] = var.eval();
+    let [a, b] = vars.eval();
 
     ops::assert(ops::eq(
         op.eval_once(invop.eval_once(a.clone(), b.clone()), b)
@@ -299,7 +299,7 @@ where
 /// It must hold:
 /// - `invop` is the left inverse of `op` ([`left_inverse`])
 /// - `invop` is the right inverse of `op` ([`right_inverse`])
-pub fn inverse<S, O, I>(var: Var<S, 2>, op: Fun2<O>, invop: Fun2<I>)
+pub fn inverse<S, O, I>(vars: Vars<S, 2>, op: Fun2<O>, invop: Fun2<I>)
 where
     S: Debug + Clone + PartialEq,
     O: Fn(S, S) -> S,
@@ -307,15 +307,15 @@ where
 {
     hint_section!("Is `{}` inverse of `{}`?", invop.name, op.name);
 
-    left_inverse(var.clone(), op.as_ref(), invop.as_ref());
-    right_inverse(var, op, invop);
+    left_inverse(vars.clone(), op.as_ref(), invop.as_ref());
+    right_inverse(vars, op, invop);
 }
 
 /// Asserts that the binary operation `op_2` is equal to the binary operation `op_1`.
 ///
-/// For all `a`, `b` of `var.set` it must hold:
+/// For all `a`, `b` of `vars.set` it must hold:
 /// - `op_1(a, b) == op_2(a, b)`
-pub fn equal<S, R, O, P>(var: Var<S, 2>, op_1: Fun2<O>, op_2: Fun2<P>)
+pub fn equal<S, R, O, P>(vars: Vars<S, 2>, op_1: Fun2<O>, op_2: Fun2<P>)
 where
     S: Debug + Clone,
     R: Debug + PartialEq,
@@ -324,7 +324,7 @@ where
 {
     hint_section!("Is `{}` equal to `{}`?", op_2.name, op_1.name);
 
-    let [a, b] = var.eval();
+    let [a, b] = vars.eval();
 
     ops::assert(ops::eq(
         op_1.eval_once(a.clone(), b.clone()).as_ref(),
@@ -343,13 +343,13 @@ mod tests {
     fn commutative_example() {
         Dicetest::once().run(|mut fate| {
             let set = Set::new("BTreeSet<u8>", dice::b_tree_set(dice::u8(..), ..));
-            let var = fate.roll(set.var(["x", "y"]));
+            let vars = fate.roll(set.vars(["x", "y"]));
             let op = Fun2::new("intersection", |x, y| {
                 BTreeSet::<u8>::intersection(&x, &y)
                     .cloned()
                     .collect::<BTreeSet<_>>()
             });
-            props::binop::commutative(var, op);
+            props::binop::commutative(vars, op);
         })
     }
 
@@ -357,12 +357,12 @@ mod tests {
     fn associative_example() {
         Dicetest::once().run(|mut fate| {
             let set = Set::new("Vec<u8>", dice::vec(dice::u8(..), ..));
-            let var = fate.roll(set.var(["x", "y", "z"]));
+            let vars = fate.roll(set.vars(["x", "y", "z"]));
             let op = Fun2::new("append", |mut x, mut y| {
                 Vec::<u8>::append(&mut x, &mut y);
                 x
             });
-            props::binop::associative(var, op);
+            props::binop::associative(vars, op);
         })
     }
 
@@ -370,10 +370,10 @@ mod tests {
     fn left_distributive_example() {
         Dicetest::once().run(|mut fate| {
             let set = Set::new("i64", dice::i64(-1000..=1000));
-            let var = fate.roll(set.var(["x", "y", "z"]));
+            let vars = fate.roll(set.vars(["x", "y", "z"]));
             let add = Fun2::infix("+", |x, y| x + y);
             let mul = Fun2::infix("*", |x, y| x * y);
-            props::binop::left_distributive(var, add, mul);
+            props::binop::left_distributive(vars, add, mul);
         })
     }
 
@@ -381,10 +381,10 @@ mod tests {
     fn right_distributive_example() {
         Dicetest::once().run(|mut fate| {
             let set = Set::new("i64", dice::i64(-1000..=1000));
-            let var = fate.roll(set.var(["x", "y", "z"]));
+            let vars = fate.roll(set.vars(["x", "y", "z"]));
             let add = Fun2::infix("+", |x, y| x + y);
             let mul = Fun2::infix("*", |x, y| x * y);
-            props::binop::right_distributive(var, add, mul);
+            props::binop::right_distributive(vars, add, mul);
         })
     }
 
@@ -392,10 +392,10 @@ mod tests {
     fn distributive_example() {
         Dicetest::once().run(|mut fate| {
             let set = Set::new("i64", dice::i64(-1000..=1000));
-            let var = fate.roll(set.var(["x", "y", "z"]));
+            let vars = fate.roll(set.vars(["x", "y", "z"]));
             let add = Fun2::infix("+", |x, y| x + y);
             let mul = Fun2::infix("*", |x, y| x * y);
-            props::binop::distributive(var, add, mul);
+            props::binop::distributive(vars, add, mul);
         })
     }
 
@@ -403,10 +403,10 @@ mod tests {
     fn left_identity_elem_example() {
         Dicetest::once().run(|mut fate| {
             let set = Set::new("i8", dice::i8(..));
-            let var = fate.roll(set.var(["x"]));
+            let vars = fate.roll(set.vars(["x"]));
             let op = Fun2::infix("+", |x, y| x + y);
             let e = Elem::new("zero", 0);
-            props::binop::left_identity_elem(var, op, e);
+            props::binop::left_identity_elem(vars, op, e);
         })
     }
 
@@ -414,10 +414,10 @@ mod tests {
     fn right_identity_elem_example() {
         Dicetest::once().run(|mut fate| {
             let set = Set::new("i8", dice::i8(..));
-            let var = fate.roll(set.var(["x"]));
+            let vars = fate.roll(set.vars(["x"]));
             let op = Fun2::infix("*", |x, y| x * y);
             let e = Elem::new("one", 1);
-            props::binop::right_identity_elem(var, op, e);
+            props::binop::right_identity_elem(vars, op, e);
         })
     }
 
@@ -425,10 +425,10 @@ mod tests {
     fn identity_elem_example() {
         Dicetest::once().run(|mut fate| {
             let set = Set::new("f32", dice::f32(..));
-            let var = fate.roll(set.var(["x"]));
+            let vars = fate.roll(set.vars(["x"]));
             let op = Fun2::infix("+", |x, y| x + y);
             let e = Elem::new("zero", 0.0);
-            props::binop::identity_elem(var, op, e);
+            props::binop::identity_elem(vars, op, e);
         })
     }
 
@@ -436,10 +436,10 @@ mod tests {
     fn left_inverse_elem_example() {
         Dicetest::once().run(|mut fate| {
             let set = Set::new("i64", dice::i64(-1000..=1000));
-            let var = fate.roll(set.var(["x", "y"]));
+            let vars = fate.roll(set.vars(["x", "y"]));
             let op = Fun2::infix("+", |x, y| x + y);
             let inv = Fun1::new("-", |x: i64| -x);
-            props::binop::left_inverse_elem(var, op, inv);
+            props::binop::left_inverse_elem(vars, op, inv);
         })
     }
 
@@ -447,10 +447,10 @@ mod tests {
     fn right_inverse_elem_example() {
         Dicetest::once().run(|mut fate| {
             let set = Set::new("i64", dice::i64(-1000..=1000));
-            let var = fate.roll(set.var(["x", "y"]));
+            let vars = fate.roll(set.vars(["x", "y"]));
             let op = Fun2::infix("+", |x, y| x + y);
             let inv = Fun1::new("-", |x: i64| -x);
-            props::binop::right_inverse_elem(var, op, inv);
+            props::binop::right_inverse_elem(vars, op, inv);
         })
     }
 
@@ -458,10 +458,10 @@ mod tests {
     fn inverse_elem_example() {
         Dicetest::once().run(|mut fate| {
             let set = Set::new("i64", dice::i64(-1000..=1000));
-            let var = fate.roll(set.var(["x", "y"]));
+            let vars = fate.roll(set.vars(["x", "y"]));
             let op = Fun2::infix("+", |x, y| x + y);
             let inv = Fun1::new("-", |x: i64| -x);
-            props::binop::inverse_elem(var, op, inv);
+            props::binop::inverse_elem(vars, op, inv);
         })
     }
 
@@ -469,10 +469,10 @@ mod tests {
     fn left_inverse_example() {
         Dicetest::once().run(|mut fate| {
             let set = Set::new("i64", dice::i64(-1000..=1000));
-            let var = fate.roll(set.var(["x", "y"]));
+            let vars = fate.roll(set.vars(["x", "y"]));
             let op = Fun2::infix("+", |x, y| x + y);
             let invop = Fun2::infix("-", |x, y| x - y);
-            props::binop::left_inverse(var, op, invop);
+            props::binop::left_inverse(vars, op, invop);
         })
     }
 
@@ -480,10 +480,10 @@ mod tests {
     fn right_inverse_example() {
         Dicetest::once().run(|mut fate| {
             let set = Set::new("i64", dice::i64(-1000..=1000));
-            let var = fate.roll(set.var(["x", "y"]));
+            let vars = fate.roll(set.vars(["x", "y"]));
             let op = Fun2::infix("+", |x, y| x + y);
             let invop = Fun2::infix("-", |x, y| x - y);
-            props::binop::right_inverse(var, op, invop);
+            props::binop::right_inverse(vars, op, invop);
         })
     }
 
@@ -491,10 +491,10 @@ mod tests {
     fn inverse_example() {
         Dicetest::once().run(|mut fate| {
             let set = Set::new("i64", dice::i64(-1000..=1000));
-            let var = fate.roll(set.var(["x", "y"]));
+            let vars = fate.roll(set.vars(["x", "y"]));
             let op = Fun2::infix("+", |x, y| x + y);
             let invop = Fun2::infix("-", |x, y| x - y);
-            props::binop::inverse(var, op, invop);
+            props::binop::inverse(vars, op, invop);
         })
     }
 
@@ -502,13 +502,13 @@ mod tests {
     fn equal_example() {
         Dicetest::once().run(|mut fate| {
             let set = Set::new("i64", dice::i64(-1000..=1000));
-            let var = fate.roll(set.var(["x", "y"]));
+            let vars = fate.roll(set.vars(["x", "y"]));
             let op_1 = Fun2::new("add", |x, y| x + y);
             let op_2 = Fun2::new("add_assign", |mut x, y| {
                 x += y;
                 x
             });
-            props::binop::equal(var, op_1, op_2);
+            props::binop::equal(vars, op_1, op_2);
         })
     }
 }

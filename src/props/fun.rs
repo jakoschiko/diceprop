@@ -5,22 +5,22 @@
 use dicetest::hint_section;
 use std::fmt::Debug;
 
-use crate::{ops, Fun1, Fun2, Var};
+use crate::{ops, Fun1, Fun2, Vars};
 
 /// Asserts that the function `f` is [idempotent].
 ///
-/// For all `a` of `var.set` it must hold:
+/// For all `a` of `vars.set` it must hold:
 /// - `f(a) == f(f(a))`
 ///
 /// [idempotent]: https://en.wikipedia.org/wiki/Idempotence
-pub fn idempotent<S, F>(var: Var<S, 1>, f: Fun1<F>)
+pub fn idempotent<S, F>(vars: Vars<S, 1>, f: Fun1<F>)
 where
     S: Debug + Clone + PartialEq,
     F: Fn(S) -> S,
 {
     hint_section!("Is `{}` idempotent?", f.name);
 
-    let [a] = var.eval();
+    let [a] = vars.eval();
     let fa = f.eval(a);
 
     ops::assert(ops::eq(fa.as_ref(), f.eval(fa.clone()).as_ref()));
@@ -28,11 +28,11 @@ where
 
 /// Asserts that the function `g` is the [left inverse] of function `f`.
 ///
-/// For all `a` of `var.set` it must hold:
+/// For all `a` of `vars.set` it must hold:
 /// - `g(f(a)) == a`
 ///
 /// [left inverse]: https://en.wikipedia.org/wiki/Inverse_function#Left_and_right_inverses
-pub fn left_inverse<S, T, F, G>(var: Var<S, 1>, f: Fun1<F>, g: Fun1<G>)
+pub fn left_inverse<S, T, F, G>(vars: Vars<S, 1>, f: Fun1<F>, g: Fun1<G>)
 where
     S: Debug + Clone + PartialEq,
     T: Debug,
@@ -41,7 +41,7 @@ where
 {
     hint_section!("Is `{}` left inverse of `{}`?", g.name, f.name);
 
-    let [a] = var.eval();
+    let [a] = vars.eval();
 
     ops::assert(ops::eq(
         g.eval_once(f.eval_once(a.clone())).as_ref(),
@@ -51,11 +51,11 @@ where
 
 /// Asserts that the function `g` is the [right inverse] of function `f`.
 ///
-/// For all `a` of `var.set` it must hold:
+/// For all `a` of `vars.set` it must hold:
 /// - `f(g(a)) == a`
 ///
 /// [right inverse]: https://en.wikipedia.org/wiki/Inverse_function#Left_and_right_inverses
-pub fn right_inverse<S, T, F, G>(var: Var<T, 1>, f: Fun1<F>, g: Fun1<G>)
+pub fn right_inverse<S, T, F, G>(vars: Vars<T, 1>, f: Fun1<F>, g: Fun1<G>)
 where
     S: Debug,
     T: Debug + Clone + PartialEq,
@@ -64,7 +64,7 @@ where
 {
     hint_section!("Is `{}` right inverse of `{}`?", g.name, f.name);
 
-    let [a] = var.eval();
+    let [a] = vars.eval();
 
     ops::assert(ops::eq(
         f.eval_once(g.eval_once(a.clone())).as_ref(),
@@ -79,7 +79,7 @@ where
 /// - `g` is the right inverse of `f` ([`right_inverse`])
 ///
 /// [inverse]: https://en.wikipedia.org/wiki/Inverse_function
-pub fn inverse<S, T, F, G>(var_s: Var<S, 1>, var_t: Var<T, 1>, f: Fun1<F>, g: Fun1<G>)
+pub fn inverse<S, T, F, G>(vars_s: Vars<S, 1>, vars_t: Vars<T, 1>, f: Fun1<F>, g: Fun1<G>)
 where
     S: Debug + Clone + PartialEq,
     T: Debug + Clone + PartialEq,
@@ -88,15 +88,15 @@ where
 {
     hint_section!("Is `{}` inverse of `{}`?", g.name, f.name);
 
-    left_inverse(var_s, f.as_ref(), g.as_ref());
-    right_inverse(var_t, f, g);
+    left_inverse(vars_s, f.as_ref(), g.as_ref());
+    right_inverse(vars_t, f, g);
 }
 
 /// Asserts that the function `g` is equal to the function `f`.
 ///
-/// For all `a` of `var.set` it must hold:
+/// For all `a` of `vars.set` it must hold:
 /// - `f(a) == g(a)`
-pub fn equal_1<S, R, F, G>(var: Var<S, 1>, f: Fun1<F>, g: Fun1<G>)
+pub fn equal_1<S, R, F, G>(vars: Vars<S, 1>, f: Fun1<F>, g: Fun1<G>)
 where
     S: Debug + Clone,
     R: Debug + PartialEq,
@@ -105,7 +105,7 @@ where
 {
     hint_section!("Is `{}` equal to `{}`?", g.name, f.name);
 
-    let [a] = var.eval();
+    let [a] = vars.eval();
 
     ops::assert(ops::eq(
         f.eval_once(a.clone()).as_ref(),
@@ -115,9 +115,9 @@ where
 
 /// Asserts that the function `g` is equal to the function `f`.
 ///
-/// For all `a` of `var_s.set` and `b` of `var_t.set` it must hold:
+/// For all `a` of `vars_s.set` and `b` of `vars_t.set` it must hold:
 /// - `f(a, b) == g(a, b)`
-pub fn equal_2<S, T, R, F, G>(var_s: Var<S, 1>, var_t: Var<T, 1>, f: Fun2<F>, g: Fun2<G>)
+pub fn equal_2<S, T, R, F, G>(vars_s: Vars<S, 1>, vars_t: Vars<T, 1>, f: Fun2<F>, g: Fun2<G>)
 where
     S: Debug + Clone,
     T: Debug + Clone,
@@ -127,8 +127,8 @@ where
 {
     hint_section!("Is `{}` equal to `{}`?", g.name, f.name);
 
-    let [a] = var_s.eval();
-    let [b] = var_t.eval();
+    let [a] = vars_s.eval();
+    let [b] = vars_t.eval();
 
     ops::assert(ops::eq(
         f.eval_once(a.clone(), b.clone()).as_ref(),
@@ -138,11 +138,11 @@ where
 
 /// Asserts that the function `f` is [commutative].
 ///
-/// For `a`, `b` of `var.set` it must hold:
+/// For `a`, `b` of `vars.set` it must hold:
 /// - `f(a, b) == f(b, a)`
 ///
 /// [commutative]: https://en.wikipedia.org/wiki/Commutative_property#Mathematical_definitions
-pub fn commutative<S, R, O>(var: Var<S, 2>, f: Fun2<O>)
+pub fn commutative<S, R, O>(vars: Vars<S, 2>, f: Fun2<O>)
 where
     S: Debug + Clone,
     R: Debug + PartialEq,
@@ -150,7 +150,7 @@ where
 {
     hint_section!("Is `{}` commutative?", f.name);
 
-    let [a, b] = var.eval();
+    let [a, b] = vars.eval();
 
     ops::assert(ops::eq(
         f.eval(a.clone(), b.clone()).as_ref(),
@@ -176,9 +176,9 @@ mod tests {
                     ..,
                 ),
             );
-            let var = fate.roll(set.var(["x"]));
+            let vars = fate.roll(set.vars(["x"]));
             let f = Fun1::new("trim", |x: String| x.trim().to_owned());
-            props::fun::idempotent(var, f);
+            props::fun::idempotent(vars, f);
         })
     }
 
@@ -186,10 +186,10 @@ mod tests {
     fn left_inverse_example() {
         Dicetest::once().run(|mut fate| {
             let set = Set::new("f32", dice::f32(..));
-            let var = fate.roll(set.var(["x"]));
+            let vars = fate.roll(set.vars(["x"]));
             let f = Fun1::new("to_string", |x: f32| x.to_string());
             let g = Fun1::new("from_string", |y: String| f32::from_str(&y).unwrap());
-            props::fun::left_inverse(var, f, g);
+            props::fun::left_inverse(vars, f, g);
         })
     }
 
@@ -197,10 +197,10 @@ mod tests {
     fn right_inverse_example() {
         Dicetest::once().run(|mut fate| {
             let set = Set::new("i8", dice::i8(..));
-            let var = fate.roll(set.var(["x"]));
+            let vars = fate.roll(set.vars(["x"]));
             let f = Fun1::new("from_string", |x: String| i8::from_str(&x).unwrap());
             let g = Fun1::new("to_string", |y: i8| y.to_string());
-            props::fun::right_inverse(var, f, g);
+            props::fun::right_inverse(vars, f, g);
         })
     }
 
@@ -209,11 +209,11 @@ mod tests {
         Dicetest::once().run(|mut fate| {
             let set_s = Set::new("i8", dice::i8(..));
             let set_t = Set::new("u8", dice::u8(..));
-            let var_s = fate.roll(set_s.var(["x"]));
-            let var_t = fate.roll(set_t.var(["y"]));
+            let vars_s = fate.roll(set_s.vars(["x"]));
+            let vars_t = fate.roll(set_t.vars(["y"]));
             let f = Fun1::new("from_string", |x: i8| x as u8);
             let g = Fun1::new("to_string", |y: u8| y as i8);
-            props::fun::inverse(var_s, var_t, f, g);
+            props::fun::inverse(vars_s, vars_t, f, g);
         })
     }
 
@@ -221,10 +221,10 @@ mod tests {
     fn equal_1_example() {
         Dicetest::once().run(|mut fate| {
             let set = Set::new("u64", dice::u64(..1000));
-            let var = fate.roll(set.var(["x"]));
+            let vars = fate.roll(set.vars(["x"]));
             let f = Fun1::postfix("+2", |x: u64| x + 2);
             let g = Fun1::postfix("+1+1", |x: u64| x + 1 + 1);
-            props::fun::equal_1(var, f, g);
+            props::fun::equal_1(vars, f, g);
         })
     }
 
@@ -233,8 +233,8 @@ mod tests {
         Dicetest::once().run(|mut fate| {
             let set_s = Set::new("BTreeSet<u8>", dice::b_tree_set(dice::u8(..), ..));
             let set_t = Set::new("u8", dice::u8(..));
-            let var_s = fate.roll(set_s.var(["xs"]));
-            let var_t = fate.roll(set_t.var(["x"]));
+            let vars_s = fate.roll(set_s.vars(["xs"]));
+            let vars_t = fate.roll(set_t.vars(["x"]));
             let f = Fun2::new("insert", |mut xs: BTreeSet<u8>, x| {
                 xs.insert(x);
                 xs
@@ -244,7 +244,7 @@ mod tests {
                 xs.insert(x);
                 xs
             });
-            props::fun::equal_2(var_s, var_t, f, g);
+            props::fun::equal_2(vars_s, vars_t, f, g);
         })
     }
 
@@ -252,9 +252,9 @@ mod tests {
     fn commutative_example() {
         Dicetest::once().run(|mut fate| {
             let set = Set::new("BTreeSet<u8>", dice::b_tree_set(dice::u8(..), ..));
-            let var = fate.roll(set.var(["x", "y"]));
+            let vars = fate.roll(set.vars(["x", "y"]));
             let f = Fun2::new("is_disjoin", |x, y| BTreeSet::<u8>::is_disjoint(&x, &y));
-            props::fun::commutative(var, f);
+            props::fun::commutative(vars, f);
         })
     }
 }

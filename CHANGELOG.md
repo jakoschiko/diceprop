@@ -7,11 +7,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Changed
-- Add struct `diceprop::Var`. It is implemented with const generics and can represent an arbitrary number of variables. It replaces `diceprop::{Var1, Var2, Var3}`.
-- Add struct `diceprop::Set`. It wraps a value generator and is necessary for generating `diceprop::Var`.
+- Add struct `diceprop::Vars`. It is implemented with const generics and can represent an arbitrary number of variables. It replaces `diceprop::{Var1, Var2, Var3}`.
+- Add struct `diceprop::Set`. It wraps a value generator and is necessary for generating `diceprop::Vars`.
 - The functions `diceprop::{fun1, postfix_fun1, fun2, infix_fun2}` are now associated functions of `diceprop::{Fun1, Fun2}`.
 - The function `diceprop::elem` is now an associated function of `diceprop::Elem`.
-- Remove `diceprop::FateVarExt`. Use the generators `diceprop::Set::{single_var, var}` instead.
+- Remove `diceprop::FateVarExt`. Use the generators `diceprop::Set::{var_once, vars}` instead.
 
 ### Added
 - Add function `diceprop::props::binop::equal`.

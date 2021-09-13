@@ -10,9 +10,9 @@ mod associative_example {
     fn add_is_associative_for_small_f32() {
         Dicetest::repeatedly().run(|mut fate| {
             let set = Set::new("f32 ∩ [-100,100]", dice::f32(-100.0..=100.0));
-            let var = fate.roll(set.var(["x", "y", "z"]));
+            let vars = fate.roll(set.vars(["x", "y", "z"]));
             let add = Fun2::infix("+", |x, y| x + y);
-            props::binop::associative(var, add);
+            props::binop::associative(vars, add);
         })
     }
 }
@@ -26,10 +26,10 @@ mod left_inverse_example {
     fn sqrt_is_left_inverse_of_sq_for_non_negative_f32() {
         Dicetest::repeatedly().run(|mut fate| {
             let set = Set::new("f32 ∩ [0,+∞]", dice::f32(0.0..));
-            let var = fate.roll(set.var(["x"]));
+            let vars = fate.roll(set.vars(["x"]));
             let sq = Fun1::postfix("²", |x| x * x);
             let sqrt = Fun1::new("√", |x: f32| x.sqrt());
-            props::fun::left_inverse(var, sq, sqrt);
+            props::fun::left_inverse(vars, sq, sqrt);
         })
     }
 }
@@ -43,9 +43,9 @@ mod partial_order_example {
     fn gt_is_partial_order_for_any_f32() {
         Dicetest::repeatedly().run(|mut fate| {
             let set = Set::new("f32", dice::any_f32());
-            let var = fate.roll(set.var(["x", "y", "z"]));
+            let vars = fate.roll(set.vars(["x", "y", "z"]));
             let gt = Fun2::infix("≤", |x, y| x <= y);
-            props::binrel::partial_order(var, gt);
+            props::binrel::partial_order(vars, gt);
         })
     }
 }
