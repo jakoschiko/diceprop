@@ -5,7 +5,7 @@ use std::marker::PhantomData;
 
 use crate::{Elem, Vars};
 
-/// A mathematical set that can be used to choose variables.
+/// A mathematical set that can be used to randomly choose [`Vars`].
 ///
 /// The elements of the set are represented by the generator. The set contains all elements
 /// that the generator could possibly generate.

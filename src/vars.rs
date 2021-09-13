@@ -4,8 +4,7 @@ use std::fmt::Write;
 
 use crate::{Elem, Eval};
 
-/// Represents elements that were chosen from a set and that can be used as variables in a
-/// predicate.
+/// Represents elements that were chosen from a set and that can be used as variables in properties.
 ///
 /// It contains `N` elements of type `S`.
 #[derive(Clone, Copy)]
