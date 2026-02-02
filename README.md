@@ -1,3 +1,8 @@
+[![crates.io](https://img.shields.io/crates/v/diceprop.svg)](https://crates.io/crates/diceprop)
+[![Documentation](https://docs.rs/diceprop/badge.svg)](https://docs.rs/diceprop)
+[![Test](https://github.com/jakoschiko/diceprop/actions/workflows/test.yml/badge.svg)](https://github.com/jakoschiko/diceprop/actions/workflows/test.yml)
+[![License](https://img.shields.io/badge/license-MIT%2FApache-blue.svg)](https://github.com/jakoschiko/diceprop?tab=readme-ov-file#license)
+
 # diceprop
 
 A collection of mathematical properties for random testing.
