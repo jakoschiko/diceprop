@@ -7,6 +7,7 @@ mod associative_example {
     use dicetest::prelude::*;
 
     #[test]
+    #[should_panic] // Should fail in readme
     fn add_is_associative_for_small_f32() {
         Dicetest::repeatedly().run(|mut fate| {
             let set = Set::new("f32 ∩ [-100,100]", dice::f32(-100.0..=100.0));
@@ -23,6 +24,7 @@ mod left_inverse_example {
     use dicetest::prelude::*;
 
     #[test]
+    #[should_panic] // Should fail in readme
     fn sqrt_is_left_inverse_of_sq_for_non_negative_f32() {
         Dicetest::repeatedly().run(|mut fate| {
             let set = Set::new("f32 ∩ [0,+∞]", dice::f32(0.0..));
@@ -40,6 +42,7 @@ mod partial_order_example {
     use dicetest::prelude::*;
 
     #[test]
+    #[should_panic] // Should fail in readme
     fn gt_is_partial_order_for_any_f32() {
         Dicetest::repeatedly().run(|mut fate| {
             let set = Set::new("f32", dice::any_f32());
