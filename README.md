@@ -13,7 +13,7 @@ It's based on [dicetest](https://crates.io/crates/dicetest).
 
 ### Associative binary operation
 
-```rust
+```rust,no_run
 use diceprop::{props, Fun2, Set};
 use dicetest::prelude::*;
 
@@ -30,7 +30,7 @@ fn add_is_associative_for_small_f32() {
 
 The test fails with the following output:
 
-```
+```text
 The test failed after 12 passes.
 
 # Config
@@ -58,7 +58,7 @@ The test failed after 12 passes.
 
 ### Left inverse function
 
-```rust
+```rust,no_run
 use diceprop::{props, Fun1, Set};
 use dicetest::prelude::*;
 
@@ -76,7 +76,7 @@ fn sqrt_is_left_inverse_of_sq_for_non_negative_f32() {
 
 The test fails with the following output:
 
-```
+```text
 The test failed after 0 passes.
 
 # Config
@@ -100,7 +100,7 @@ The test failed after 0 passes.
 
 ### Partial order
 
-```rust
+```rust,no_run
 use diceprop::{props, Fun2, Set};
 use dicetest::prelude::*;
 
@@ -117,7 +117,7 @@ fn gt_is_partial_order_for_any_f32() {
 
 The test fails with the following output:
 
-```
+```text
 The test failed after 3 passes.
 
 # Config
