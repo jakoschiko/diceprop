@@ -11,4 +11,4 @@ keywords = ["algebra", "dicetest", "math", "property", "testing"]
 categories = ["development-tools::testing"]
 
 [dependencies]
-dicetest = "0.3"
+dicetest = "0.4.0"
