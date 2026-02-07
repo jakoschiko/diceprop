@@ -155,3 +155,8 @@ pub use fun::{Fun1, Fun1Label, Fun2, Fun2Label, Fun3, Fun3Label};
 pub mod ops;
 
 pub mod props;
+
+// Test examples from the readme.
+#[doc = include_str!("../README.md")]
+#[cfg(doctest)]
+pub struct ReadmeDoctests;
