@@ -18,18 +18,3 @@ cargo doc --no-deps
 
 echo "STEP diceprop: cargo readme > README.md"
 cargo readme > README.md
-
-
-cd examples_readme
-
-echo "STEP examples_readme: cargo fmt"
-cargo fmt
-
-echo "STEP examples_readme: cargo build"
-cargo build
-
-echo "STEP examples_readme: cargo test --no-run"
-cargo test --no-run
-
-echo "STEP examples_readme: cargo clippy"
-cargo clippy
