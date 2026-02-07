@@ -11,5 +11,4 @@ keywords = ["algebra", "dicetest", "math", "property", "testing"]
 categories = ["development-tools::testing"]
 
 [dependencies]
-array-init = "2.0"
 dicetest = "0.3"
