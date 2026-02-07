@@ -2,11 +2,14 @@
 //!
 //! [algebraic structures]: https://en.wikipedia.org/wiki/Algebraic_structure
 
-use dicetest::hint_section;
 use std::fmt::Debug;
 
-use crate::props::binop::{associative, commutative, distributive, identity_elem, inverse_elem};
-use crate::{Elem, Fun1, Fun2, Vars};
+use dicetest::hint_section;
+
+use crate::{
+    Elem, Fun1, Fun2, Vars,
+    props::binop::{associative, commutative, distributive, identity_elem, inverse_elem},
+};
 
 /// Asserts that `(vars.set, op)` is a [semigroup].
 ///

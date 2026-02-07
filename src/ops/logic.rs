@@ -1,6 +1,6 @@
+use std::{fmt::Display, ops::Not};
+
 use crate::{Eval, Fun1, Fun1Label, Fun2, Fun2Label};
-use std::fmt::Display;
-use std::ops::Not;
 
 /// Logical negation.
 pub fn not<L>(b: Eval<L, bool>) -> Eval<Fun1Label<'static, L>, bool>

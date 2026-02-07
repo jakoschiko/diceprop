@@ -1,5 +1,6 @@
-use crate::Eval;
 use std::fmt::Display;
+
+use crate::Eval;
 
 /// Asserts that `assertion` is true.
 ///
