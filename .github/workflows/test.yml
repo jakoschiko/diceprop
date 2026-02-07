@@ -1,0 +1,32 @@
+name: test
+
+on:
+  push:
+    branches: ["main"]
+  pull_request:
+    branches: ["main"]
+
+env:
+  CARGO_TERM_COLOR: always
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out
+        uses: actions/checkout@v6
+      - name: Install Rust
+        uses: dtolnay/rust-toolchain@stable
+        with:
+          toolchain: 1.87.0 # MSRV
+          components: clippy, rustfmt
+      - name: Check fmt
+        run: cargo fmt --all --check
+      - name: Check clippy
+        run: cargo clippy --all-targets
+      - name: Build
+        run: cargo build --all-targets
+      - name: Run tests
+        run: RUST_BACKTRACE=1 cargo test -- --format=terse
+      - name: Check semver
+        uses: obi1kenobi/cargo-semver-checks-action@v2
