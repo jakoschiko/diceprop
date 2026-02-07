@@ -1,7 +1,7 @@
 [package]
 name = "diceprop"
 version = "0.2.0"
-edition = "2018"
+edition = "2024"
 rust-version = "1.87.0"
 description = "Mathematical properties for random testing"
 readme = "README.md"
