@@ -3,7 +3,7 @@
 
 #[cfg(test)]
 mod associative_example {
-    use diceprop::{props, Fun2, Set};
+    use diceprop::{Fun2, Set, props};
     use dicetest::prelude::*;
 
     #[test]
@@ -20,7 +20,7 @@ mod associative_example {
 
 #[cfg(test)]
 mod left_inverse_example {
-    use diceprop::{props, Fun1, Set};
+    use diceprop::{Fun1, Set, props};
     use dicetest::prelude::*;
 
     #[test]
@@ -38,7 +38,7 @@ mod left_inverse_example {
 
 #[cfg(test)]
 mod partial_order_example {
-    use diceprop::{props, Fun2, Set};
+    use diceprop::{Fun2, Set, props};
     use dicetest::prelude::*;
 
     #[test]

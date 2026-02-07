@@ -5,7 +5,7 @@
 use dicetest::hint_section;
 use std::fmt::Debug;
 
-use crate::{ops, Fun1, Fun2, Vars};
+use crate::{Fun1, Fun2, Vars, ops};
 
 /// Asserts that the function `f` is [idempotent].
 ///
@@ -160,7 +160,7 @@ where
 
 #[cfg(test)]
 mod tests {
-    use crate::{props, Fun1, Fun2, Set};
+    use crate::{Fun1, Fun2, Set, props};
 
     use dicetest::prelude::*;
     use std::collections::BTreeSet;
