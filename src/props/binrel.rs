@@ -5,7 +5,7 @@
 use dicetest::hint_section;
 use std::fmt::Debug;
 
-use crate::{ops, Fun2, Vars};
+use crate::{Fun2, Vars, ops};
 
 /// Asserts that the binary relation `rel` is [reflexive].
 ///
@@ -230,7 +230,7 @@ where
 mod tests {
     use dicetest::prelude::*;
 
-    use crate::{props, Fun2, Set};
+    use crate::{Fun2, Set, props};
 
     #[test]
     fn reflexive_example() {

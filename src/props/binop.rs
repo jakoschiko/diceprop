@@ -5,7 +5,7 @@
 use dicetest::hint_section;
 use std::fmt::Debug;
 
-use crate::{ops, props, Elem, Fun1, Fun2, Vars};
+use crate::{Elem, Fun1, Fun2, Vars, ops, props};
 
 /// Asserts that the binary operation `op` is [commutative].
 ///
@@ -337,7 +337,7 @@ mod tests {
     use dicetest::prelude::*;
     use std::collections::BTreeSet;
 
-    use crate::{props, Elem, Fun1, Fun2, Set};
+    use crate::{Elem, Fun1, Fun2, Set, props};
 
     #[test]
     fn commutative_example() {

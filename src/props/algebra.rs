@@ -222,7 +222,7 @@ pub fn field<S, A, M, N, I>(
 mod tests {
     use dicetest::prelude::*;
 
-    use crate::{props, Elem, Fun1, Fun2, Set};
+    use crate::{Elem, Fun1, Fun2, Set, props};
 
     #[test]
     fn semigroup_example() {

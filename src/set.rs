@@ -1,4 +1,4 @@
-use dicetest::{dice, Die, DieOnce};
+use dicetest::{Die, DieOnce, dice};
 use std::fmt::Debug;
 use std::marker::PhantomData;
 
