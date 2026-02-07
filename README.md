@@ -33,27 +33,27 @@ fn add_is_associative_for_small_f32() {
 The test fails with the following output:
 
 ```text
-The test failed after 12 passes.
+The test failed after 8 passes.
 
 # Config
-- seed: 14859458141222391139
+- seed: 3953300129614487606
 - start limit: 0
 - end limit: 100
 - passes: 200
 
 # Counterexample
-- run code: "2pYRCj9fj8sV52fB5iyFhxCISGY3nKlMzlzIKq0NKLwGAAAAAAAAAA=="
-- limit: 6
+- run code: 2xMt8jfykZD8kKocVrFZR84lYvMbMs04Rl0ZcpHvDq5WA05p7iI9U8
+- limit: 4
 - hints:
         - Is `+` associative?
                 - x, y, z of f32 ∩ [-100,100]
-                - x = 96.621735
-                - y = -90.97134
-                - z = -8.10239
-                - (x + y) = 5.6503983
-                - ((x + y) + z) = -2.451992
-                - (y + z) = -99.07373
-                - (x + (y + z)) = -2.4519958
+                - x = -77.55548
+                - y = 96.37662
+                - z = -25.76199
+                - (x + y) = 18.821136
+                - ((x + y) + z) = -6.940853
+                - (y + z) = 70.614624
+                - (x + (y + z)) = -6.940857
                 - (((x + y) + z) == (x + (y + z))) = false
 - error: assertion failed: (((x + y) + z) == (x + (y + z)))
 ```
@@ -82,18 +82,18 @@ The test fails with the following output:
 The test failed after 0 passes.
 
 # Config
-- seed: 7632522237817347676
+- seed: 11456840474003924454
 - start limit: 0
 - end limit: 100
 - passes: 200
 
 # Counterexample
-- run code: "F2/nnlbX6qyCOm5MU7P8BSXdnJ4XNXJdihgwhtWxlzMAAAAAAAAAAA=="
+- run code: 64H4o8H1xczhbtq1FWgThGEkosuz8WYzyZ5nYe7sSie9qsgkfbbtRI
 - limit: 0
 - hints:
         - Is `√` left inverse of `²`?
                 - x of f32 ∩ [0,+∞]
-                - x = 305770290000000000000000000000000000000.0
+                - x = 3.079607e38
                 - (x)² = inf
                 - √((x)²) = inf
                 - (√((x)²) == x) = false
@@ -120,17 +120,17 @@ fn gt_is_partial_order_for_any_f32() {
 The test fails with the following output:
 
 ```text
-The test failed after 3 passes.
+The test failed after 4 passes.
 
 # Config
-- seed: 18374838706510982620
+- seed: 14352745908157362390
 - start limit: 0
 - end limit: 100
 - passes: 200
 
 # Counterexample
-- run code: "h6jQMNr6fi/j9OZOXmklXYAUATM96EpE6+DENMhSZHkBAAAAAAAAAA=="
-- limit: 1
+- run code: EiazScJsgqxJ5a69wRiYCiam1wEa8vnOAlZNwGI8f07oeiXlMlDZIG
+- limit: 2
 - hints:
         - Is `≤` a partial order?
                 - Is `≤` reflexive?
