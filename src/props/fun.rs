@@ -2,8 +2,9 @@
 //!
 //! [functions]: https://en.wikipedia.org/wiki/Function_(mathematics)
 
-use dicetest::hint_section;
 use std::fmt::Debug;
+
+use dicetest::hint_section;
 
 use crate::{Fun1, Fun2, Vars, ops};
 
@@ -160,11 +161,11 @@ where
 
 #[cfg(test)]
 mod tests {
-    use crate::{Fun1, Fun2, Set, props};
+    use std::{collections::BTreeSet, str::FromStr};
 
     use dicetest::prelude::*;
-    use std::collections::BTreeSet;
-    use std::str::FromStr;
+
+    use crate::{Fun1, Fun2, Set, props};
 
     #[test]
     fn idempotent_example() {

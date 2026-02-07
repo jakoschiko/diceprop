@@ -2,8 +2,9 @@
 //!
 //! [binary relations]: https://en.wikipedia.org/wiki/Binary_relation
 
-use dicetest::hint_section;
 use std::fmt::Debug;
+
+use dicetest::hint_section;
 
 use crate::{Fun2, Vars, ops};
 

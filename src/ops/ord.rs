@@ -1,5 +1,6 @@
-use crate::{Eval, Fun2, Fun2Label};
 use std::fmt::{Debug, Display};
+
+use crate::{Eval, Fun2, Fun2Label};
 
 /// The first value is less than the second value based on [`PartialOrd`].
 pub fn lt<L1, L2, V>(lhs: Eval<L1, &V>, rhs: Eval<L2, &V>) -> Eval<Fun2Label<'static, L1, L2>, bool>

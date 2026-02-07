@@ -2,8 +2,9 @@
 //!
 //! [binary operations]: https://en.wikipedia.org/wiki/Binary_operation
 
-use dicetest::hint_section;
 use std::fmt::Debug;
+
+use dicetest::hint_section;
 
 use crate::{Elem, Fun1, Fun2, Vars, ops, props};
 
@@ -334,8 +335,9 @@ where
 
 #[cfg(test)]
 mod tests {
-    use dicetest::prelude::*;
     use std::collections::BTreeSet;
+
+    use dicetest::prelude::*;
 
     use crate::{Elem, Fun1, Fun2, Set, props};
 
