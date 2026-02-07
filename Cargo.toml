@@ -1,14 +1,14 @@
 [package]
 name = "diceprop"
 version = "0.2.0"
-license = "MIT OR Apache-2.0"
-readme = "README.md"
-description = "Mathematical properties for random testing"
-keywords = ["testing", "property", "dicetest", "algebra", "math"]
-categories = ["development-tools::testing"]
-repository = "https://github.com/jakoschiko/diceprop"
 edition = "2018"
+description = "Mathematical properties for random testing"
+readme = "README.md"
+repository = "https://github.com/jakoschiko/diceprop"
+license = "MIT OR Apache-2.0"
+keywords = ["algebra", "dicetest", "math", "property", "testing"]
+categories = ["development-tools::testing"]
 
 [dependencies]
-dicetest = "0.3"
 array-init = "2.0"
+dicetest = "0.3"
