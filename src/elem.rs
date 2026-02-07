@@ -29,12 +29,12 @@ impl<'a, S: Debug> Elem<'a, S> {
     }
 
     /// Returns an [`Elem`] with the same name and a reference to the original value.
-    pub fn as_ref(&self) -> Elem<&S> {
+    pub fn as_ref(&self) -> Elem<'_, &S> {
         Elem::new(self.name, &self.value)
     }
 }
 
-impl<'a, 'b, S: Debug> Elem<'a, &'b S> {
+impl<'a, S: Debug> Elem<'a, &S> {
     /// Returns an [`Elem`] with the same name and a clone of the original value.
     pub fn cloned(self) -> Elem<'a, S>
     where
