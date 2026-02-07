@@ -1,6 +1,9 @@
+use std::{
+    array,
+    fmt::{Debug, Write},
+};
+
 use dicetest::hint;
-use std::fmt::Debug;
-use std::fmt::Write;
 
 use crate::{Elem, Eval};
 
@@ -45,7 +48,7 @@ impl<'a, S: Debug, const N: usize> Vars<'a, S, N> {
 
     /// Returns a [`Vars`] with the same names and references to the original values.
     pub fn as_ref<'b: 'a>(&'b self) -> Vars<'a, &'b S, N> {
-        let elems = array_init::array_init(|i| self.elems[i].as_ref());
+        let elems = array::from_fn(|i| self.elems[i].as_ref());
         Vars::new(self.set, elems)
     }
 }

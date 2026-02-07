@@ -1,5 +1,6 @@
-use dicetest::hint;
 use std::fmt::Debug;
+
+use dicetest::hint;
 
 use crate::Eval;
 
