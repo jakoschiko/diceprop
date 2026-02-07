@@ -53,8 +53,9 @@ impl<'a, S: Debug, D: Die<S> + 'a> Set<'a, S, D> {
         let die = self.elem_die;
         dice::from_fn(move |mut fate| {
             let values = fate.roll(dice::array::<_, _, N>(&die));
-            let elems_iter = IntoIterator::into_iter(names)
-                .zip(IntoIterator::into_iter(values))
+            let elems_iter = names
+                .into_iter()
+                .zip(values)
                 .map(|(name, value)| Elem::new(name, value));
             let elems: [_; N] = array_init::from_iter(elems_iter).unwrap();
             Vars::new(set, elems)
