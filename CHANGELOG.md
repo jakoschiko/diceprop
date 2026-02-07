@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## Changed
+
+- Set MSRV to 1.87.0
+
 ## [0.2.0] - 2021-09-13
 
 ### Added
