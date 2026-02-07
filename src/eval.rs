@@ -20,7 +20,7 @@ impl<L: Display + Copy, S> Eval<L, S> {
     }
 }
 
-impl<'a, L: Display + Copy, S> Eval<L, &'a S> {
+impl<L: Display + Copy, S> Eval<L, &S> {
     /// Returns an [`Eval`] with the same label and a clone of the original value.
     pub fn cloned(self) -> Eval<L, S>
     where

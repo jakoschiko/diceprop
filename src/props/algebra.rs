@@ -183,7 +183,7 @@ pub fn commutative_ring<S, A, M, N>(
 /// It must hold:
 /// - `(vars.set, add, mul, neg, zero, one)` is a commutative ring ([`commutative_ring`])
 /// - For `a` of `non_zero_vars.set` the result of `inv(a)` is the inverse element of `a` regarding
-/// to `mul` ([`inverse_elem`])
+///   to `mul` ([`inverse_elem`])
 ///
 /// [field]: https://en.wikipedia.org/wiki/Field_(mathematics)
 #[allow(clippy::too_many_arguments)]

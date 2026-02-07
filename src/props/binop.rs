@@ -230,9 +230,9 @@ where
 ///
 /// It must hold:
 /// - `inv` returns the left inverse element regarding to `op`
-/// ([`left_inverse_elem`])
+///   ([`left_inverse_elem`])
 /// - `inv` returns the right inverse element regarding to `op`
-/// ([`right_inverse_elem`])
+///   ([`right_inverse_elem`])
 ///
 /// [inverse element]: https://en.wikipedia.org/wiki/Inverse_element
 pub fn inverse_elem<S, O, I>(vars: Vars<S, 2>, op: Fun2<O>, inv: Fun1<I>)
