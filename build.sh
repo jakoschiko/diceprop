@@ -15,6 +15,3 @@ cargo clippy
 
 echo "STEP diceprop: cargo doc --no-deps"
 cargo doc --no-deps
-
-echo "STEP diceprop: cargo readme > README.md"
-cargo readme > README.md
