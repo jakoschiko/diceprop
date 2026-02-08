@@ -7,7 +7,9 @@
 
 A collection of mathematical properties for random testing.
 
-It's based on [dicetest](https://crates.io/crates/dicetest).
+It's based on [dicetest].
+
+[dicetest]: https://crates.io/crates/dicetest
 
 ## Examples
 
